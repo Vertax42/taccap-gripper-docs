@@ -9,8 +9,7 @@
 site_name: TacCap-Gripper 数采快速使用手册
 site_description: XenseRobotics TacCap-Gripper 手持触觉数采夹爪 · 基于 lerobot 的数据采集快速上手
 site_author: XenseRobotics
-# TODO: 换成实际的 GitHub Pages 地址(user/org.github.io/<repo>/)
-site_url: https://vertax42.github.io/taccap-gripper-mkdoc-material/
+site_url: https://vertax42.github.io/taccap-gripper-docs/
 copyright: 文档版本 v0.0.1 &nbsp;·&nbsp; Copyright &copy; 2026 XenseRobotics Co., Ltd.
 
 # 不打包进站点的 docs 内文件(素材说明 + 暂移出导航的页面,文件留存备用)
@@ -18,9 +17,9 @@ exclude_docs: |
   assets/README.md
   embedded.md
 
-# 源码仓库(右上角链接);TODO: 如文档单独建仓,改成文档仓地址
-repo_url: https://github.com/Vertax42/xense-taccap-lerobot
-repo_name: xense-taccap-lerobot
+# 文档仓库(右上角链接)
+repo_url: https://github.com/Vertax42/taccap-gripper-docs
+repo_name: Vertax42/taccap-gripper-docs
 edit_uri: ""
 
 theme:
@@ -147,7 +146,7 @@ extra_css:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/Vertax42/xense-taccap-lerobot
+      link: https://github.com/Vertax42/taccap-gripper-docs
 
 nav:
   - 首页: index.md
