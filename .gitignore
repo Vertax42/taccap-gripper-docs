@@ -1,0 +1,18 @@
+# mkdocs 构建产物
+site/
+.cache/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# 编辑器 / 系统
+.DS_Store
+.idea/
+.vscode/
+
+# 原始参考资料(不发布、常较大/含内部信息;仅保留说明)
+materials/*
+!materials/README.md

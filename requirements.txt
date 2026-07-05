@@ -1,0 +1,7 @@
+# 文档站构建依赖 / Docs site build dependencies
+# 安装: pip install -r requirements.txt
+mkdocs-material>=9.5.0
+mkdocs-static-i18n>=1.2.0
+mkdocs-glightbox>=0.4.0
+# 可选:导出 PDF(如需离线手册,取消注释)
+# mkdocs-with-pdf>=0.9.0

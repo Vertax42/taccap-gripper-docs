@@ -1,0 +1,176 @@
+# =============================================================================
+# TacCap-Gripper 数采快速使用手册 · mkdocs-material 配置
+# 中英双语(中文默认 / English via mkdocs-static-i18n · suffix 结构)
+# 本地预览:  mkdocs serve
+# 构建:      mkdocs build --strict
+# 发布:      GitHub Actions -> gh-pages(见 .github/workflows/deploy.yml)
+# =============================================================================
+
+site_name: TacCap-Gripper 数采快速使用手册
+site_description: XenseRobotics TacCap-Gripper 手持触觉数采夹爪 · 基于 lerobot 的数据采集快速上手
+site_author: XenseRobotics
+# TODO: 换成实际的 GitHub Pages 地址(user/org.github.io/<repo>/)
+site_url: https://vertax42.github.io/taccap-gripper-mkdoc-material/
+copyright: 文档版本 v0.0.1 &nbsp;·&nbsp; Copyright &copy; 2026 XenseRobotics Co., Ltd.
+
+# 不打包进站点的 docs 内文件(素材说明 + 暂移出导航的页面,文件留存备用)
+exclude_docs: |
+  assets/README.md
+  embedded.md
+
+# 源码仓库(右上角链接);TODO: 如文档单独建仓,改成文档仓地址
+repo_url: https://github.com/Vertax42/xense-taccap-lerobot
+repo_name: xense-taccap-lerobot
+edit_uri: ""
+
+theme:
+  name: material
+  language: zh
+  # TODO: 放好素材后取消注释启用自定义 logo/favicon(文件放 docs/assets/brand/)
+  # logo: assets/brand/logo.png
+  # favicon: assets/brand/favicon.png
+  icon:
+    repo: fontawesome/brands/github
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: 切换到暗色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: 切换到亮色模式
+  features:
+    # navigation.instant 与 i18n 语言切换器不兼容,勿开启
+    # 快速手册:不用顶栏 tabs,全部章节走左侧栏(分组 + 展开)
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+    - content.tooltips
+
+plugins:
+  - search:
+      separator: '[\s​\-_,:!=\[\]()"`/]+|\.(?!\d)|&[lg]t;|(?!\b)(?=[A-Z][a-z])'
+  - glightbox
+  - i18n:
+      docs_structure: suffix
+      fallback_to_default: true
+      reconfigure_material: true
+      reconfigure_search: true
+      languages:
+        - locale: zh
+          default: true
+          name: 简体中文
+          build: true
+        - locale: en
+          name: English
+          build: true
+          site_name: "TacCap-Gripper Data-Collection Quickstart"
+          nav_translations:
+            首页: Home
+            一页速通: Quickstart
+            故障排查: Troubleshooting
+            概述: Overview
+            产品亮点: Highlights
+            硬件介绍: Hardware
+            环境安装: Installation
+            环境部署: Environment Setup
+            主机与设备配置: Host & Device Setup
+            软件使用: Software Usage
+            标定与自检: Calibration & Smoke Test
+            数据采集: Data Collection
+            采集规范与最佳实践: Best Practices
+            数据介绍: Data
+            数据集与示例: Dataset & Examples
+            数据管理与命名: Data Management
+            参考: Reference
+            维护保养: Maintenance
+            版本与支持: Versions & Support
+            常见问题与参考: FAQ & Reference
+            "附录:SDK 与二次开发": "Appendix: SDK"
+            SDK 概览: SDK Overview
+            安装与构建: Install & Build
+            示例: Examples
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      permalink_title: 锚点链接
+  - pymdownx.betterem
+  - pymdownx.caret
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/Vertax42/xense-taccap-lerobot
+
+nav:
+  - 首页: index.md
+  - 一页速通: quickstart.md
+  - 概述: 01-overview.md
+  - 产品亮点: highlights.md
+  - 硬件介绍: hardware.md
+  - 环境安装:
+      - 环境部署: 02-environment.md
+      - 主机与设备配置: 03-host-hardware.md
+  - 软件使用:
+      - 标定与自检: 04-calibration.md
+      - 数据采集: 05-data-collection.md
+      - 采集规范与最佳实践: best-practices.md
+  - 数据介绍:
+      - 数据集与示例: 06-dataset.md
+      - 数据管理与命名: data-management.md
+  - 参考:
+      - 故障排查: troubleshooting.md
+      - 维护保养: maintenance.md
+      - 常见问题与参考: 07-faq-reference.md
+      - 版本与支持: versions.md
+      - 附录:SDK 与二次开发:
+          - SDK 概览: sdk-overview.md
+          - 安装与构建: sdk-install.md
+          - 示例: sdk-examples.md
