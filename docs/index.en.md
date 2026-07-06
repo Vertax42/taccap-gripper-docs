@@ -10,7 +10,7 @@ hide:
 
 # Handheld tactile data collection, from unboxing to a dataset
 
-<p class="tc-sub">TacCap-Gripper handheld tactile gripper × Pico4 Ultra tracker — capture synchronized vision · tactile · pose data with lerobot, straight to a training-ready <code>LeRobotDataset</code></p>
+<p class="tc-sub">TacCap-Gripper handheld tactile gripper × Pico4 Ultra tracker<br>capture synchronized vision · tactile · pose data with lerobot, straight to a training-ready <code>LeRobotDataset</code></p>
 
 [Quickstart :material-arrow-right-bold:](quickstart.md){ .md-button .md-button--primary }
 [Installation](02-environment.md){ .md-button }

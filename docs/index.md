@@ -10,7 +10,7 @@ hide:
 
 # 手持触觉数采,从开箱到数据集
 
-<p class="tc-sub">TacCap-Gripper 手持触觉数采夹爪 × Pico4 Ultra 追踪器 —— 基于 lerobot 同步采集视觉 · 触觉 · 位姿多模态数据,直出可训练的标准 <code>LeRobotDataset</code></p>
+<p class="tc-sub">TacCap-Gripper 手持触觉数采夹爪 × Pico4 Ultra 追踪器<br>基于 lerobot 同步采集视觉 · 触觉 · 位姿多模态数据,直出可训练的标准 <code>LeRobotDataset</code></p>
 
 [一页速通 :material-arrow-right-bold:](quickstart.md){ .md-button .md-button--primary }
 [环境安装](02-environment.md){ .md-button }
