@@ -32,17 +32,17 @@ flowchart LR
 
 ## Three steps
 
-This is the **xense-taccap-lerobot data-collection quickstart**. Three parts: **set up the environment → record with the software → understand the data**.
+This is the **xense-taccap-lerobot data-collection quickstart**. Three parts: **get ready → record → understand the data**.
 
 <div class="grid cards" markdown>
 
--   :material-download-box-outline: __① Installation__
+-   :material-check-decagram-outline: __① Getting Ready (prerequisites)__
 
     ---
 
-    Mamba env, submodules, one-shot `setup_env.sh`, host & device config.
+    Know your hardware → connect & power it on → set up the software environment and host/device config.
 
-    [:octicons-arrow-right-24: Environment Setup](02-environment.md)
+    [:octicons-arrow-right-24: Hardware](hardware.md) · [Environment Setup](02-environment.md)
 
 -   :material-record-circle-outline: __② Software Usage__
 
@@ -59,14 +59,6 @@ This is the **xense-taccap-lerobot data-collection quickstart**. Three parts: **
     What a `LeRobotDataset` looks like, what's recorded per frame, checking & upload.
 
     [:octicons-arrow-right-24: Dataset & Examples](06-dataset.md)
-
--   :material-chip: __Device & Hardware__
-
-    ---
-
-    Get to know the handheld gripper (hardware is just one chapter).
-
-    [:octicons-arrow-right-24: Overview](01-overview.md) · [Hardware](hardware.md)
 
 </div>
 

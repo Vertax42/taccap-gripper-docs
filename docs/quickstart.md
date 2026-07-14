@@ -1,9 +1,11 @@
 # 一页速通(TL;DR)
 
-已经装好环境、标定过设备?这一页从**上电到出第一条数据**,照抄即可。第一次用请先走
-[环境安装](02-environment.md) 与 [标定与自检](04-calibration.md)。
+已经做完准备工作(认识硬件、连好线、装好环境)?这一页从**上电到出第一条数据**,照抄即可。
+第一次用请先走 [准备工作](hardware.md):[硬件介绍](hardware.md) → [环境安装](02-environment.md) →
+[主机与设备配置](03-host-hardware.md),再回来。
 
-!!! note "前提"
+!!! note "前提(准备工作)"
+    - 已了解设备并**连接好硬件、上电**(见 [硬件介绍](hardware.md#install))。
     - 已完成 [环境安装](02-environment.md)(`setup_env.sh --install` 通过、三个包能 import)。
     - 已做 [串口权限 + ModemManager](03-host-hardware.md#31) 一次性主机配置。
     - 已 [标定编码器零点](04-calibration.md#41)。

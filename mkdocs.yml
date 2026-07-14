@@ -87,6 +87,7 @@ plugins:
             故障排查: Troubleshooting
             概述: Overview
             产品亮点: Highlights
+            准备工作: Getting Ready
             硬件介绍: Hardware
             环境安装: Installation
             环境部署: Environment Setup
@@ -153,9 +154,9 @@ nav:
   - 一页速通: quickstart.md
   - 概述: 01-overview.md
   - 产品亮点: highlights.md
-  - 硬件介绍: hardware.md
-  - 环境安装:
-      - 环境部署: 02-environment.md
+  - 准备工作:
+      - 硬件介绍: hardware.md
+      - 环境安装: 02-environment.md
       - 主机与设备配置: 03-host-hardware.md
   - 软件使用:
       - 标定与自检: 04-calibration.md

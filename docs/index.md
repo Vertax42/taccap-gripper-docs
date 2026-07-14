@@ -32,17 +32,17 @@ flowchart LR
 
 ## 三步走
 
-本手册是 **xense-taccap-lerobot 数采快速使用文档**,主线就三块:**装好环境 → 用软件采集 → 认识数据**。
+本手册是 **xense-taccap-lerobot 数采快速使用文档**,主线三块:**准备就绪 → 采集数据 → 认识数据**。
 
 <div class="grid cards" markdown>
 
--   :material-download-box-outline: __① 环境安装__
+-   :material-check-decagram-outline: __① 准备工作(前提)__
 
     ---
 
-    Mamba 环境、克隆子模块、`setup_env.sh` 一键装好、主机与设备配置。
+    认识拿到的硬件 → 连接硬件、上电 → 装好软件环境与主机/设备配置。这三件是采集前的前提。
 
-    [:octicons-arrow-right-24: 环境部署](02-environment.md)
+    [:octicons-arrow-right-24: 硬件介绍](hardware.md) · [环境安装](02-environment.md)
 
 -   :material-record-circle-outline: __② 软件使用__
 
@@ -59,14 +59,6 @@ flowchart LR
     `LeRobotDataset` 长什么样、每帧记录了什么、如何校验与上传。
 
     [:octicons-arrow-right-24: 数据集与示例](06-dataset.md)
-
--   :material-chip: __设备与硬件__
-
-    ---
-
-    先了解这台手持数采夹爪的构成与接口(硬件只是其中一章)。
-
-    [:octicons-arrow-right-24: 概述](01-overview.md) · [硬件介绍](hardware.md)
 
 </div>
 
