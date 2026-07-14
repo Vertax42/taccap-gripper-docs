@@ -1,14 +1,11 @@
 # 产品亮点
 
-!!! info "命名"
-    本手册统一用工程名 **TacCap-Gripper**;其**对外市场名为「千觉 XTac UMI G1」**。
-
-**TacCap-Gripper** 是面向机器人操作学习的**穿戴式视触觉多模态数据采集夹爪**,面向具身操作数据集
+**XTac-UMI G1** 是面向机器人操作学习的**穿戴式视触觉多模态数据采集夹爪**,面向具身操作数据集
 构建。整机由**穿戴式主端 + 机器人从端 + 采集背包 + 三色光视触觉传感器**组成,集成腕部鱼眼相机、
 高精度位姿传感单元与 IMU,可同步采集 RGB 图像、视触觉、空间位姿、夹爪状态与惯性数据,服务于
 模仿学习、VLA / VTLA 模型训练与触觉世界模型研究。
 
-![TacCap-Gripper(XTac UMI G1)产品外观](assets/product/xtac-umi-g1-hero.jpg){ width="720" }
+![XTac-UMI G1 产品外观](assets/product/xtac-umi-g1-hero.jpg){ width="720" }
 
 ## 核心价值
 
@@ -89,7 +86,7 @@
 
 ## 产品外观
 
-![TacCap-Gripper 多角度与采集单元](assets/product/xtac-umi-g1-group.jpg)
+![XTac-UMI G1 多角度与采集单元](assets/product/xtac-umi-g1-group.jpg)
 
 ## 应用场景
 

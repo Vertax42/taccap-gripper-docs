@@ -1,6 +1,6 @@
 # SDK 概览
 
-`xense.taccap`(`taccap-gripper` SDK)是 TacCap-Gripper 的 **C++17 / Python 设备访问层**,
+`xense.taccap`(`taccap-gripper` SDK)是 XTac-UMI G1 的 **C++17 / Python 设备访问层**,
 统一命名空间 `xense::taccap::` / `xense.taccap`。数采主仓库通过
 `third_party/taccap-gripper` 子模块消费它,不重复实现底层通信。
 

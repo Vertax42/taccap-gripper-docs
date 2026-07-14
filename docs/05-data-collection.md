@@ -73,9 +73,9 @@ lerobot-record \
 | `--display_compressed_images` | `true` | Rerun 用 JPEG 显示以降内存;要无损设 `false` |
 | `--play_sounds` | `true` | 语音播报录制事件 |
 | `--resume` | `false` | 在已有数据集上**续录** |
-| `--teleop.*` | — | 遥操作端;**TacCap 自驱动无需**,不用填 |
+| `--teleop.*` | — | 遥操作端;**XTac-UMI G1 自驱动无需**,不用填 |
 
-#### 设备参数 `--robot.*`(TacCap 专属)
+#### 设备参数 `--robot.*`(XTac-UMI G1 专属)
 
 | 参数 | 默认 | 含义 |
 |---|---|---|
@@ -111,10 +111,10 @@ Pico4 追踪器上电后,6-DoF 位姿**自动录制**——追踪器按序列号
 |---|---|---|
 | `tcp.x`, `tcp.y`, `tcp.z` | Pico4 追踪器 → EE | float(米) |
 | `tcp.r1`..`tcp.r6` | EE 的 6-D 旋转 | float |
-| `gripper.pos` | TacCap 编码器,归一化 | float ∈ [0, 1] |
-| `imu.accel.{x,y,z}`(可选) | TacCap IMU | float(m/s²) |
-| `imu.gyro.{x,y,z}`(可选) | TacCap IMU | float(rad/s) |
-| `imu.mag.{x,y,z}`(可选) | TacCap IMU | float(µT) |
+| `gripper.pos` | XTac-UMI G1 编码器,归一化 | float ∈ [0, 1] |
+| `imu.accel.{x,y,z}`(可选) | XTac-UMI G1 IMU | float(m/s²) |
+| `imu.gyro.{x,y,z}`(可选) | XTac-UMI G1 IMU | float(rad/s) |
+| `imu.mag.{x,y,z}`(可选) | XTac-UMI G1 IMU | float(µT) |
 | `tactile_left` / `tactile_right` | 视触觉校正图 | uint8,约 `(400, 700, 3)` |
 | `wrist_cam` | 腕部相机 | uint8 `(H, W, 3)` |
 

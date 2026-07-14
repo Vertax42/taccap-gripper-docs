@@ -5,10 +5,9 @@
     概述/硬件 → 环境安装 → 软件使用采集 → 数据落盘与介绍。
     **模型训练、推理、部署不在范围内。**
 
-## 1.1 TacCap-Gripper 是什么
+## 1.1 XTac-UMI G1 是什么
 
-**TacCap-Gripper**(TacCap = *Tactile Capture* Gripper,**对外市场名:千觉 XTac UMI G1**)
-是 XenseRobotics 的**手持式 UMI 主夹爪**,专为多模态触觉数据采集设计。产品定位为
+**XTac-UMI G1** 是 XenseRobotics 的**手持式 UMI 主夹爪**,专为多模态触觉数据采集设计。产品定位为
 **面向机器人操作学习的穿戴式视触觉多模态数据采集夹爪**,更多产品价值见 [产品亮点](highlights.md)。
 单个夹爪单元集成:
 
@@ -32,7 +31,7 @@
 ```mermaid
 flowchart TB
     subgraph 硬件
-      G[TacCap-Gripper<br/>夹爪+触觉+腕相机+IMU]
+      G[XTac-UMI G1<br/>夹爪+触觉+腕相机+IMU]
       P[Pico4 Ultra<br/>独立运动追踪器]
     end
     subgraph 主机

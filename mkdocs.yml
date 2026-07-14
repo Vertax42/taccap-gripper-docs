@@ -1,13 +1,13 @@
 # =============================================================================
-# TacCap-Gripper 数采快速使用手册 · mkdocs-material 配置
+# XTac-UMI G1 数采快速使用手册 · mkdocs-material 配置
 # 中英双语(中文默认 / English via mkdocs-static-i18n · suffix 结构)
 # 本地预览:  mkdocs serve
 # 构建:      mkdocs build --strict
 # 发布:      GitHub Actions -> gh-pages(见 .github/workflows/deploy.yml)
 # =============================================================================
 
-site_name: TacCap-Gripper 数采快速使用手册
-site_description: XenseRobotics TacCap-Gripper 手持触觉数采夹爪 · 基于 lerobot 的数据采集快速上手
+site_name: XTac-UMI G1 数采快速使用手册
+site_description: XenseRobotics XTac-UMI G1 手持触觉数采夹爪 · 基于 lerobot 的数据采集快速上手
 site_author: XenseRobotics
 site_url: https://vertax42.github.io/taccap-gripper-docs/
 copyright: 文档版本 v0.0.1 &nbsp;·&nbsp; Copyright &copy; 2026 XenseRobotics Co., Ltd.
@@ -80,7 +80,7 @@ plugins:
         - locale: en
           name: English
           build: true
-          site_name: "TacCap-Gripper Data-Collection Quickstart"
+          site_name: "XTac-UMI G1 Data-Collection Quickstart"
           nav_translations:
             首页: Home
             一页速通: Quickstart

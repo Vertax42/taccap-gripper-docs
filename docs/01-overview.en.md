@@ -1,8 +1,8 @@
 # 1. Overview
 
-## 1.1 What is the TacCap-Gripper
+## 1.1 What is the XTac-UMI G1
 
-The **TacCap-Gripper** (TacCap = *Tactile Capture* Gripper) is XenseRobotics'
+The **XTac-UMI G1** is XenseRobotics'
 **handheld UMI leader gripper** for multimodal tactile data collection. A single unit
 integrates:
 
@@ -27,7 +27,7 @@ A full collection involves four cooperating parts:
 ```mermaid
 flowchart TB
     subgraph Hardware
-      G[TacCap-Gripper<br/>gripper+tactile+wrist+IMU]
+      G[XTac-UMI G1<br/>gripper+tactile+wrist+IMU]
       P[Pico4 Ultra<br/>independent motion tracker]
     end
     subgraph Host

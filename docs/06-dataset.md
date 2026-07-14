@@ -4,7 +4,7 @@
 
 !!! abstract "第一次用 lerobot?先读官方文档"
     我们的数据落盘为标准 **LeRobotDataset v3.0** 格式。没接触过 lerobot 的用户,强烈建议先读官方文档,
-    再回来看本章的 TacCap 具体用法:
+    再回来看本章的 XTac-UMI G1 具体用法:
 
     - :material-book-open-variant: **LeRobotDataset v3.0 官方文档**:<https://huggingface.co/docs/lerobot/lerobot-dataset-v3>
       (格式设计、目录结构、录制、加载/流式、v2.1→v3.0 迁移)

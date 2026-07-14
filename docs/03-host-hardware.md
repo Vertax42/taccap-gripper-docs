@@ -51,7 +51,7 @@ IoError: SerialBus: open(/dev/serial/by-id/usb-1a86_USB_Dual_Serial_..-if02): De
 
 ```bash
 sudo tee /etc/udev/rules.d/99-taccap-ignore-modemmanager.rules >/dev/null <<'EOF'
-# TacCap-Gripper MCUs are CH343 USB-serial (1a86:55d2) — keep ModemManager off them
+# XTac-UMI G1 MCUs are CH343 USB-serial (1a86:55d2) — keep ModemManager off them
 ACTION=="add|change", SUBSYSTEMS=="usb", ATTRS{idVendor}=="1a86", ENV{ID_MM_DEVICE_IGNORE}="1"
 EOF
 sudo udevadm control --reload-rules && sudo udevadm trigger
@@ -205,7 +205,7 @@ Pico4 Ultra 通过 **USB 有线共享网络**接入数采电脑,追踪数据经�
 !!! note "启动顺序"
     标准启动顺序如下(APP 界面以实际版本为准):
 
-1. 将 TacCap-Gripper 插入主机(USB)。
+1. 将 XTac-UMI G1 插入主机(USB)。
 2. 接好 Pico4 Ultra 的**有线共享网络**,并**关闭数采电脑的 WiFi**(见 [3.4 网络连接](#pico-network))。
 3. 开启 Pico4 Ultra 头显,配对运动追踪器。
 4. **面朝机器人正前方**,启动 XenseVR-Toolkit APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame))。

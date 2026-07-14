@@ -6,17 +6,17 @@ hide:
 
 <div class="tc-hero" markdown>
 
-<span class="tc-eyebrow">XenseRobotics · TacCap-Gripper</span>
+<span class="tc-eyebrow">XenseRobotics · XTac-UMI G1</span>
 
 # Handheld tactile data collection, from unboxing to a dataset
 
-<p class="tc-sub">TacCap-Gripper handheld tactile gripper × Pico4 Ultra tracker<br>capture synchronized vision · tactile · pose data with lerobot, straight to a training-ready <code>LeRobotDataset</code></p>
+<p class="tc-sub">XTac-UMI G1 handheld tactile gripper × Pico4 Ultra tracker<br>capture synchronized vision · tactile · pose data with lerobot, straight to a training-ready <code>LeRobotDataset</code></p>
 
 [Quickstart :material-arrow-right-bold:](quickstart.md){ .md-button .md-button--primary }
 [Installation](02-environment.md){ .md-button }
 [About the device](01-overview.md){ .md-button }
 
-![TacCap-Gripper product](assets/product/xtac-umi-g1-hero.jpg){ .tc-hero-img }
+![XTac-UMI G1 product](assets/product/xtac-umi-g1-hero.jpg){ .tc-hero-img }
 
 </div>
 

@@ -30,7 +30,7 @@
 
 | 术语 | 含义 |
 |---|---|
-| **TacCap** | Tactile Capture,触觉采集(夹爪名) |
+| **TacCap**(代码名) | 代码/包名 `xense.taccap`、`taccap_gripper` 的由来(Tactile Capture);产品显示名为 XTac-UMI G1 |
 | **UMI** | Universal Manipulation Interface,手持式主夹爪数采范式 |
 | **Leader / Follower** | 主/从;序列号 patch `m`=Master(主),`s`=Slave(从) |
 | **单左双右** | 4 位序列号最后一位:奇→左,偶→右 |

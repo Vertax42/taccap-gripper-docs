@@ -1,7 +1,7 @@
-# TacCap-Gripper 数采快速使用手册(文档站)
+# XTac-UMI G1 数采快速使用手册(文档站)
 
 基于 [mkdocs-material](https://squidfunk.github.io/mkdocs-material/) 的
-**TacCap-Gripper 手持触觉数采夹爪** lerobot 数据采集快速上手文档。中英双语,
+**XTac-UMI G1 手持触觉数采夹爪** lerobot 数据采集快速上手文档。中英双语,
 发布到 GitHub Pages。
 
 ## 本地预览

@@ -36,7 +36,7 @@ git submodule update --init --recursive --progress
 
 | 子模块 | 安装后的包 |
 |---|---|
-| `third_party/taccap-gripper` | `xense.taccap`(TacCap UMI 触觉夹爪 SDK) |
+| `third_party/taccap-gripper` | `xense.taccap`(XTac-UMI G1 触觉夹爪 SDK) |
 | `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 遥操 / 追踪器) |
 | `third_party/XenseVR-RobotVision-PC` | ZED-M → Pico4 立体透视(单独构建) |
 
