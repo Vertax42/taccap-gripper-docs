@@ -61,7 +61,7 @@ time alignment and episode handling live in `xense-taccap-lerobot`.
 | Python | 3.12 (pinned by v5.1) |
 | PyTorch | ≥ 2.2, CUDA 12.8 |
 | Gripper SDK | `xense.taccap` ≥ 0.1.0 (`taccap-gripper` PyPI package) |
-| Env manager | [Mamba / Miniforge](https://github.com/conda-forge/miniforge) strongly recommended |
+| Env manager | [Mamba / Miniforge](https://github.com/conda-forge/miniforge) strongly recommended (~10× faster dependency solving than conda) |
 | Video codec | `torchcodec` + `av` wheels (v5.1 no longer pins ffmpeg via conda) |
 
 !!! danger "Prerequisites"

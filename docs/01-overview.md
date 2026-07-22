@@ -88,7 +88,7 @@ flowchart TB
 | Python | 3.12(v5.1 固定) |
 | PyTorch | ≥ 2.2,CUDA 12.8 |
 | 夹爪 SDK | `xense.taccap` ≥ 0.1.0(`taccap-gripper` PyPI 包) |
-| 环境管理 | 强烈推荐 [Mamba / Miniforge](https://github.com/conda-forge/miniforge)(robostack-staging 通道更快) |
+| 环境管理 | 强烈推荐 [Mamba / Miniforge](https://github.com/conda-forge/miniforge)(依赖求解比 conda 快约 10×) |
 | 视频编解码 | `torchcodec` + `av` wheel(v5.1 不再用 conda 固定 ffmpeg) |
 
 !!! danger "先决条件"
