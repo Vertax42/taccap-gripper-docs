@@ -63,6 +63,16 @@ XTac-UMI G1 的机械、电气与操作说明,面向数采使用的
 
 主夹爪**无需单独电源**,供电与通信都走 Type-C。连接后观察指示灯,并在采集软件中确认左右主夹爪识别正常。
 
+**用 `lsusb` 核对传感器**:接线完毕后运行 `lsusb`,确认能看到全部 UVC 传感器——
+**双臂**应有 **6 个**:2 个腕部相机(wrist camera)+ 4 个视触觉传感器(每只主爪 1 相机 + 2 触觉);
+**单臂** 3 个(1 相机 + 2 触觉)。
+
+```bash
+lsusb
+```
+
+数量不对时,检查线缆是否锁紧、USB 口是否接触良好;排查见 [异常排查](#troubleshoot)。
+
 ### 指示灯状态 {#buttons-leds}
 
 !!! warning "功能开发测试中"
@@ -156,7 +166,7 @@ XTac-UMI G1 的机械、电气与操作说明,面向数采使用的
 固件烧录的 SN 同时编码**侧别**与**主从角色**(详见 [3.3 设备发现规则](03-host-hardware.md#33)):
 
 ```
-TCGU01 A24 Z 0001 m      product: TCGU01夹爪 / GSPS01传感器
+TCGU01 A24 Z 0001 m      product: TCGU01夹爪 / GSPS01视触觉 / XC腕相机
 └─┬──┘ └┬┘ │ └┬─┘ │       line   : Z=研发/测试, A=量产
 product batch│  seq patch  seq    : 末位奇→左, 偶→右(单左双右)
              line          patch  : m=Master(主/Leader), s=Slave(从/Follower)
