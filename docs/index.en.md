@@ -10,7 +10,7 @@ hide:
 
 # Handheld tactile data collection, from unboxing to a dataset
 
-<p class="tc-sub">XTac-UMI G1 handheld tactile gripper × Pico4 Ultra tracker<br>capture synchronized vision · tactile · pose data with lerobot, straight to a training-ready <code>LeRobotDataset</code></p>
+<p class="tc-sub">XTac-UMI G1 handheld tactile gripper × Pico4 Ultra Enterprise Edition tracker<br>capture synchronized vision · tactile · pose data with lerobot, straight to a training-ready <code>LeRobotDataset</code></p>
 
 [Quickstart :material-arrow-right-bold:](quickstart.md){ .md-button .md-button--primary }
 [Installation](02-environment.md){ .md-button }
@@ -68,5 +68,5 @@ This is the **xense-taccap-lerobot data-collection quickstart**. Three parts: **
 |---|---|
 | [`xense-taccap-lerobot`](https://github.com/Vertax42/xense-taccap-lerobot) | Data-collection repo (lerobot v5.1 fork, `taccap_gripper` robot class) |
 | `xense.taccap` (`taccap-gripper` SDK) | Gripper device driver: IMU / encoder / wrist camera / protocol |
-| `xensevr_pc_service_sdk` | Pico4 teleop / tracker PC service SDK |
-| `xensesdk` | Visuotactile (OG) imaging & rectification (PyPI) |
+| `xensevr_pc_service_sdk` | Pico4 Ultra Enterprise Edition teleop / tracker PC service SDK |
+| `xensesdk` | Visuotactile sensor SDK |

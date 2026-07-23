@@ -32,11 +32,11 @@
 flowchart TB
     subgraph 硬件
       G[XTac-UMI G1<br/>夹爪+触觉+腕相机+IMU]
-      P[Pico4 Ultra<br/>独立运动追踪器]
+      P[Pico4 Ultra 企业版<br/>独立运动追踪器]
     end
     subgraph 主机
       PS[XenseVR PC Service<br/>守护进程]
-      SDK[xense.taccap SDK<br/>xensesdk 成像]
+      SDK[xense.taccap SDK<br/>xensesdk 视触觉传感器 SDK]
       LR[lerobot-record<br/>taccap_gripper 机器人类]
     end
     G -- USB / 串口+UVC --> SDK
@@ -47,7 +47,7 @@ flowchart TB
 ```
 
 - **夹爪** 通过 `xense.taccap` SDK 读取(串口 `/dev/ttyACM*` + UVC `/dev/video*`)。
-- **Pico4 Ultra 运动追踪器**装在夹爪顶部,经 `xensevr_pc_service_sdk` 由
+- **Pico4 Ultra 企业版运动追踪器**装在夹爪顶部,经 `xensevr_pc_service_sdk` 由
   `Pico4TrackerReader` 读取 6-DoF 位姿。
 - **XenseVR PC Service** 是位姿数据的主机守护进程,追踪器与它通信。
 - **lerobot-record** 把观测(t-1 帧)与动作(t 帧位姿 + 归一化夹爪开度)配对,写出数据集。
@@ -71,10 +71,10 @@ flowchart TB
 ```
 
 !!! note "触觉成像在 Python 层"
-    自 SDK 0.1.4 起,视触觉(OG)采集/校正**不在 C++ SDK 内**,而是在 Python 层
-    通过 `xensesdk` wheel 完成;`xense.taccap` 只负责**夹爪协议 + 腕部相机**。
+    自 SDK 0.1.4 起,视触觉(OG)采集/校正由 `xensesdk` 视触觉传感器 SDK 完成;
+    `xense.taccap` 只负责**夹爪协议 + 腕部相机**。
 
-**每帧最终会记录**:Pico4 位姿(`tcp.*`)、归一化夹爪开度(`gripper.pos`)、
+**每帧最终会记录**:Pico4 Ultra 企业版位姿(`tcp.*`)、归一化夹爪开度(`gripper.pos`)、
 可选 IMU、左右触觉图、腕相机图——详见 [5.4 每帧记录内容](05-data-collection.md#54)。
 
 ## 1.4 支持的平台与依赖版本

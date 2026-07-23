@@ -28,11 +28,11 @@ A full collection involves four cooperating parts:
 flowchart TB
     subgraph Hardware
       G[XTac-UMI G1<br/>gripper+tactile+wrist+IMU]
-      P[Pico4 Ultra<br/>independent motion tracker]
+      P[Pico4 Ultra Enterprise Edition<br/>independent motion tracker]
     end
     subgraph Host
       PS[XenseVR PC Service<br/>daemon]
-      SDK[xense.taccap SDK<br/>xensesdk imaging]
+      SDK[xense.taccap SDK<br/>xensesdk visuotactile SDK]
       LR[lerobot-record<br/>taccap_gripper robot class]
     end
     G -- USB / serial+UVC --> SDK
@@ -49,7 +49,7 @@ time alignment and episode handling live in `xense-taccap-lerobot`.
 
 !!! note "Tactile imaging is at the Python level"
     Since SDK 0.1.4, visuotactile (OG) capture/rectify is **not** in the C++ SDK — it is
-    handled in Python via the `xensesdk` wheel. `xense.taccap` is **gripper protocol +
+    handled by the `xensesdk` visuotactile sensor SDK. `xense.taccap` is **gripper protocol +
     wrist camera** only.
 
 ## 1.4 Supported platforms & dependency versions

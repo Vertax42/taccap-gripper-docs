@@ -10,7 +10,7 @@ hide:
 
 # 手持触觉数采,从开箱到数据集
 
-<p class="tc-sub">XTac-UMI G1 手持触觉数采夹爪 × Pico4 Ultra 追踪器<br>基于 lerobot 同步采集视觉 · 触觉 · 位姿多模态数据,直出可训练的标准 <code>LeRobotDataset</code></p>
+<p class="tc-sub">XTac-UMI G1 手持触觉数采夹爪 × Pico4 Ultra 企业版追踪器<br>基于 lerobot 同步采集视觉 · 触觉 · 位姿多模态数据,直出可训练的标准 <code>LeRobotDataset</code></p>
 
 [一页速通 :material-arrow-right-bold:](quickstart.md){ .md-button .md-button--primary }
 [环境安装](02-environment.md){ .md-button }
@@ -71,8 +71,8 @@ flowchart LR
 |---|---|
 | [`xense-taccap-lerobot`](https://github.com/Vertax42/xense-taccap-lerobot) | 数采主仓库(lerobot v5.1 fork,含 `taccap_gripper` 机器人类) |
 | `xense.taccap`(`taccap-gripper` SDK) | 夹爪底层驱动:IMU / 编码器 / 腕相机 / 协议 |
-| `xensevr_pc_service_sdk` | Pico4 遥操 / 追踪器 PC 服务 SDK |
-| `xensesdk` | 视触觉(OG)传感器成像与校正(PyPI 安装) |
+| `xensevr_pc_service_sdk` | Pico4 Ultra 企业版遥操 / 追踪器 PC 服务 SDK |
+| `xensesdk` | 视触觉传感器 SDK |
 
 !!! note "适用版本"
     本手册对应 `xense.taccap ≥ 0.1.0`、`xense-taccap-lerobot` 跟踪上游 **lerobot v5.1**。
