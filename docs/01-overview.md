@@ -84,7 +84,7 @@ flowchart TB
 | 项 | 要求 |
 |---|---|
 | 操作系统 | Ubuntu 22.04(已验证);采集路径为 V4L2 + UVC,不支持 macOS / Windows |
-| 显卡驱动 | NVIDIA ≥ 570.144 |
+| GPU / 显卡驱动 | 推荐 NVIDIA GPU + 驱动 ≥ 570.144;可使用 GPU H.264 硬件编码器降低 CPU 编码压力 |
 | Python | 3.12(v5.1 固定) |
 | PyTorch | ≥ 2.2,CUDA 12.8 |
 | 夹爪 SDK | `xense.taccap` ≥ 0.1.0(`taccap-gripper` PyPI 包) |

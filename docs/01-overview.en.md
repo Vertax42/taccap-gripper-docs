@@ -57,7 +57,7 @@ time alignment and episode handling live in `xense-taccap-lerobot`.
 | Item | Requirement |
 |---|---|
 | OS | Ubuntu 22.04 (tested); V4L2 + UVC capture path, macOS / Windows unsupported |
-| GPU driver | NVIDIA ≥ 570.144 |
+| GPU / driver | NVIDIA GPU + driver ≥ 570.144 recommended; enables GPU H.264 hardware encoding and reduces CPU encoding load |
 | Python | 3.12 (pinned by v5.1) |
 | PyTorch | ≥ 2.2, CUDA 12.8 |
 | Gripper SDK | `xense.taccap` ≥ 0.1.0 (`taccap-gripper` PyPI package) |

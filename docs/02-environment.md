@@ -10,10 +10,12 @@
     - Linux kernel: `7.0.0-28-generic`(测试机 `uname -r` 输出,非最低内核要求)
     - 机器架构: `x86_64`
     - Python: `3.12.13`
-    - 测试仓库: `xense-taccap-lerobot` `main@3a8abf12`
-    - 关键包: `lerobot 0.5.1`, `xense.taccap 0.1.4`, `xensesdk 2.0.1`, `torch 2.10.0`, `torchcodec 0.10.0`, `av 15.1.0`
+    - 测试仓库: `xense-taccap-lerobot` `main@d7b74a6c`
+    - 关键包: `lerobot 0.5.1`, `xense.taccap 0.1.4`, `xensesdk 2.1.1`, `torch 2.10.0`, `torchcodec 0.10.0`, `av 15.1.0`
 
     Ubuntu 22.04 LTS 也是本章覆盖的目标环境;其它发行版或架构需按实际驱动、UVC、串口权限和 `.deb` 包支持情况单独验证。
+
+    建议采集主机配 NVIDIA GPU,这样 `--dataset.vcodec=auto` 可使用 GPU H.264 硬件编码器,降低多路视频实时编码时的 CPU 压力。
 
 !!! info "总览"
     四步:装 Mamba → 克隆仓库(含子模块)→ 建环境 → `setup_env.sh --install` → 验证。

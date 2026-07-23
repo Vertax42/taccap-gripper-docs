@@ -150,7 +150,9 @@ lerobot-record \
 - 每个相机一个 `_CameraEncoderThread`,通过有界队列喂原始帧
   (`--dataset.encoder_queue_maxsize`,约 1 秒帧量);编码器跟不上时**丢弃最旧帧并告警**,
   不阻塞采集循环。
-- `--dataset.vcodec=auto` 启用硬件编码。
+- `--dataset.vcodec=auto` 会优先启用可用的硬件编码。推荐采集主机配 NVIDIA GPU,
+  这样可使用 GPU H.264 硬件编码器,降低多路视频实时编码时的 CPU 压力;无 NVIDIA GPU 时仍可录制,
+  但高分辨率或多相机场景更容易出现编码跟不上。
 
 !!! note "编码器预热"
     打开 PyAV 容器 + 编解码上下文约 25 ms,惰性到首帧才做会让首帧严重超出 `fps` 预算。

@@ -9,13 +9,13 @@
 | 组件 | 版本 |
 |---|---|
 | 操作系统 | Ubuntu 22.04 |
-| NVIDIA 驱动 | ≥ 570.144 |
+| NVIDIA GPU / 驱动 | 推荐;驱动 ≥ 570.144,用于 GPU H.264 硬件编码 |
 | Python | 3.12 |
 | PyTorch | ≥ 2.2(CUDA 12.8) |
 | `xense-taccap-lerobot` | 跟踪上游 **lerobot v5.1** |
 | `xense.taccap`(`taccap-gripper` SDK) | ≥ 0.1.0 |
 | 夹爪固件协议 | 帧格式 **V1.8** + 命令集 **V1.7** |
-| `xensesdk` | 视触觉传感器 SDK |
+| `xensesdk` | 2.1.1(视触觉传感器 SDK) |
 | `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` |
 
 !!! note "版本以本地为准"
