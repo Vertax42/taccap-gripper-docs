@@ -1,7 +1,19 @@
 # 2. 环境部署
 
-对应参考手册的"开发环境部署"。本章在 Ubuntu 22.04 上把 `xense-taccap-lerobot`
-及全部硬件 SDK 装好并验证。
+对应参考手册的"开发环境部署"。本章面向 Ubuntu 22.04 LTS / Ubuntu 24.04 LTS,
+把 `xense-taccap-lerobot` 及全部硬件 SDK 装好并验证。
+
+!!! info "XTac-UMI G1 已验证环境"
+    XTac-UMI G1 硬件联调与采集流程在 `mamba` 环境 `xense-taccap` 下验证。当前可读取的测试主机环境:
+
+    - OS: Ubuntu 24.04.4 LTS (Noble Numbat)
+    - Linux kernel: `7.0.0-28-generic`(测试机 `uname -r` 输出,非最低内核要求)
+    - 机器架构: `x86_64`
+    - Python: `3.12.13`
+    - 测试仓库: `xense-taccap-lerobot` `main@3a8abf12`
+    - 关键包: `lerobot 0.5.1`, `xense.taccap 0.1.4`, `xensesdk 2.0.1`, `torch 2.10.0`, `torchcodec 0.10.0`, `av 15.1.0`
+
+    Ubuntu 22.04 LTS 也是本章覆盖的目标环境;其它发行版或架构需按实际驱动、UVC、串口权限和 `.deb` 包支持情况单独验证。
 
 !!! info "总览"
     四步:装 Mamba → 克隆仓库(含子模块)→ 建环境 → `setup_env.sh --install` → 验证。
@@ -37,48 +49,43 @@ git submodule update --init --recursive --progress
 | 子模块 | 安装后的包 |
 |---|---|
 | `third_party/taccap-gripper` | `xense.taccap`(XTac-UMI G1 触觉夹爪 SDK) |
-| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 遥操 / 追踪器) |
-| `third_party/XenseVR-RobotVision-PC` | ZED-M → Pico4 立体透视(单独构建) |
+| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 Ultra 企业版遥操 / 追踪器) |
+| `third_party/XenseVR-RobotVision-PC` | ZED-M → Pico4 Ultra 企业版立体透视(单独构建) |
 
 !!! note "xensesdk 不是子模块"
-    `xensesdk`(视触觉成像)发布在 PyPI(cp312 manylinux wheel,内置打过补丁的
-    `libxense_c.so`)。`setup_env.sh --install` 会用 `uv pip install xensesdk`
-    直接装。离线/自定义构建可指定本地 wheel:
-    ```bash
-    export XENSESDK_WHEEL=/path/to/xensesdk-*-cp312-*-linux_x86_64.whl
-    ```
+    `xensesdk` 是视触觉传感器 SDK,由 `setup_env.sh --install` 自动安装,
+    无需单独拉取子模块。
 
 ## 2.3 创建并激活环境
 
 ```bash
-bash ./setup_env.sh --mamba lerobot-xense
-mamba activate lerobot-xense
+./setup_env.sh --mamba
+mamba activate xense-taccap
 ```
 
 !!! tip "环境名"
-    `conda_environment.yaml` 里默认名就是 `lerobot-xense`。可以传别的名给 `--mamba`,
-    但本手册统一默认用 `lerobot-xense`。
+    `--mamba` 默认创建 `xense-taccap` 环境;
+    如需自定义环境名,可在 `--mamba` 后追加名称。
 
 ## 2.4 一键安装
 
 ```bash
-bash ./setup_env.sh --install
+./setup_env.sh --install
 ```
 
 这一步会:
 
-- 用 `conda_environment.yaml` 更新 conda 环境
+- 用 `conda_environment.yaml` 更新 conda/mamba 环境
 - 从 `pyproject.toml` 安装主包
-- 从 PyPI 安装 `xensesdk`(`uv pip install xensesdk`,可用 `$XENSESDK_WHEEL` 覆盖)
+- 安装 `xensesdk` 视触觉传感器 SDK
 - 安装 **XenseVR PC Service 守护进程**(约 100 MB 的 `.deb`,装到 `/opt/apps/roboticsservice`)
-- 构建 `third_party` 下的 SDK:`xensevr_pc_service_sdk`(Pico4)与 `xense.taccap`(夹爪)
+- 构建 `third_party` 下的 SDK:`xensevr_pc_service_sdk`(Pico4 Ultra 企业版)与 `xense.taccap`(夹爪)
 
 !!! note "XenseVR PC Service 的 .deb 从哪来"
-    `setup_env.sh --install` 会**优先用本地副本**(`$XENSEVR_DEB`、仓库 `dist/`
-    或 `~/Downloads/`),否则从
+    `./setup_env.sh --install` 会直接从
     [v0.1.0 release](https://github.com/Vertax42/XenseVR-PC-Service/releases/tag/v0.1.0)
-    下载对应架构的包(可用 `$XENSEVR_DEB_URL` 覆盖),再 `sudo dpkg -i`(幂等,
-    同版本会跳过)。
+    下载当前机器架构对应的 `.deb` 包(可用 `$XENSEVR_DEB_URL` 覆盖下载地址),
+    再执行 `sudo dpkg -i` 安装;已安装同版本时会跳过。
 
 ## 2.5 验证安装
 

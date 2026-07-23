@@ -9,13 +9,13 @@
     - 已完成 [环境安装](02-environment.md)(`setup_env.sh --install` 通过、三个包能 import)。
     - 已做 [串口权限 + ModemManager](03-host-hardware.md#31) 一次性主机配置。
     - 已 [标定编码器零点](04-calibration.md#41)。
-    - `mamba activate lerobot-xense`。
+    - `mamba activate xense-taccap`。
 
 ## 1. 上电顺序
 
 ```mermaid
 flowchart LR
-    A[插夹爪 USB] --> N[接 Pico4 有线网络<br/>关闭电脑 WiFi] --> B[开头显·配对追踪器] --> C[面朝机器人启动<br/>XenseVR-Toolkit] --> D[启动 XenseVR PC Service]
+    A[插夹爪 USB] --> N[接 Pico4 Ultra 企业版<br/>有线网络并关闭 WiFi] --> B[开启 Pico4 Ultra 企业版<br/>配对追踪器] --> C[面朝机器人启动<br/>XenseVR-Toolkit] --> D[启动 XenseVR PC Service]
 ```
 
 ```bash
@@ -23,7 +23,7 @@ flowchart LR
 ```
 
 !!! danger "数采时关闭电脑 WiFi"
-    Pico4 走**有线共享网络**,电脑 WiFi 会与之冲突导致追踪不稳/连不上。数采期间关闭数采电脑 WiFi。
+    Pico4 Ultra 企业版走**有线共享网络**,电脑 WiFi 会与之冲突导致追踪不稳/连不上。数采期间关闭数采电脑 WiFi。
     见 [3.4 网络连接](03-host-hardware.md#pico-network)。
 
 !!! warning "采集全程不要重启 XenseVR-Toolkit"
@@ -53,7 +53,7 @@ lerobot-record \
     --dataset.single_task='Pick up the object'
 ```
 
-- Pico4 位姿会**自动录制**;只想要触觉+夹爪加 `--robot.enable_tracker=false`。
+- Pico4 Ultra 企业版位姿会**自动录制**;只想要触觉+夹爪加 `--robot.enable_tracker=false`。
 - 双臂用 `--robot.type=bi_taccap_gripper`。
 - 加 `--display_data=true` 开 Rerun 3D 可视化。
 

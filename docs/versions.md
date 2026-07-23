@@ -15,7 +15,7 @@
 | `xense-taccap-lerobot` | 跟踪上游 **lerobot v5.1** |
 | `xense.taccap`(`taccap-gripper` SDK) | ≥ 0.1.0 |
 | 夹爪固件协议 | 帧格式 **V1.8** + 命令集 **V1.7** |
-| `xensesdk` | PyPI(cp312 manylinux wheel) |
+| `xensesdk` | 视触觉传感器 SDK |
 | `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` |
 
 !!! note "版本以本地为准"
@@ -25,7 +25,7 @@
 ## 如何查版本
 
 ```bash
-# lerobot-xense / SDK
+# xense-taccap / SDK
 python -c "import xense.taccap as t; print('xense.taccap', t.__version__)"
 python -c "import xensesdk, xensevr_pc_service_sdk; print('xensesdk/pc_service OK')"
 
@@ -43,7 +43,7 @@ python -c "import torchcodec; print('torchcodec', torchcodec.__version__)"
   ```bash
   git pull --recurse-submodules
   git submodule update --init --recursive --progress
-  bash ./setup_env.sh --install     # 重新对齐依赖
+  ./setup_env.sh --install     # 重新对齐依赖
   ```
 - **固件 OTA**:通过 SDK 的 `OtaSession` / `ota_update.py`,见 [SDK 示例](sdk-examples.md)。
 

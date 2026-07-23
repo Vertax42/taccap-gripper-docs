@@ -9,11 +9,11 @@
 ## 环境与安装
 
 ??? failure "`import xensesdk` / `import xensevr_pc_service_sdk` / `import xense.taccap` 失败"
-    **原因**:环境未装全,或未激活 `lerobot-xense` 环境。
+    **原因**:环境未装全,或未激活 `xense-taccap` 环境。
     **解决**:
     ```bash
-    mamba activate lerobot-xense
-    bash ./setup_env.sh --install     # 重跑安装
+    mamba activate xense-taccap
+    ./setup_env.sh --install     # 重跑安装
     ```
     逐个验证见 [环境部署 §2.5](02-environment.md#25)。
 
@@ -55,19 +55,19 @@
     两传感器映射到同一手指、触觉 hub 找不到对应夹爪。
     **解决**:按报错**指名的物理设备/hub**排查装配与接线。规则见 [3.3 设备发现](03-host-hardware.md#33)。
 
-## Pico4 追踪器与位姿
+## Pico4 Ultra 企业版追踪器与位姿
 
 ??? failure "没有位姿 / 追踪器连不上 / 位姿不稳"
-    **原因**:**电脑 WiFi 与 Pico4 有线共享网络冲突**(最常见);或 XenseVR PC Service 未启动、
+    **原因**:**电脑 WiFi 与 Pico4 Ultra 企业版有线共享网络冲突**(最常见);或 XenseVR PC Service 未启动、
     XenseVR-Toolkit 未启动、追踪器未配对/没电。
-    **解决**:**先关闭数采电脑 WiFi**(只保留 Pico4 有线共享网络,见
+    **解决**:**先关闭数采电脑 WiFi**(只保留 Pico4 Ultra 企业版有线共享网络,见
     [3.4 网络连接](03-host-hardware.md#pico-network));再按 [上电顺序](03-host-hardware.md#36)
     逐项确认;启动服务 `/opt/apps/roboticsservice/runService.sh`;必要时用
     `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 自检。
 
 ??? failure "位姿参考系在集之间漂移"
     **原因**:分集途中**重启了 XenseVR-Toolkit**,世界原点被重设。
-    **解决**:采集**全程不要重启** XenseVR-Toolkit。见 [3.4 Pico4 配置](03-host-hardware.md#34)。
+    **解决**:采集**全程不要重启** XenseVR-Toolkit。见 [3.4 Pico4 Ultra 企业版配置](03-host-hardware.md#34)。
 
 ??? failure "追踪器侧别匹配错 / PC 服务枚举不稳"
     **原因**:序列号不合规,或枚举抖动。
