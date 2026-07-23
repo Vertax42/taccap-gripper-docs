@@ -39,7 +39,7 @@ SDK 示例脚本位于 `python/examples/`(C++ 示例需 `-DTACCAP_BUILD_EXAMPLES
 
 | 脚本 | 作用 |
 |---|---|
-| `rerun_dual_with_tracker.py` | 双夹爪 IMU/编码器 + Pico4 追踪器 6-DoF 位姿,在 Rerun 单视图中可视化。需 `xensevr_pc_service_sdk` 与 XenseVR PC Service 运行 |
+| `rerun_dual_with_tracker.py` | 双夹爪 IMU/编码器 + Pico4 Ultra 企业版追踪器 6-DoF 位姿,在 Rerun 单视图中可视化。需 `xensevr_pc_service_sdk` 与 XenseVR PC Service 运行 |
 | `calibrate.py` | 按 SN 的编码器零点标定 CLI(见 [标定与自检](04-calibration.md)) |
 | `ota_update.py` | 固件 OTA 刷写 CLI,带进度与刷后状态探测。**有风险——刷错会变砖** |
 | `v4l2_probe.py` / `v4l2_sweep.py` | 手动 V4L2 拉起腕/视触觉相机(发现流程为 MCU-only,不枚举相机);SN 未烧录时也有用 |
@@ -58,7 +58,7 @@ python python/examples/calibrate.py TCGU01A24A0002m   # 右主爪
     闭合恒为 0;负向漂移会被钳到 0(原始值保留在 `raw_position_rad`);raw 负漂
     超过 -0.1 rad 会限频告警。完整说明见 [4.1 编码器零点标定](04-calibration.md)。
 
-## Pico4 追踪器绑定(按台)
+## Pico4 Ultra 企业版追踪器绑定(按台)
 
 `rerun_dual_with_tracker.py` 需显式 `--left-tracker-sn` / `--right-tracker-sn`,因为
 追踪器物理粘在特定夹爪上,软件无法反推。用 `scan_grippers` 报告的 SN 匹配你本机的配对:

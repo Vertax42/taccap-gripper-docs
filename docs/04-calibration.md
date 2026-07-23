@@ -36,7 +36,7 @@ python -c "from xense.taccap import scan_grippers, Side; \
 !!! warning "必须先摆好姿态再按 Enter"
     固件在处理命令的瞬间锁存当时看到的原始计数,所以按 Enter 前夹爪必须已在目标(闭合)姿态。
 
-## 4.2 Pico4 tracker 自检
+## 4.2 Pico4 Ultra 企业版追踪器自检
 
 ```bash
 python -m lerobot.robots.taccap_gripper.calibrate_tracker
@@ -65,7 +65,7 @@ python -m lerobot.robots.taccap_gripper.calibrate_tracker LHR-XXXXXXXX
     python -m lerobot.robots.taccap_gripper.taccap_gripper_example --side left --no-wrist
     ```
 
-=== "+ Pico4 追踪器(位姿)"
+=== "+ Pico4 Ultra 企业版追踪器(位姿)"
 
     ```bash
     python -m lerobot.robots.taccap_gripper.taccap_gripper_example \
@@ -75,7 +75,7 @@ python -m lerobot.robots.taccap_gripper.calibrate_tracker LHR-XXXXXXXX
 ## 4.4 3D 轨迹可视化(Rerun) {#44}
 
 录制/自检时加 `--display_data=true`,Rerun 查看器会多出一个 `/world` 3D 视图:夹爪
-以带标签的椭球 + 坐标三轴在其实时 Pico4 位姿(`tcp.*`)处绘制,并拖出一条走过的
+以带标签的椭球 + 坐标三轴在其实时 Pico4 Ultra 企业版位姿(`tcp.*`)处绘制,并拖出一条走过的
 轨迹面包屑。
 
 - 我们的位姿已在重力对齐世界系,场景是 `RIGHT_HAND_Z_UP`。
@@ -84,7 +84,7 @@ python -m lerobot.robots.taccap_gripper.calibrate_tracker LHR-XXXXXXXX
 
 !!! note "参考实现"
     与 SDK 的 `python/examples/rerun_dual_with_tracker.py` 示例一致(该示例展示的是
-    Pico 原始 `LEFT_HAND_Y_UP` 系)。
+    Pico4 Ultra 企业版原始 `LEFT_HAND_Y_UP` 系)。
 
 标定与自检通过后,即可开始正式采集。
 

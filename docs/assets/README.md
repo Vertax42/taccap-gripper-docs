@@ -10,7 +10,7 @@
 | 子目录 | 用途 | 对应章节 |
 |---|---|---|
 | `brand/` | 站点 logo、favicon | 主题 |
-| `pico4/` | Pico4 企业版 APP 使用截图 | §3.4 |
+| `pico4/` | Pico4 Ultra 企业版 APP 使用截图 | §3.4 |
 | `bringup/` | 数采启动流程截图 | §3.6 |
 | `hardware/` | 设备/串口/接线/发现规则示意 | §3 |
 | `record/` | 录制终端/界面、Rerun 截图 | §4 / §5 |
@@ -27,7 +27,7 @@
 Markdown 里用**相对 docs 根**的路径。例如在 `docs/03-host-hardware.md` 中:
 
 ```markdown
-![Pico4 配对追踪器](assets/pico4/3-4-pair-tracker.png)
+![Pico4 Ultra 企业版配对追踪器](assets/pico4/3-4-pair-tracker.png)
 ```
 
 加说明/宽度(需要 `attr_list`,已启用):

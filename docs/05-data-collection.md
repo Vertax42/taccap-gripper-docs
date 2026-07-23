@@ -9,7 +9,7 @@
 处理(通过 `SELF_DRIVEN_RECORD_ROBOTS` 路由)。
 
 **移位帧(shifted-frame)配对**:每条记录用 *t-1* 步的观测,配 *t* 步的位姿
-(Pico4 位姿 + 归一化 `gripper.pos`)作为动作——动作**领先观测一步**,是真正的
+(Pico4 Ultra 企业版位姿 + 归一化 `gripper.pos`)作为动作——动作**领先观测一步**,是真正的
 "移动到下一步"目标,而非退化的同帧位姿。每集丢弃 1 帧(首帧没有前驱)。集与集之间的
 复位阶段是被动等待:重新摆放设备即可,无需遥操。
 
@@ -90,7 +90,7 @@ lerobot-record \
 | `--robot.tactile_output_types` | — | 触觉输出类型 |
 | `--robot.expected_tactiles_per_side` | — | 校验每侧触觉数量 |
 
-Pico4 追踪器上电后,6-DoF 位姿**自动录制**——追踪器按序列号倒数第二位(奇左偶右)
+Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪器按序列号倒数第二位(奇左偶右)
 自动匹配本单元侧别。
 
 !!! tip "只录触觉 + 夹爪"
@@ -109,7 +109,7 @@ Pico4 追踪器上电后,6-DoF 位姿**自动录制**——追踪器按序列号
 
 | Key | 来源 | 形状 / 类型 |
 |---|---|---|
-| `tcp.x`, `tcp.y`, `tcp.z` | Pico4 追踪器 → EE | float(米) |
+| `tcp.x`, `tcp.y`, `tcp.z` | Pico4 Ultra 企业版追踪器 → EE | float(米) |
 | `tcp.r1`..`tcp.r6` | EE 的 6-D 旋转 | float |
 | `gripper.pos` | XTac-UMI G1 编码器,归一化 | float ∈ [0, 1] |
 | `imu.accel.{x,y,z}`(可选) | XTac-UMI G1 IMU | float(m/s²) |
