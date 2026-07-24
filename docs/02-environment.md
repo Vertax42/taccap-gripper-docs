@@ -99,10 +99,11 @@ python -c 'import xensesdk; print("xensesdk OK ->", xensesdk.__file__)'
 python -c 'import xense.taccap; print("xense.taccap OK ->", xense.taccap.__file__)'
 ```
 
-可选:确认视频编解码 wheel 可加载(v5.1 用 `torchcodec` + `av`,不再 conda 固定 ffmpeg):
+可选:确认视频编解码依赖可加载(`torchcodec` 按 PyTorch 兼容矩阵固定,PyAV 固定为 `15.1.0`;FFmpeg 不参与 conda 求解):
 
 ```bash
 python -c 'import torchcodec; print("torchcodec OK ->", torchcodec.__version__)'
+python -c 'import av; print("PyAV OK ->", av.__version__)'
 ```
 
 !!! tip "需要系统 ffmpeg?"

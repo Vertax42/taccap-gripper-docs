@@ -18,8 +18,8 @@
     逐个验证见 [环境部署 §2.5](02-environment.md#25)。
 
 ??? failure "`torchcodec` 加载失败 / 视频编码报错"
-    **原因**:v5.1 用 `torchcodec` + `av` wheel,未装或版本不符。
-    **解决**:重跑 `setup_env.sh --install`;需要系统 ffmpeg(带 `libsvtav1`)时单独装。
+    **原因**:`torchcodec` 与当前 PyTorch 的兼容版本不匹配,或 PyAV 不是要求的 `15.1.0`。
+    **解决**:重跑 `setup_env.sh --install` 自动校正版本;需要带 `libsvtav1` 的系统 FFmpeg 时再单独安装。
 
 ## 串口权限与设备发现
 
