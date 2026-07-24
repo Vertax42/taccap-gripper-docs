@@ -48,7 +48,7 @@ flowchart TB
     LR --> DS[(LeRobotDataset<br/>parquet + mp4)]
 ```
 
-- **夹爪** 通过 `xense.taccap` SDK 读取(串口 `/dev/ttyACM*` + UVC `/dev/video*`)。
+- **夹爪 MCU** 通过 `xense.taccap` 读取编码器与可选 IMU;腕相机和触觉图像由 `xense-taccap-lerobot` 的 camera 类直接采集。
 - **Pico4 Ultra 运动追踪器**装在夹爪顶部,通过无线与 **Pico4 Ultra 企业版头显**通信。
 - **Pico4 Ultra 企业版头显**通过 Type-C 有线网络或 WiFi 无线网络连接数采电脑,将位姿发送至 XenseVR PC Service。
 - **XenseVR PC Service** 是位姿数据的主机守护进程,`Pico4TrackerReader` 经 `xensevr_pc_service_sdk` 从中读取 6-DoF 位姿。
@@ -62,7 +62,7 @@ flowchart TB
 
 ```mermaid
 flowchart TB
-    REC[lerobot-record<br/>self_driven_record_loop] -- 循环调用 --> ROBOT[TaccapGripper / BiTaccapGripper<br/>get_observation]
+    REC["lerobot-record<br/>self_driven_record_loop"] -->|循环调用| ROBOT["TaccapGripper / BiTaccapGripper<br/>get_observation()"]
 
     MCU[夹爪 MCU<br/>编码器 / 可选 IMU] --> SDK[xense.taccap<br/>串口读取]
     WRIST[腕部 UVC 相机] --> CV[OpenCVCamera<br/>OpenCV + 异步读线程]
@@ -74,7 +74,7 @@ flowchart TB
     XS -- async_read --> ROBOT
     TRACK --> ROBOT
 
-    ROBOT --> PAIR[错帧配对<br/>obs(t-1) + action(t)]
+    ROBOT --> PAIR["错帧配对<br/>obs(t-1) + action(t)"]
     PAIR --> DS[(LeRobotDataset<br/>Parquet + MP4)]
 ```
 
