@@ -87,7 +87,7 @@
     ```bash
     python third_party/taccap-gripper/python/examples/calibrate.py <固件SN>
     ```
-    见 [4.1 编码器零点标定](04-calibration.md#41)。
+    见 [4.1 编码器零点检查与按需标定](04-calibration.md#41)。
 
 ??? failure "腕相机/视触觉打不开、`video ... busy`"
     **原因**:相机由外部相机服务占用,或用户不在 `video` 组。

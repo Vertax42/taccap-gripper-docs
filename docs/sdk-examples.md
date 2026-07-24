@@ -47,6 +47,8 @@ SDK 示例脚本位于 `python/examples/`(C++ 示例需 `-DTACCAP_BUILD_EXAMPLES
 
 ## 编码器零点标定
 
+`calibrate.py` 无需在每次采集前运行。只有夹爪完全闭合但读数不为 0,或确认出现零点漂移时才重新标定。
+
 ```bash
 python python/examples/calibrate.py TCGU01A24A0002m   # 右主爪
 ```

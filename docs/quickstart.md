@@ -8,7 +8,7 @@
     - 已了解设备并**连接好硬件、上电**(见 [硬件介绍](hardware.md#install))。
     - 已完成 [环境安装](02-environment.md)(`setup_env.sh --install` 通过、三个包能 import)。
     - 已做 [串口权限 + ModemManager](03-host-hardware.md#31) 一次性主机配置。
-    - 已 [标定编码器零点](04-calibration.md#41)。
+    - 已确认[编码器零点](04-calibration.md#41)有效(完全闭合读数≈0;出现漂移时再标定)。
     - `mamba activate xense-taccap`。
 
 ## 1. 上电顺序
