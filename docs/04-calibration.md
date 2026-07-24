@@ -49,39 +49,67 @@ python -m lerobot.robots.taccap_gripper.calibrate_tracker LHR-XXXXXXXX
 `tracker_to_ee_*` 安装变换后的结果(默认单位变换)。测量你的物理安装偏移并写入配置
 (`tracker_to_ee_pos`、`tracker_to_ee_quat`)。
 
-## 4.3 独立冒烟测试
+## 4.3 端到端冒烟测试
 
-在**不依赖 `lerobot-record`** 的情况下验证整个机器人栈。设备自动发现;仅当两只夹爪都
-接入时才需 `--side`。
+使用当前实际支持的 `lerobot-teleoperate` 入口验证夹爪、触觉和腕相机数据流。该命令只读取并预览设备,
+**不会录制数据集**。为单独检查夹爪本体与相机,下面先关闭 Pico4 追踪器,运行 10 秒后自动退出。
 
-=== "夹爪 + 触觉 + 腕相机(全部自动发现)"
+**单夹爪(以右侧为例):**
 
-    ```bash
-    python -m lerobot.robots.taccap_gripper.taccap_gripper_example --side left
-    ```
+```bash
+lerobot-teleoperate \
+    --robot.type=taccap_gripper \
+    --robot.side=right \
+    --robot.enable_tracker=false \
+    --fps=30 \
+    --teleop_time_s=10 \
+    --debug_timing=true
+```
 
-=== "仅相机 + 夹爪(无腕相机)"
+**双夹爪:**
 
-    ```bash
-    python -m lerobot.robots.taccap_gripper.taccap_gripper_example --side left --no-wrist
-    ```
+```bash
+lerobot-teleoperate \
+    --robot.type=bi_taccap_gripper \
+    --robot.enable_tracker=false \
+    --fps=30 \
+    --teleop_time_s=10 \
+    --debug_timing=true
+```
 
-=== "+ Pico4 Ultra 企业版追踪器(位姿)"
-
-    ```bash
-    python -m lerobot.robots.taccap_gripper.taccap_gripper_example \
-        --side left --tracker --tracker-sn PT-XXXXXXXXXXXX
-    ```
+命令能持续输出采样耗时与相机数量,且无设备发现、连接或读取异常,即表示基础数据流正常。
 
 ## 4.4 3D 轨迹可视化(Rerun) {#44}
 
-录制/自检时加 `--display_data=true`,Rerun 查看器会多出一个 `/world` 3D 视图:夹爪
-以带标签的椭球 + 坐标三轴在其实时 Pico4 Ultra 企业版位姿(`tcp.*`)处绘制,并拖出一条走过的
-轨迹面包屑。
+使用 `lerobot-teleoperate` 并开启 `--display_data=true`,即可实时预览全部观测和 3D 轨迹。
+
+**单夹爪(以右侧为例):**
+
+```bash
+lerobot-teleoperate \
+    --robot.type=taccap_gripper \
+    --robot.side=right \
+    --fps=30 \
+    --display_data=true \
+    --show_trajectory=true
+```
+
+**双夹爪:**
+
+```bash
+lerobot-teleoperate \
+    --robot.type=bi_taccap_gripper \
+    --fps=30 \
+    --display_data=true \
+    --show_trajectory=true
+```
+
+Rerun 查看器会多出一个 `/world` 3D 视图:夹爪以带标签的椭球 + 坐标三轴在其实时
+Pico4 Ultra 企业版位姿(`tcp.*`)处绘制,并拖出一条走过的轨迹面包屑。
 
 - 我们的位姿已在重力对齐世界系,场景是 `RIGHT_HAND_Z_UP`。
-- 默认开启;`--show_trajectory=false` 关闭;当 `--robot.enable_tracker=false`
-  (无位姿可画)时自动跳过。
+- `--show_trajectory` 默认开启;设为 `false` 可关闭。当 `--robot.enable_tracker=false`
+  (无位姿可画)时会自动跳过。
 
 !!! note "参考实现"
     与 SDK 的 `python/examples/rerun_dual_with_tracker.py` 示例一致(该示例展示的是
