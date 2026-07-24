@@ -46,7 +46,7 @@ lerobot-record \
 | `single_task` | **必填** | 任务的简短准确描述,写入 `meta/tasks`(如 `'Pick up the object'`) |
 | `root` | `$HF_LEROBOT_HOME/repo_id` | 本地存储目录;不指定则用默认缓存路径 |
 | `fps` | `30` | 采样(录制)帧率上限 |
-| `episode_time_s` | `60` | 每集录制时长(秒) |
+| `episode_time_s` | `120` | 每集录制时长(秒) |
 | `reset_time_s` | `60` | 每集之间的复位时长(秒),被动等待你重新摆放场景 |
 | `num_episodes` | `50` | 录制集数 |
 | `video` | `true` | 是否把帧编码为视频(mp4) |
