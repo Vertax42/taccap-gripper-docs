@@ -10,7 +10,7 @@ site_name: XTac-UMI G1 数采快速使用手册
 site_description: XenseRobotics XTac-UMI G1 手持触觉数采夹爪 · 基于 lerobot 的数据采集快速上手
 site_author: XenseRobotics
 site_url: https://vertax42.github.io/taccap-gripper-docs/
-copyright: 文档版本 v0.0.1 &nbsp;·&nbsp; Copyright &copy; 2026 XenseRobotics Co., Ltd.
+copyright: 文档版本 v0.0.2 &nbsp;·&nbsp; Copyright &copy; 2026 XenseRobotics Co., Ltd.
 
 # 不打包进站点的 docs 内文件(素材说明 + 暂移出导航的页面,文件留存备用)
 exclude_docs: |
