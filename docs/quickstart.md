@@ -39,33 +39,83 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 出问题看 [故障排查](troubleshooting.md)。
 
-## 3. 录制一条数据
+## 3. 预览实时数据
 
-单臂(单只夹爪自动选中;两只都接时加 `--robot.side=left|right`):
+录制前先用 `lerobot-teleoperate` 打开 Rerun,确认触觉、夹爪开度和位姿数据正常。
+
+**单夹爪(以右侧为例):**
+
+```bash
+lerobot-teleoperate \
+    --robot.type=taccap_gripper \
+    --robot.side=right \
+    --fps=30 \
+    --display_data=true
+```
+
+**双夹爪:**
+
+```bash
+lerobot-teleoperate \
+    --robot.type=bi_taccap_gripper \
+    --fps=30 \
+    --display_data=true
+```
+
+移动并开合夹爪检查各路数据;确认无误后按 `Ctrl+C` 退出预览。
+
+## 4. 录制一条数据
+
+**单夹爪(以右侧为例):**
 
 ```bash
 lerobot-record \
     --robot.type=taccap_gripper \
-    --robot.id=right --robot.side=right \
+    --robot.side=right \
+    --display_data=true \
     --dataset.repo_id=<你的org>/<数据集名> \
     --dataset.num_episodes=1 \
-    --dataset.episode_time_s=10 \
+    --dataset.fps=30 \
+    --dataset.push_to_hub=false \
+    --dataset.episode_time_s=120 \
+    --dataset.reset_time_s=60 \
     --dataset.single_task='Pick up the object'
 ```
 
-- Pico4 Ultra 企业版位姿会**自动录制**;只想要触觉+夹爪加 `--robot.enable_tracker=false`。
-- 双臂用 `--robot.type=bi_taccap_gripper`。
-- 加 `--display_data=true` 开 Rerun 3D 可视化。
+**双夹爪:**
 
-细节见 [数据采集](05-data-collection.md)。
+```bash
+lerobot-record \
+    --robot.type=bi_taccap_gripper \
+    --display_data=true \
+    --dataset.repo_id=<你的org>/<数据集名> \
+    --dataset.num_episodes=1 \
+    --dataset.fps=30 \
+    --dataset.push_to_hub=false \
+    --dataset.episode_time_s=120 \
+    --dataset.reset_time_s=60 \
+    --dataset.single_task='Pick up the object'
+```
 
-## 4. 看数据
+- `--robot.side=right` 指定右侧夹爪,并参与按侧别发现和匹配设备序列号。
+- 位姿默认会**自动录制**;如不需要,可添加 `--robot.enable_tracker=false`。
+- `--fps=30` 控制预览帧率;`--dataset.fps=30` 控制录制采样帧率。
+- `--display_data=true` 会在录制过程中打开实时 Rerun 可视化。
+- `--dataset.push_to_hub=false` 表示仅保存到本地,不自动上传 Hugging Face Hub。
+
+!!! info "lerobot-record 参数详细说明"
+    `lerobot-record` 的完整参数定义与用法请查阅 [LeRobot v0.6.0 官方 Record function 文档](https://huggingface.co/docs/lerobot/v0.6.0/en/il_robots#record-function)。
+    本项目的设备参数与采集说明见 [数据采集](05-data-collection.md)。
+
+## 5. 检查本地数据完整性
+
+使用与录制时相同的 `repo_id`,检查本地数据集结构与内容是否完整。
 
 ```bash
 lerobot-check-dataset --repo-id <你的org>/<数据集名>
 ```
 
-## 5.(可选)上传 Hub
+## 6.(可选)上传 Hub
 
 ```bash
 python push_dataset_to_hub.py \
