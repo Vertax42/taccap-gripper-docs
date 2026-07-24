@@ -8,9 +8,9 @@
 
 | 组件 | 版本 |
 |---|---|
-| 操作系统 | Ubuntu 22.04 |
+| 操作系统 | Ubuntu 22.04 / 24.04 |
 | NVIDIA GPU / 驱动 | 推荐;驱动 ≥ 570.144,用于 GPU H.264 硬件编码 |
-| Python | 3.12 |
+| Python | ≥ 3.10 |
 | PyTorch | ≥ 2.2(CUDA 12.8) |
 | `xense-taccap-lerobot` | 跟踪上游 **lerobot v5.1** |
 | `xense.taccap`(`taccap-gripper` SDK) | ≥ 0.1.0 |

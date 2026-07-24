@@ -96,9 +96,9 @@ flowchart TB
 | GPU / 显卡驱动 | 推荐 NVIDIA GPU + 驱动 ≥ 570.144;可使用 GPU H.264 硬件编码器降低 CPU 编码压力 |
 | Python | ≥ 3.10 |
 | PyTorch | ≥ 2.2,CUDA 12.8 |
-| 夹爪 SDK | `xense.taccap` ≥ 0.1.0(`taccap-gripper` PyPI 包) |
+| 夹爪 SDK | `xense.taccap` ≥ 0.1.0;由 `third_party/taccap-gripper` 源码本地构建安装 |
 | 环境管理 | 强烈推荐 [Mamba / Miniforge](https://github.com/conda-forge/miniforge)(依赖求解比 conda 快约 10×) |
-| 视频编解码 | `torchcodec` + `av` wheel(v5.1 不再用 conda 固定 ffmpeg) |
+| 视频编解码 | `torchcodec` 按 PyTorch 兼容矩阵固定,PyAV 固定为 `15.1.0`;均通过 wheel 安装,FFmpeg 不参与 conda 求解 |
 
 !!! danger "先决条件"
     - 用户需加入 `dialout`、`video` 用户组(见 [3.1 串口权限](03-host-hardware.md#31))。
