@@ -37,7 +37,7 @@
 | **GSPS** | 视触觉传感器(左右指各一),序列号 `GSPS01...` |
 | **XC** | 腕部 UVC 相机,序列号 `XC...` |
 | **tcp** | Tool Center Point,末端执行器位姿(`tcp.x/y/z` + 6D 旋转 `r1..r6`) |
-| **6D rotation** | `r1..r3` = 旋转矩阵第一列,`r4..r6` = 第二列(同 `vive_tracker`) |
+| **6D rotation** | `r1..r3` = 旋转矩阵第一列,`r4..r6` = 旋转矩阵第二列 |
 | **shifted-frame** | 移位帧配对:t-1 观测配 t 动作 |
 | **self-driven** | 自驱动:设备自身产出观测与演示动作,无独立遥操端 |
 
