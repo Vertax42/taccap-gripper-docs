@@ -4,48 +4,116 @@ SDK 示例脚本位于 `python/examples/`(C++ 示例需 `-DTACCAP_BUILD_EXAMPLES
 
 ## 快速上手
 
-=== "单夹爪"
+=== "Python:单主夹爪"
 
     ```python
     import xense.taccap as t
 
-    # 自动发现唯一连接的夹爪(左或右);0 个或 >1 个会抛 IoError
-    gripper = t.LeaderGripper.open()      # 仅 MCU;相机默认不开
-    gripper.start_streaming(imu_hz=100, encoder_hz=100)
+    # 按固件 SN 的 m 后缀选择 Leader,避免把 Follower 交给 LeaderGripper。
+    ep = t.find_leader()
+    gripper = t.LeaderGripper(ep.mcu_device)  # MCU-only;腕相机默认不开
 
     gripper.encoder.on_data(lambda s: print("enc", s.position_rad))
     gripper.imu.on_data(lambda s: print(s))
-    # ... 采集 ...
-    gripper.stop_streaming()
+    gripper.start_streaming(imu_hz=100, encoder_hz=100)
+    try:
+        # ... 采集 ...
+        pass
+    finally:
+        gripper.stop_streaming()
     ```
 
-=== "双夹爪(左右同进程)"
+=== "Python:双主夹爪"
 
     ```python
-    from xense.taccap import LeaderGripper, scan_grippers, Side
+    from xense.taccap import LeaderGripper, Role, Side, scan_grippers
 
-    endpoints = scan_grippers()           # 一次 USB 扫描拿到全部端点
-    left  = next(e for e in endpoints if e.side == Side.Left)
-    right = next(e for e in endpoints if e.side == Side.Right)
+    endpoints = scan_grippers()
+    left = next(e for e in endpoints
+                if e.side == Side.Left and e.role == Role.Leader)
+    right = next(e for e in endpoints
+                 if e.side == Side.Right and e.role == Role.Leader)
 
-    g_left  = LeaderGripper(left.mcu_device)
-    g_right = LeaderGripper(right.mcu_device)
-    g_left.start_streaming(imu_hz=100, encoder_hz=100)
-    g_right.start_streaming(imu_hz=100, encoder_hz=100)
-    # ... 挂回调,退出前 stop_streaming() ...
+    grippers = [LeaderGripper(left.mcu_device), LeaderGripper(right.mcu_device)]
+    try:
+        for g in grippers:
+            g.start_streaming(imu_hz=100, encoder_hz=100)
+        # ... 为两只夹爪挂回调并采集 ...
+    finally:
+        for g in grippers:
+            g.stop_streaming()
     ```
+
+=== "C++17:单主夹爪"
+
+    ```cpp
+    #include <taccap/discovery.hpp>
+    #include <taccap/leader_gripper.hpp>
+
+    #include <chrono>
+    #include <iostream>
+    #include <thread>
+
+    int main() {
+        namespace tc = xense::taccap;
+
+        const auto ep = tc::discovery::find_leader();
+        tc::LeaderGripper::Config cfg;
+        cfg.mcu_device = ep.mcu_device;
+        tc::LeaderGripper gripper(cfg);
+
+        gripper.encoder().on_data([](const auto& sample) {
+            std::cout << "encoder=" << sample.position_rad << "\n";
+        });
+        gripper.start_streaming(100, 100);
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+        gripper.stop_streaming();
+        return 0;
+    }
+    ```
+
+    工程中通过 `add_subdirectory()` 引入 SDK 并链接 `taccap_core`,详见[安装与构建](sdk-install.md)。
 
 ## 示例脚本一览
 
 | 脚本 | 作用 |
 |---|---|
 | `rerun_dual_with_tracker.py` | 双夹爪 IMU/编码器 + Pico4 Ultra 企业版追踪器 6-DoF 位姿,在 Rerun 单视图中可视化。需 `xensevr_pc_service_sdk` 与 XenseVR PC Service 运行 |
-| `calibrate.py` | 按 SN 的编码器零点标定 CLI(见 [标定与自检](04-calibration.md)) |
+| `calibrate.py` | 按 SN 检查编码器零点并按需重新标定(见 [标定与自检](04-calibration.md)) |
 | `ota_update.py` | 固件 OTA 刷写 CLI,带进度与刷后状态探测。**有风险——刷错会变砖** |
-| `v4l2_probe.py` / `v4l2_sweep.py` | 手动 V4L2 拉起腕/视触觉相机(发现流程为 MCU-only,不枚举相机);SN 未烧录时也有用 |
-| `leader_demo`(C++) | 单主爪 5 秒多流速率报告 |
+| `v4l2_probe.py` / `v4l2_sweep.py` | 直接用 SDK `Camera` 调试 V4L2/UVC 节点;仅用于底层排障,不代表正式 LeRobot / `xensesdk` 图像采集路径 |
+| `motor_mit_control.py` | 从夹爪原始弧度坐标下的 MIT 阻抗控制演示;会驱动真实电机 |
+| `gripper_control_test.py` | 从夹爪归一化开度 `[0,1]` 与 `ControlLoop` 交互测试;要求从夹爪配置已标定 |
+| `leader_demo`(C++) | 单主夹爪 IMU + 编码器 5 秒 MCU 流速率报告 |
 
-## 编码器零点标定
+## C++ 冒烟程序
+
+启用 C++ 示例后,可直接运行官方 `leader_demo` 验证单只主夹爪的 IMU 与编码器流:
+
+```bash
+cmake -B build -G Ninja \
+    -DTACCAP_BUILD_PYTHON=OFF \
+    -DTACCAP_BUILD_EXAMPLES=ON
+cmake --build build -j
+./build/cpp/examples/leader_demo
+```
+
+该程序自动发现当前唯一连接的夹爪并采样 5 秒。若同时连接多只夹爪,应改用显式端点构造,不要使用 `LeaderGripper::open()`。
+
+## 从夹爪电机控制(高风险)
+
+!!! danger "会驱动真实电机"
+    以下脚本仅适用于从夹爪(Follower)。运行前清空夹爪运动范围,确认急停 / 断电手段可用,并保持手指远离夹爪。主夹爪没有电机,不要在主夹爪上执行。
+
+- `motor_mit_control.py` 直接发送原始电机弧度目标和 MIT 阻抗参数,适合底层控制链路调试。
+- `gripper_control_test.py` 使用归一化开度 `[0,1]` 测试单次命令与 `ControlLoop`;要求从夹爪的 `GripperConfig` 已完成闭合零点和最大开度标定。
+
+```bash
+python python/examples/motor_mit_control.py --hz 200 --seconds 5
+python python/examples/gripper_control_test.py
+```
+
+## 编码器零点检查与按需标定
 
 `calibrate.py` 无需在每次采集前运行。只有夹爪完全闭合但读数不为 0,或确认出现零点漂移时才重新标定。
 
@@ -58,12 +126,13 @@ python python/examples/calibrate.py TCGU01A24A0002m   # 右主爪
 
 !!! tip "标定细节"
     闭合恒为 0;负向漂移会被钳到 0(原始值保留在 `raw_position_rad`);raw 负漂
-    超过 -0.1 rad 会限频告警。完整说明见 [4.1 编码器零点标定](04-calibration.md)。
+    超过 -0.1 rad 会限频告警。完整说明见 [4.1 编码器零点检查与按需标定](04-calibration.md)。
 
 ## Pico4 Ultra 企业版追踪器绑定(按台)
 
-`rerun_dual_with_tracker.py` 需显式 `--left-tracker-sn` / `--right-tracker-sn`,因为
-追踪器物理粘在特定夹爪上,软件无法反推。用 `scan_grippers` 报告的 SN 匹配你本机的配对:
+作为 SDK 独立示例,`rerun_dual_with_tracker.py` 不使用 LeRobot 的序列号自动匹配逻辑,
+因此需显式传入 `--left-tracker-sn` / `--right-tracker-sn`。正式 `lerobot-teleoperate` /
+`lerobot-record` 流程默认可按追踪器序列号规则自动匹配。
 
 ```bash
 python python/examples/rerun_dual_with_tracker.py \

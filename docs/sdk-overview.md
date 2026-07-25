@@ -4,6 +4,9 @@
 统一命名空间 `xense::taccap::` / `xense.taccap`。数采主仓库通过
 `third_party/taccap-gripper` 子模块消费它,不重复实现底层通信。
 
+!!! info "版本基线"
+    本附录按 `taccap-gripper 0.1.4` 源码核对。SDK 升级后应同步复核接口、构建选项与示例命令。
+
 !!! note "能力边界"
     - SDK 通过串口协议访问夹爪 MCU,提供 IMU、编码器、按键、传感器错误、OTA,以及仅从夹爪具备的电机控制。
     - SDK 也提供独立、可选的腕部 UVC `Camera` 类;`LeaderGripper.open()` / `FollowerGripper.open()` 默认不打开相机,只有显式设置 `open_cameras=true` 并提供设备路径时聚合对象才会持有它。
