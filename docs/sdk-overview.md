@@ -37,10 +37,10 @@ flowchart TB
 
 | 产物 | 用途 |
 |---|---|
-| `libtaccap_core.so`(C++ 共享库) | 集成进 ROS2 包或其他 CMake 工程 |
+| `taccap_core` CMake target / `libtaccap_core.so` | 通过源码 `add_subdirectory()` 集成进 ROS2 或其他 CMake 工程 |
 | `xense.taccap`(Python 扩展) | 数采脚本、Jupyter、上层产品(本手册主用) |
 
-二者由**同一套顶层 CMake** 构建,按需选择。安装见 [安装与构建](sdk-install.md)。
+二者由**同一套顶层 CMake** 构建。当前 C++ 面没有独立的 install/export package,应通过源码子目录消费;Python 面由本地源码构建 wheel / editable install。详见 [安装与构建](sdk-install.md)。
 
 ## 线程模型
 
