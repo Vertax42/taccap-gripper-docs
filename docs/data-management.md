@@ -35,13 +35,11 @@
 !!! tip "建议约定(团队内统一)"
     `<org>/<任务>_<变体>_<YYYYMMDD>`,例:`Xense/insert_plug_left_20260703`。
 
-## 磁盘规划与估算
+## 磁盘规划与估算 {#storage-planning}
 
-- 满负荷出流可达 **~280 MB/s**(双臂多相机)。采集前务必确认目标盘的**空间与写入带宽**。
-- 粗估单条 episode 体积 ≈ 各视频流码率 × 时长 + 表格数据。相机数、分辨率、`fps`、
-  `episode_time_s` 都会放大体积。
-- 建议采集大批量前先采几条,`du -sh ~/.cache/huggingface/lerobot/<repo_id>` 看实际单集体积,
-  再乘以计划集数估算总量。
+- 双夹爪多相机的原始视频数据吞吐可达约 **280 MB/s**;这不是编码后的磁盘写入速度。实时编码后的体积取决于分辨率、画面内容、`fps`、编码器和码率。
+- 粗估单条 episode 体积 ≈ 各编码视频流平均码率 × 时长 + Parquet 与元数据。相机数、分辨率、`fps`、`episode_time_s` 都会放大体积。
+- 大批量采集前先录制 2–3 条代表性 episode,运行完整性检查,再用 `du -sh` 测量实际体积并按计划集数估算。不要直接用原始 280 MB/s 推算落盘量。
 
 ```bash
 du -sh ~/.cache/huggingface/lerobot/<你的org>/<数据集名>
@@ -51,18 +49,22 @@ df -h ~/.cache/huggingface/lerobot          # 看目标盘剩余空间
 ## 备份与上传
 
 - **本地备份**:重要数据集在删除/迁移前先备份整个 `<repo_id>/` 目录。
-- **上传 Hub**:用 `lerobot-push-dataset-to-hub`(见 [6.4 上传 HuggingFace Hub](06-dataset.md#64));
+- **上传 Hub**:用 `lerobot-push-dataset-to-hub`(见 [6.4 上传 Hugging Face Hub](06-dataset.md#64));
   大数据集加 `--upload-large-folder`,私有加 `--private`。
 - 上传即视为一次**异地备份 + 交付**;上传前先 `lerobot-check-dataset` 校验。
 
 ## 清理与维护
 
-- 磁盘紧张时清理**已上传/已备份**的旧数据集释放空间:
+- 磁盘紧张时,先确认数据已通过 `lerobot-check-dataset` 校验并完成备份 / 上传。为保留恢复机会,优先把目标数据集移动到单独的隔离目录,观察无误后再通过文件管理器删除:
 
 ```bash
-# 确认已备份/已上传后再删
-rm -rf ~/.cache/huggingface/lerobot/<你的org>/<旧数据集名>
+mkdir -p /data/lerobot-trash
+realpath ~/.cache/huggingface/lerobot/<你的org>/<旧数据集名>
+du -sh ~/.cache/huggingface/lerobot/<你的org>/<旧数据集名>
+mv -- ~/.cache/huggingface/lerobot/<你的org>/<旧数据集名> /data/lerobot-trash/
 ```
+
+移动前必须核对 `realpath` 输出是预期的单个数据集目录;不要对缓存根目录执行递归删除。
 
 - 定期用 `df -h` 盯住目标盘,避免采集中途写满(见 [故障排查 → 数据与磁盘](troubleshooting.md))。
 
@@ -76,5 +78,8 @@ rm -rf ~/.cache/huggingface/lerobot/<你的org>/<旧数据集名>
 | 任务描述 | `Pick up the object` |
 | 用的夹爪 / 追踪器 SN | `TCGU01A24Z0001m` / `PC2310MLL...` |
 | 标定时间 | 2026-07-03 |
+| 软件版本 / commit | `xense-taccap-lerobot main@d7b74a6c`;`xense.taccap 0.1.4` |
+| 世界系会话 | XenseVR-Toolkit 启动时间 / 操作者朝向 |
+| 完整性检查 | `lerobot-check-dataset` 通过;异常 episode 列表 |
 | 集数 / 单集时长 | 50 / 15s |
 | 备注 | 光照/场景/异常集 |

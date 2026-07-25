@@ -20,6 +20,9 @@ hide:
 
 </div>
 
+!!! info "English coverage"
+    The Home and Overview pages are available in English. Other navigation entries currently fall back to the Chinese source pages; command examples remain directly usable.
+
 ## The whole flow in 5 minutes
 
 ```mermaid

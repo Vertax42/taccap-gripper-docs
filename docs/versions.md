@@ -50,22 +50,24 @@ python -c "import torchcodec; print('torchcodec', torchcodec.__version__)"
 !!! danger "OTA 有风险"
     刷错固件会**变砖 MCU**。核对目标固件与设备型号后再操作。
 
-## 支持与反馈
+## 支持与反馈 {#support}
 
 遇到问题:
 
-1. 先查 [故障排查](troubleshooting.md) 与 [常见问题](07-faq-reference.md)。
-2. 仍未解决,通过**内部渠道反馈**(*待补:issue 地址 / 对接人 / 群*)。
+1. 先查[故障排查](troubleshooting.md)与[常见问题](07-faq-reference.md)。
+2. 文档内容、链接或示例问题可提交到[文档仓库 Issues](https://github.com/Vertax42/taccap-gripper-docs/issues)。
+3. 硬件、固件、标定材料或返修问题请通过设备交付 / 售后渠道反馈,并提供设备 SN。
 
 反馈时请附带:
 
-- **完整报错**(不要截断)。
-- 自检输出:`scan_grippers` 的 side / role / firmware_sn。
-- 版本信息:上面「如何查版本」的输出。
-- 复现步骤:用的命令、单/双臂、是否接追踪器等。
+- 完整报错与相关日志,不要截断。
+- `scan_grippers` 的 side / role / firmware_sn 输出。
+- 本页“如何查版本”命令的输出。
+- 复现步骤、完整命令、单夹爪 / 双夹爪、是否启用追踪器。
+- 如涉及相机或硬件装配,附设备连接和异常画面照片。
 
-## 待补
+## 兼容性与发布维护
 
-- 内部 issue / 工单地址与对接人
-- 固件 ↔ SDK ↔ lerobot 的精确兼容矩阵(跨版本)
-- 发布节奏 / 变更日志入口
+- 当前站点文档版本为 `v0.0.2`;内容变更可通过文档仓库 Git 提交历史追踪。
+- 精确兼容关系以主仓库依赖锁定文件、子模块 commit 和本页“已验证基线”为准,不要仅按包名猜测兼容性。
+- 升级主仓库、SDK、固件或 XenseVR PC Service 后,应重新执行环境验证、设备自检和一条短 episode 校验。

@@ -17,7 +17,7 @@
 ## 6.1 LeRobotDataset 格式速览 {#61}
 
 采集产出标准 `LeRobotDataset`,默认落在 `~/.cache/huggingface/lerobot/<repo_id>/`。
-它可以像普通 HuggingFace / PyTorch 数据集一样索引:
+它可以像普通 Hugging Face / PyTorch 数据集一样索引:
 
 ```python
 from lerobot.datasets.lerobot_dataset import LeRobotDataset
@@ -28,7 +28,7 @@ sample = ds[0]          # 单帧:观测 + 动作,均为 torch tensor
 
 序列化方式:
 
-- `hf_dataset`:HuggingFace datasets → parquet
+- `hf_dataset`:Hugging Face datasets → parquet
 - 视频(触觉 + 腕相机):mp4(省空间)
 - 元数据:纯 json / jsonl(`info` / `episodes` / `stats` / `tasks`)
 
@@ -76,7 +76,7 @@ lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand --episode-in
 - **数据集浏览**:用上游 lerobot 的数据集可视化工具打开 parquet + mp4 逐帧检查
   (以你 checkout 的 `lerobot` 版本提供的可视化脚本为准)。
 
-## 6.4 上传 HuggingFace Hub {#64}
+## 6.4 上传 Hugging Face Hub {#64}
 
 用已安装的 `lerobot-push-dataset-to-hub` 控制台入口推送到 Hub:
 

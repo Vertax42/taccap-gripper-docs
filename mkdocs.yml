@@ -78,7 +78,7 @@ plugins:
           name: 简体中文
           build: true
         - locale: en
-          name: English
+          name: English (partial)
           build: true
           site_name: "XTac-UMI G1 Data-Collection Quickstart"
           nav_translations:

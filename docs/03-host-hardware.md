@@ -29,8 +29,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 ```
 
 !!! warning "序列号仍为空?"
-    修好权限后 `firmware_sn` 仍为空,说明设备的 SN 从未烧录(或固件 < V1.6)——
-    这是设备/固件问题,不是主机问题。
+    修好权限后 `firmware_sn` 仍为空,可能是 SN 未烧录、串口读取仍失败、固件通信异常或设备端配置问题;不能只根据空 SN 推断固件版本。保存完整报错并换线 / 换口复测,仍异常时联系设备或固件团队。
 
 ## 3.2 关闭 ModemManager 抢占(udev) {#32}
 
