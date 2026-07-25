@@ -118,7 +118,7 @@ lerobot-check-dataset --repo-id <你的org>/<数据集名>
 ## 6.(可选)上传 Hub
 
 ```bash
-python push_dataset_to_hub.py \
+lerobot-push-dataset-to-hub \
     --repo-id <你的org>/<数据集名> \
     --dataset-path ~/.cache/huggingface/lerobot/<你的org>/<数据集名> \
     --upload-large-folder

@@ -51,7 +51,7 @@ df -h ~/.cache/huggingface/lerobot          # 看目标盘剩余空间
 ## 备份与上传
 
 - **本地备份**:重要数据集在删除/迁移前先备份整个 `<repo_id>/` 目录。
-- **上传 Hub**:用 `push_dataset_to_hub.py`(见 [6.4 上传 HuggingFace Hub](06-dataset.md#64));
+- **上传 Hub**:用 `lerobot-push-dataset-to-hub`(见 [6.4 上传 HuggingFace Hub](06-dataset.md#64));
   大数据集加 `--upload-large-folder`,私有加 `--private`。
 - 上传即视为一次**异地备份 + 交付**;上传前先 `lerobot-check-dataset` 校验。
 

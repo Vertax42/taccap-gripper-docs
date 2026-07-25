@@ -78,11 +78,11 @@ lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand --episode-in
 
 ## 6.4 上传 HuggingFace Hub {#64}
 
-用 `push_dataset_to_hub.py` 推送到 Hub:
+用已安装的 `lerobot-push-dataset-to-hub` 控制台入口推送到 Hub:
 
 ```bash
 # 基本用法(需要 --repo-id 与 --dataset-path)
-python push_dataset_to_hub.py \
+lerobot-push-dataset-to-hub \
     --repo-id Vertax/xense_flare_pick_and_place \
     --dataset-path ~/.cache/huggingface/lerobot/Vertax/xense_flare_pick_and_place
 ```
@@ -92,7 +92,7 @@ python push_dataset_to_hub.py \
 === "大数据集"
 
     ```bash
-    python push_dataset_to_hub.py \
+    lerobot-push-dataset-to-hub \
         --repo-id Xense/assemble_box_with_phone_stand0410 \
         --dataset-path ~/.cache/huggingface/lerobot/Xense/assemble_box_with_phone_stand0410 \
         --upload-large-folder
@@ -101,7 +101,7 @@ python push_dataset_to_hub.py \
 === "私有仓库"
 
     ```bash
-    python push_dataset_to_hub.py \
+    lerobot-push-dataset-to-hub \
         --repo-id Vertax/xense_flare_pick_and_place \
         --dataset-path ~/.cache/huggingface/lerobot/Vertax/xense_flare_pick_and_place \
         --private
@@ -110,7 +110,7 @@ python push_dataset_to_hub.py \
 === "不传视频"
 
     ```bash
-    python push_dataset_to_hub.py \
+    lerobot-push-dataset-to-hub \
         --repo-id Vertax/xense_flare_pick_and_place \
         --dataset-path ~/.cache/huggingface/lerobot/Vertax/xense_flare_pick_and_place \
         --no-videos
@@ -119,26 +119,51 @@ python push_dataset_to_hub.py \
 成功后数据集地址为 `https://huggingface.co/datasets/<repo_id>`。
 
 !!! tip "先登录 Hub"
-    上传前确保已 `huggingface-cli login`(或设置 `HF_TOKEN`),否则会因鉴权失败。
+    上传前确保已执行 `hf auth login`(旧版也可使用 `huggingface-cli login`),或设置 `HF_TOKEN`,否则会因鉴权失败。
 
 ## 6.5 完整命令示例合集
 
-一条龙(单臂,20 集,15 秒/集,实时编码,采完校验再上传):
+先录制到本地并校验;确认完整后再按需上传 Hub。以下命令均显式指定 30 FPS、120 秒录制、60 秒复位和不自动上传。
+
+=== "单夹爪(以右侧为例)"
+
+    ```bash
+    lerobot-record \
+        --robot.type=taccap_gripper \
+        --robot.side=right \
+        --display_data=true \
+        --dataset.repo_id=Xense/pick_object_demo \
+        --dataset.single_task='Pick up the object' \
+        --dataset.num_episodes=20 \
+        --dataset.fps=30 \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.push_to_hub=false
+    ```
+
+=== "双夹爪"
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --display_data=true \
+        --dataset.repo_id=Xense/pick_object_demo \
+        --dataset.single_task='Pick up the object' \
+        --dataset.num_episodes=20 \
+        --dataset.fps=30 \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.push_to_hub=false
+    ```
+
+录制完成后执行:
 
 ```bash
-# 1) 采集
-lerobot-record \
-    --robot.type=taccap_gripper --robot.side=right --robot.id=right \
-    --dataset.repo_id=Xense/pick_object_demo \
-    --dataset.num_episodes=20 --dataset.episode_time_s=15 \
-    --dataset.single_task='Pick up the object' \
-    --dataset.streaming_encoding=true --dataset.encoder_threads=2 --dataset.vcodec=auto
-
-# 2) 校验
+# 1) 检查本地数据完整性
 lerobot-check-dataset --repo-id Xense/pick_object_demo
 
-# 3) 上传
-python push_dataset_to_hub.py \
+# 2) 可选:上传 Hub
+lerobot-push-dataset-to-hub \
     --repo-id Xense/pick_object_demo \
     --dataset-path ~/.cache/huggingface/lerobot/Xense/pick_object_demo \
     --upload-large-folder
