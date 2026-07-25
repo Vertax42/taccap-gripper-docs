@@ -108,7 +108,7 @@ python -c 'import av; print("PyAV OK ->", av.__version__)'
 
 !!! tip "需要系统 ffmpeg?"
     若你需要带 `libsvtav1` 的系统 ffmpeg,请单独安装(apt 或上游静态构建);
-    v5.1 的默认编码路径不依赖它。
+    当前 0.5.1 定制分支的默认编码路径不依赖它。
 
 ---
 

@@ -57,10 +57,10 @@ time alignment and episode handling live in `xense-taccap-lerobot`.
 | Item | Requirement |
 |---|---|
 | OS | Ubuntu 22.04 / 24.04 (tested); V4L2 + UVC capture path, macOS / Windows unsupported |
-| GPU / driver | NVIDIA GPU + driver ≥ 570.144 recommended; enables GPU H.264 hardware encoding and reduces CPU encoding load |
+| GPU / driver | Optional; NVIDIA GPU recommended for multi-stream video. Driver 570.144 tested |
 | Python | ≥ 3.10 |
-| PyTorch | ≥ 2.2, CUDA 12.8 |
-| Gripper SDK | `xense.taccap` ≥ 0.1.0; built locally from `third_party/taccap-gripper` |
+| PyTorch | Installed from the project lock files by `setup_env.sh`; 2.10.0 tested |
+| Gripper SDK | `xense.taccap` 0.1.4; built locally from `third_party/taccap-gripper` |
 | Env manager | [Mamba / Miniforge](https://github.com/conda-forge/miniforge) strongly recommended (~10× faster dependency solving than conda) |
 | Video codec | `torchcodec` is pinned according to the PyTorch compatibility matrix; PyAV is pinned to `15.1.0`. Both use wheels, while FFmpeg is excluded from the conda solve |
 

@@ -111,9 +111,8 @@ Pico4 Ultra 企业版位姿(`tcp.*`)处绘制,并拖出一条走过的轨迹面�
 - `--show_trajectory` 默认开启;设为 `false` 可关闭。当 `--robot.enable_tracker=false`
   (无位姿可画)时会自动跳过。
 
-!!! note "参考实现"
-    与 SDK 的 `python/examples/rerun_dual_with_tracker.py` 示例一致(该示例展示的是
-    Pico4 Ultra 企业版原始 `LEFT_HAND_Y_UP` 系)。
+!!! note "与 SDK 独立示例的区别"
+    轨迹标记与面包屑的可视化形式和 SDK `python/examples/rerun_dual_with_tracker.py` 相似;正式 LeRobot 流程使用重力对齐的 `RIGHT_HAND_Z_UP` 世界系,SDK 独立示例展示 Pico4 原始 `LEFT_HAND_Y_UP` 坐标系。
 
 标定与自检通过后,即可开始正式采集。
 

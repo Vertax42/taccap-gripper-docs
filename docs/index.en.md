@@ -66,7 +66,7 @@ This is the **xense-taccap-lerobot data-collection quickstart**. Three parts: **
 
 | Repo / package | Role |
 |---|---|
-| [`xense-taccap-lerobot`](https://github.com/Vertax42/xense-taccap-lerobot) | Data-collection repo (lerobot v5.1 fork, `taccap_gripper` robot class) |
-| `xense.taccap` (`taccap-gripper` SDK) | Gripper device driver: IMU / encoder / wrist camera / protocol |
-| `xensevr_pc_service_sdk` | Pico4 Ultra Enterprise Edition teleop / tracker PC service SDK |
+| [`xense-taccap-lerobot`](https://github.com/Vertax42/xense-taccap-lerobot) | Data-collection repo (lerobot 0.5.1 customized branch, `taccap_gripper` robot class) |
+| `xense.taccap` (`taccap-gripper` SDK) | Gripper MCU access layer: IMU, encoder, keys, protocol, and follower-only motor control |
+| `xensevr_pc_service_sdk` | Pico4 Ultra tracker PC service SDK |
 | `xensesdk` | Visuotactile sensor SDK |

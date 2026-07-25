@@ -93,10 +93,10 @@ flowchart TB
 | 项 | 要求 |
 |---|---|
 | 操作系统 | Ubuntu 22.04/24.04(已验证);采集路径为 V4L2 + UVC,不支持 macOS / Windows |
-| GPU / 显卡驱动 | 推荐 NVIDIA GPU + 驱动 ≥ 570.144;可使用 GPU H.264 硬件编码器降低 CPU 编码压力 |
+| GPU / 显卡驱动 | GPU 可选;多路视频推荐 NVIDIA GPU。已验证驱动为 570.144 |
 | Python | ≥ 3.10 |
-| PyTorch | ≥ 2.2,CUDA 12.8 |
-| 夹爪 SDK | `xense.taccap` ≥ 0.1.0;由 `third_party/taccap-gripper` 源码本地构建安装 |
+| PyTorch | 由 `setup_env.sh` 与依赖锁定文件安装;已验证 2.10.0 |
+| 夹爪 SDK | `xense.taccap` 0.1.4;由 `third_party/taccap-gripper` 源码本地构建安装 |
 | 环境管理 | 强烈推荐 [Mamba / Miniforge](https://github.com/conda-forge/miniforge)(依赖求解比 conda 快约 10×) |
 | 视频编解码 | `torchcodec` 按 PyTorch 兼容矩阵固定,PyAV 固定为 `15.1.0`;均通过 wheel 安装,FFmpeg 不参与 conda 求解 |
 

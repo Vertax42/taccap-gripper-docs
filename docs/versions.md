@@ -4,19 +4,19 @@
 
 ## 版本兼容基线
 
-本手册以下列版本为准;实际以你本地 checkout 为准。
+本页将“支持范围”和“已验证基线”分开列出。实际命令与字段仍以本地 checkout 为准。
 
-| 组件 | 版本 |
-|---|---|
-| 操作系统 | Ubuntu 22.04 / 24.04 |
-| NVIDIA GPU / 驱动 | 推荐;驱动 ≥ 570.144,用于 GPU H.264 硬件编码 |
-| Python | ≥ 3.10 |
-| PyTorch | ≥ 2.2(CUDA 12.8) |
-| `xense-taccap-lerobot` | 跟踪上游 **lerobot v5.1** |
-| `xense.taccap`(`taccap-gripper` SDK) | ≥ 0.1.0 |
-| 夹爪固件协议 | 帧格式 **V1.8** + 命令集 **V1.7** |
-| `xensesdk` | 2.1.1(视触觉传感器 SDK) |
-| `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` |
+| 组件 | 支持范围 / 约束 | 已验证基线 |
+|---|---|---|
+| 操作系统 | Ubuntu 22.04 / 24.04 | Ubuntu 24.04.4 LTS |
+| NVIDIA GPU / 驱动 | GPU 可选;多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 |
+| Python | ≥ 3.10 | 3.12.13 |
+| PyTorch | 由 `setup_env.sh` 与依赖锁定文件统一安装 | 2.10.0 |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制 | `main@d7b74a6c` |
+| `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.4 |
+| 夹爪固件协议 | 帧格式 V1.8 + 命令集 V1.7 | V1.8 / V1.7 |
+| `xensesdk` | 由安装脚本提供 | 2.1.1 |
+| `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` | v0.1.0 release |
 
 !!! note "版本以本地为准"
     命令与字段应以你 checkout 的 `src/lerobot/robots/taccap_gripper/README.md` 与
