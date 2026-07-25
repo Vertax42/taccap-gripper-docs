@@ -55,7 +55,7 @@ python -c "import torchcodec; print('torchcodec', torchcodec.__version__)"
 遇到问题:
 
 1. 先查[故障排查](troubleshooting.md)与[常见问题](07-faq-reference.md)。
-2. 文档内容、链接或示例问题可提交到[文档仓库 Issues](https://github.com/Vertax42/taccap-gripper-docs/issues)。
+2. 文档内容、链接或示例问题可提交到[文档仓库 Issues](https://github.com/XenseRobotics/XTac-UMI-G1-Docs/issues)。
 3. 硬件、固件、标定材料或返修问题请通过设备交付 / 售后渠道反馈,并提供设备 SN。
 
 反馈时请附带:
