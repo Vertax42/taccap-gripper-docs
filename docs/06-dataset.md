@@ -70,6 +70,7 @@ lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand --episode-in
 
 ## 6.3 回放与可视化
 
+- **在线数据集可视化**:数据集上传到 Hugging Face Hub 后,可使用 [LeRobot Dataset Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset) 在线浏览各 episode 的视频与数据。
 - **3D 轨迹**:采集/自检时加 `--display_data=true`,Rerun 中查看夹爪位姿与轨迹
   (见 [4.4](04-calibration.md#44))。
 - **数据集浏览**:用上游 lerobot 的数据集可视化工具打开 parquet + mp4 逐帧检查
