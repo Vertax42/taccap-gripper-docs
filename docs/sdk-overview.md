@@ -5,27 +5,33 @@
 `third_party/taccap-gripper` 子模块消费它,不重复实现底层通信。
 
 !!! note "能力边界"
-    SDK 只负责**夹爪协议 + 腕部相机**:IMU / 编码器读取、电机控制(从爪)、主/从聚合对象、
-    零配置发现、独立腕相机。**视触觉(OG)成像不在本 SDK**——由 `xensesdk` 视触觉传感器 SDK 完成。
+    - SDK 通过串口协议访问夹爪 MCU,提供 IMU、编码器、按键、传感器错误、OTA,以及仅从夹爪具备的电机控制。
+    - SDK 也提供独立、可选的腕部 UVC `Camera` 类;`LeaderGripper.open()` / `FollowerGripper.open()` 默认不打开相机,只有显式设置 `open_cameras=true` 并提供设备路径时聚合对象才会持有它。
+    - `xense-taccap-lerobot` 的正式数采路径不使用该 SDK `Camera`,而是直接使用 LeRobot `OpenCVCamera`;视触觉图像由 `XenseTactileCamera` + `xensesdk` 采集。
 
 ## 分层架构
 
 ```mermaid
 flowchart TB
-    U[用户代码 / 数采脚本] --> L4[L4 聚合<br/>LeaderGripper / FollowerGripper<br/>start/stop_streaming · 零配置发现]
-    L4 --> L3[L3 组件<br/>IMU · Encoder · Camera]
-    L3 --> L2[L2 异步传输<br/>Transport: 读线程 · ACK 匹配 · 订阅]
-    L2 --> L1[L1 协议 + 总线<br/>pack/parse · CRC16 · 字节填充 · SerialBus 3Mbps]
-    L1 --> K[/内核: /dev/ttyACM · /dev/video/]
-    K --> HW[TC-GU-01 夹爪硬件]
+    U["用户代码 / 上层适配器"] --> AGG["LeaderGripper / FollowerGripper<br/>MCU 聚合对象"]
+    AGG --> COMP["MCU 组件<br/>IMU · Encoder · Key · SensorErrors · OTA · Motor(仅从夹爪)"]
+    COMP --> TX["异步 Transport<br/>后台读线程 · ACK 匹配 · DATA 订阅"]
+    TX --> PROTO["协议与串口总线<br/>pack/parse · CRC16 · 字节填充 · 3 Mbps"]
+    PROTO --> SERIAL["/dev/ttyACM* / CH343"]
+    SERIAL --> MCU["夹爪 MCU"]
+
+    U -->|可独立构造| CAM["可选腕部 Camera<br/>OpenCV VideoCapture"]
+    AGG -->|open_cameras=true 时持有| CAM
+    CAM --> VIDEO["/dev/video* / V4L2 UVC"]
 ```
 
-| 层 | 职责 |
+| 层 / 组件 | 职责 |
 |---|---|
-| **L4 聚合** | `LeaderGripper` / `FollowerGripper`:拥有 Transport + 组件,生命周期管理,`open()` 按 MCU 序列号自动发现 |
-| **L3 组件** | `IMU` / `Encoder` / `Camera`:`read_once()` 同步读、`on_data(cb)` 流式订阅 |
-| **L2 传输** | 异步 `Transport`:后台读线程、ACK 匹配(seq→promise)、按命令订阅 DATA |
-| **L1 协议/总线** | 帧打包解析、CRC16、字节填充、`SerialBus`(termios @ 3 Mbps) |
+| **聚合对象** | `LeaderGripper` / `FollowerGripper` 管理 MCU Transport 与组件生命周期;`open()` 只适用于当前恰好连接一只夹爪的场景,多设备时应先扫描端点再显式构造 |
+| **MCU 组件** | `IMU` / `Encoder` 使用 `read_once()` 同步读取、`on_data(cb)` 订阅流数据;从夹爪额外提供 `Motor` 与归一化位置控制 |
+| **Camera** | 独立 OpenCV/V4L2 采集路径,使用 `read()` 或 `start(callback)` / `stop()`,不经过串口 Transport |
+| **Transport** | 后台串口读线程、ACK 匹配(seq→promise)、按命令分发 DATA |
+| **协议 / 总线** | 帧打包解析、CRC16、字节填充、`SerialBus`(termios @ 3 Mbps) |
 
 ## 两个可消费面
 
@@ -40,7 +46,7 @@ flowchart TB
 
 - 回调在**生产者线程**(读线程 / 采集线程)触发。
 - Python 回调重新获取 GIL;回调内异常经 `discard_as_unraisable` 上报,不会拖垮生产者。
-- `LeaderGripper` 不可拷贝/移动;`open()` 返回 `unique_ptr`,析构时 `stop_streaming()` 并 join 线程。
+- `LeaderGripper` 与 `FollowerGripper` 不可拷贝/移动;C++ `open()` 返回 `unique_ptr`,析构时执行尽力而为的 `stop_streaming()`。
 
 ## 不属于本 SDK 的部分
 
