@@ -98,6 +98,7 @@ mmcli -L                                                               # 夹爪�
 
 追踪器序列号(如 `PC2310MLL3200496G`)**不是** Xense 序列号。侧别看**倒数第二位**:
 奇 → 左,偶 → 右(`pico_tracker_side`),例:`…496G` → `6` → 右。
+SN 从 XRT(Python SDK)读取,见 [读取追踪器 SN](#pico-tracker-sn)。
 
 !!! note "硬件烧错/装错会显式报错"
     每个发现函数在遇到不合规序列号、每侧数量不对、两枚传感器映射到同一手指、
@@ -108,7 +109,7 @@ mmcli -L                                                               # 夹爪�
 
 Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供 6-DoF 位姿。在 Pico4 Ultra 企业版上运行 **XenseVR-Toolkit**
 (VR 客户端 APP),位姿经 [XenseVR PC Service](#35) 由 `Pico4TrackerReader` 读取。
-首次使用按「**安装 → 网络连接 → 追踪器 → 启动对齐**」四步走。
+首次使用按「**安装 → 网络连接 → 绑定追踪器 → 追踪模式与界面设置 → 启动对齐**」五步走。
 
 ### 首次安装 XenseVR-Toolkit(Pico4 Ultra 企业版) {#pico-app}
 
@@ -161,26 +162,115 @@ Pico4 Ultra 企业版通过 **USB 有线共享网络**接入数采电脑,追踪�
 
 ![USB 连接选择传输文件](assets/pico4/usb-shared-network.jpg){ width="520" }
 
-### 配对运动追踪器(Tracker) {#pico-tracker}
+### 绑定运动追踪器到头显 {#pico-tracker-bind}
+
+**首次使用、或更换追踪器后**,必须先把 PICO Motion Tracker **绑定到这台头显**。
+未绑定时,追踪模式里选不到它,XenseVR-Toolkit 与 PC Service 也发现不了对应 SN。
+
+1. 从 **资源库** 打开「**体感追踪器**」App,进入**配对界面**。
+2. **长按追踪器电源键约 6 秒**,直到指示灯**蓝红交替闪烁**——这是蓝牙配对状态
+   (只亮蓝灯是普通开机,不是配对状态,App 扫不到)。
+3. 在配对界面点「**开始配对**」,等待绑定完成;成功后该追踪器出现在「**我的追踪器**」列表里,
+   显示电量与编号(如 `Tracker 150399`)并标注「**已连接**」。
+4. **两只夹爪各一枚,需要绑定两枚**。列表顶部应显示「**已配对 2 个**」。
+
+!!! tip "长按 6 秒 vs 长按到蓝灯"
+    **首次绑定**要长按到**蓝红交替闪烁**(约 6 秒);
+    **日常开机**只需长按到**蓝灯亮起**即可,不要按到进配对状态。
+
+=== "打开体感追踪器 App"
+
+    ![资源库 → 体感追踪器](assets/pico4/tracker-enable.png){ width="440" }
+
+=== "我的追踪器:已配对 2 个"
+
+    ![体感追踪器 App:两枚追踪器均已连接](assets/pico4/tracker-bind.jpg){ width="440" }
+
+!!! note "绑定是一次性的;解除配对在 ⓘ 里"
+    绑定关系保存在头显上,日常开关机、重启 APP **不需要重绑**;
+    更换追踪器、换用另一台头显或头显恢复出厂设置后需要重新绑定。
+    **更换设备**时先在列表项右侧的 **ⓘ** 中解除配对,再绑新的。
+
+!!! warning "独立追踪模式下,追踪器必须在头显视野内"
+    App 自身也会提示这一点。追踪器被身体、桌沿或另一只手长时间遮挡会**丢跟踪**,
+    表现为位姿跳变或卡住。采集时注意作业姿态,别让夹爪顶部的追踪器长时间脱离头显视野。
+
+#### 读取追踪器 SN {#pico-tracker-sn}
+
+SN 决定左右(倒数第二位奇左偶右,见 [3.3](#33)),也是 PC Service 识别追踪器的依据。
+
+头显里看不到这个 SN:「体感追踪器」App 只显示**短编号**(如 `Tracker 150399`),
+XenseVR-Toolkit 的 Network 面板显示的 SN(如 `PA9410MGL…`)是**头显自己的**。
+匹配左右要用的**追踪器完整 SN**(形如 `PC2310MLL3200496G`)从 **XRT**
+(Python SDK `xensevr_pc_service_sdk`,代码里惯用别名 `xrt`)读取:
+
+```python
+import xensevr_pc_service_sdk as xrt
+
+xrt.init()
+print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...]
+```
+
+!!! warning "读 SN 需要整条链路先跑起来"
+    `get_motion_tracker_serial_numbers()` 报的是**服务当前收到数据的**追踪器。
+    所以要先:追踪器已绑定并开机 → XenseVR-Toolkit 按[界面清单](#pico-toolkit-ui)勾上 `Send`
+    → 主机已启动 [XenseVR PC Service](#35)。少任一步,返回的会是空列表。
+
+拿到 SN 后可用 `--robot.tracker_serial=<SN>` 直接钉住,跳过自动匹配。
+**逐个摇晃夹爪**确认哪个 SN 对应哪只手,再写进配置。
+
+### 追踪模式与 Toolkit 设置 {#pico-tracker}
+
+绑定完成后:
 
 1. 在 Pico4 Ultra 企业版里打开「**体感追踪**」。
 2. 进入设置,追踪模式选「**独立追踪**」。
-3. 在 XenseVR-Toolkit 里,把 **PICO Motion Tracker** 的 mode 选为 **object**。
+3. 在 XenseVR-Toolkit 里,把 **PICO Motion Tracker** 的 `Mode` 选为 **`Object`**。
 
 === "独立追踪模式"
 
     ![追踪模式:独立追踪](assets/pico4/tracker-standalone.png){ width="440" }
 
-=== "Toolkit:mode = object"
+=== "Toolkit:Mode = Object"
 
-    ![XenseVR-Toolkit PICO Motion Tracker = object](assets/pico4/toolkit-tracker-object.png){ width="440" }
+    ![XenseVR-Toolkit PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
 
 追踪器由 XenseVR PC Service 按**序列号(SN)**识别;侧别按 SN 倒数第二位奇左偶右自动匹配
 (见 [3.3](#33)),或用 `--robot.tracker_serial=<SN>` 直接钉住。
 
+### 打开 App 后的界面清单 {#pico-toolkit-ui}
+
+戴上头显、打开 **XenseVR-Toolkit** 后,在 APP 界面里**按顺序**完成下面四项;
+四项都做完,PC 端才会收到追踪数据。
+
+| # | 操作 | 界面位置 | 说明 |
+|---|------|----------|------|
+| 1 | **网络连接** | **Network** 面板 → 勾 `Shared network (connect USB first)` → `PC Service:` 填 PC 端 IP → `Enter` | 连上后 `Status:` 显示绿色 **`WORKING`**。详见 [网络连接](#pico-network) |
+| 2 | **Mode 选 `Object`** | **Tracking** 面板 → `PICO Motion Tracker` → `Mode` 下拉 | 选 **`Object`**(物体追踪),不是 Head / Controller / Hand。详见 [追踪模式与 Toolkit 设置](#pico-tracker) |
+| 3 | **勾选 `High-Acc`** | 同一行,`Mode` 右侧 | 高精度追踪模式,位姿更稳、抖动更小 |
+| 4 | **勾选 `Send`** | **Data & Control** 分区 | **开始向 PC 端推送**追踪数据。这是最后一步,勾上之前 PC 侧读不到任何位姿 |
+
+![XenseVR-Toolkit 主界面:Status WORKING、Mode=Object、High-Acc 与 Send 均已勾选](assets/pico4/toolkit-main.jpg){ width="560" }
+
+!!! tip "`Num:` 就是在线追踪器数量"
+    `High-Acc` 右边的 `Num:` 显示当前连上的追踪器个数,**双爪应为 `Num: 2`**。
+    只有 1 或 0,说明某枚没开机、没绑定或已断连——先回
+    [绑定](#pico-tracker-bind) 排查,不用等 PC 端才发现。
+
+!!! warning "`Send` 必须最后勾"
+    `Send` 是数据推送的总开关:**网络连上、Mode = `Object`、`High-Acc` 都设好之后,再勾 `Send`**。
+    若中途改过 Mode 或 High-Acc,**取消 `Send` 再重新勾选**,让数据流带着新设置重开;
+    不必重启 APP(重启会重置世界系,见 [坐标系对齐](#pico-frame))。
+
+!!! tip "自检:PC 端有没有真的收到"
+    四项设好后,在主机上用 `/opt/apps/roboticsservice/` 的 `ConsoleDemo` 或
+    `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 确认能读到带 `sn` 的位姿。
+    界面看着连上了但 PC 无数据,**首先检查 `Send` 是否漏勾**。
+
 ### 启动与坐标系对齐 {#pico-frame}
 
-**佩戴 Pico4 Ultra 企业版启动 XenseVR-Toolkit 时,面朝机器人正前方**,再输入 PC 端 IP、开启接口。启动瞬间
+**佩戴 Pico4 Ultra 企业版启动 XenseVR-Toolkit 时,面朝机器人正前方**,再按
+[界面清单](#pico-toolkit-ui)输入 PC 端 IP、选 `Object`、勾 `High-Acc` 与 `Send`。启动瞬间
 **冻结世界系的原点与方向**。
 
 ![启动软件 · 输入 PC IP](assets/pico4/launch-connect.png){ width="520" }
@@ -225,8 +315,9 @@ Pico4 Ultra 企业版通过 **USB 有线共享网络**接入数采电脑,追踪�
 
 1. 将 XTac-UMI G1 插入主机(USB)。
 2. 接好 Pico4 Ultra 企业版的**有线共享网络**,并**关闭数采电脑的 WiFi**(见 [3.4 网络连接](#pico-network))。
-3. 开启 Pico4 Ultra 企业版,配对运动追踪器。
-4. **面朝机器人正前方**,启动 XenseVR-Toolkit APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame))。
+3. 开启 Pico4 Ultra 企业版,长按追踪器电源键至**蓝灯亮起**(首次使用需先[绑定](#pico-tracker-bind))。
+4. **面朝机器人正前方**,启动 XenseVR-Toolkit APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame)),
+   并按 [界面清单](#pico-toolkit-ui) 完成:连网络 → tracker 选 `Object` → 勾 `High-Acc` → 勾 `Send`。
 5. 启动主机的 XenseVR PC Service(`runService.sh`)。
 6. 运行标定 / 自检 / 录制脚本。
 

@@ -143,3 +143,4 @@ python python/examples/rerun_dual_with_tracker.py \
 !!! warning "SN 属于具体硬件"
     示例里的 SN 标识**特定机台**的设备,换机需替换为你的 `xensevr_pc_service_sdk`
     报告的追踪器 SN,并逐个摇晃夹爪验证左右对应。
+    读法见 [读取追踪器 SN](03-host-hardware.md#pico-tracker-sn)。
