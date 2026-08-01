@@ -117,11 +117,30 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
 
 ![Pico4 Ultra 企业版开发者模式 / USB 调试](assets/pico4/devmode.png){ width="520" }
 
-**2. 拷贝 apk**:用 USB 线连接 Pico4 Ultra 企业版与电脑,把 `XenseVR-Toolkit.apk` 拷到 Pico4 Ultra 企业版的 `Download/` 目录。
+**2. 关闭休眠与灭屏**:开发者模式打开后,进入 企业设置 → 系统设置 → **电源策略**,
+按下面的**顺序**把两项都改成「**永不**」:
+
+1. 先设 **系统休眠 = 永不**;
+2. 再设 **灭屏(息屏)= 永不**。
+
+!!! warning "顺序不能反"
+    灭屏时间受系统休眠时间约束。若先改灭屏,系统休眠仍是默认值,灭屏的「永不」会被
+    钳制回一个有限值(表面看已设置,实际未生效)。**先休眠、后灭屏**,改完退出设置再回来
+    确认两项都显示「永不」。
+
+不做这一步的后果:头显在采集间隙自动灭屏/休眠后,**XenseVR-Toolkit 会被系统挂起或杀掉**,
+追踪数据中断;重启 Toolkit 又会重新冻结世界系原点与方向,导致同一数据集内位姿参考系不一致
+(见 [坐标系对齐](#pico-frame))。摘下头显放置时同样会触发,所以必须关掉,不能只靠「别摘头显」。
+
+!!! note "本项在企业设置里,不在普通设置里"
+    「电源策略」只在 **Pico 企业版**的「企业设置」中提供;消费版设置菜单里没有这一项,
+    也无法把灭屏调到「永不」。
+
+**3. 拷贝 apk**:用 USB 线连接 Pico4 Ultra 企业版与电脑,把 `XenseVR-Toolkit.apk` 拷到 Pico4 Ultra 企业版的 `Download/` 目录。
 
 ![拷贝 apk 到 Download](assets/pico4/copy-apk.png){ width="520" }
 
-**3. 安装**:在 Pico4 Ultra 企业版内打开 文件管理 → Download → `XenseVR-Toolkit.apk` → 安装 → 完成。
+**4. 安装**:在 Pico4 Ultra 企业版内打开 文件管理 → Download → `XenseVR-Toolkit.apk` → 安装 → 完成。
 
 ![安装 XenseVR-Toolkit](assets/pico4/install-apk.png){ width="520" }
 
