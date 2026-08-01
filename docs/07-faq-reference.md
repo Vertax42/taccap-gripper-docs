@@ -17,8 +17,10 @@
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别规则 |
 | `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
 | `--robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率/帧率 |
-| `--robot.tactile_fps` | — | 触觉帧率 |
-| `--robot.tactile_output_types` | — | 触觉输出类型 |
+| `--robot.tactile_fps` | `30` | 触觉帧率 |
+| `--robot.tactile_output_types` | `["rectify"]` | **落盘**的触觉流,**只能填一个**;填多个直接报错 |
+| `--robot.tactile_display_output_types` | `["difference"]` | **仅供 Rerun 显示**、不落盘的额外触觉流;设为空列表则关闭 |
+| `--robot.tactile_diff_gain` | `1.0` | `difference` 图的线性增益(只影响显示流);`None` = 用传感器出厂值 |
 | `--robot.expected_tactiles_per_side` | — | 校验每侧触觉数量 |
 | `--robot.gripper_open_rad` | `1.7` | 该单元最大开合角(闭合恒为 0) |
 | `enable_init_pose_alignment` | `false` | UMI 式初始位姿对齐(高级选项,默认关闭) |

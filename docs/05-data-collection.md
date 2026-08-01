@@ -91,8 +91,10 @@ lerobot-record \
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别自动匹配 |
 | `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
 | `--robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率 / 帧率 |
-| `--robot.tactile_fps` | — | 触觉录制帧率 |
-| `--robot.tactile_output_types` | — | 触觉输出类型 |
+| `--robot.tactile_fps` | `30` | 触觉录制帧率 |
+| `--robot.tactile_output_types` | `["rectify"]` | **落盘**的触觉流,**只能填一个** |
+| `--robot.tactile_display_output_types` | `["difference"]` | **仅显示**、不落盘的额外触觉流 |
+| `--robot.tactile_diff_gain` | `1.0` | `difference` 图的增益(只影响显示) |
 | `--robot.expected_tactiles_per_side` | — | 校验每侧触觉数量 |
 
 Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪器按序列号倒数第二位(奇左偶右)
@@ -144,6 +146,23 @@ lerobot-record \
 - **触觉** → `tactile_left` / `tactile_right`;校正图为横向 `(400,700,3)`(宽高自动推导,
   **别写死**)。用 `--robot.tactile_fps` / `--robot.tactile_output_types` 调;
   `--robot.expected_tactiles_per_side` 校验每侧数量。
+
+!!! danger "落盘的是 `rectify`,不是你在 Rerun 里看到的那张图"
+    两路触觉流**故意不同**:
+
+    - **落盘** = `--robot.tactile_output_types`,默认 `rectify` ——**未做基线相减**的原图,
+      保留传感器看到的全部信息。**只能填一个类型**(每个传感器对应数据集里一个视频键),
+      填多个会直接报错并提示改用显示流。
+    - **显示** = `--robot.tactile_display_output_types`,默认 `difference` ——相对传感器
+      **初始化时刻基线**的增强差分图。这张图接触更易读,所以 Rerun 里给操作员看的是它;
+      键名形如 `tactile_left_difference`,**不在** `observation_features` 里,不会落盘。
+
+    差分图是**破坏性**的:基线在传感器 init 时抓取,所以**连接时压在胶上的任何力都会被
+    整段采集减掉**。这就是它只用于显示、不进数据集的原因——不要为了"看着清楚"把
+    `--robot.tactile_output_types` 改成 `difference`。
+
+    `--robot.tactile_diff_gain`(默认 `1.0`)只影响显示流的增益。传感器出厂值 1.5 在本胶体上
+    噪声偏大且会削顶;它同时放大信号与噪声,**不改变信噪比**,只是留出余量。
 - **腕相机** → `wrist_cam`;`--robot.enable_wrist_camera=false` 跳过;
   `--robot.wrist_camera_width/_height/_fps` 调。
 - **角色** → `--robot.role=follower` 绑定 Slave 单元(默认 `leader`)。

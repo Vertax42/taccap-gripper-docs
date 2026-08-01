@@ -53,6 +53,7 @@ git submodule update --init --recursive --progress
 | `third_party/taccap-gripper` | `xense.taccap`(XTac-UMI G1 触觉夹爪 SDK) |
 | `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 Ultra 企业版遥操 / 追踪器) |
 | `third_party/XenseVR-RobotVision-PC` | ZED-M → Pico4 Ultra 企业版立体透视(单独构建) |
+| `third_party/pyinsight` | `pyinsight`(Insight 头戴相机接口) |
 
 !!! note "xensesdk 不是子模块"
     `xensesdk` 是视触觉传感器 SDK,由 `setup_env.sh --install` 自动安装,
@@ -82,6 +83,12 @@ mamba activate xense-taccap
 - 安装 `xensesdk` 视触觉传感器 SDK
 - 安装 **XenseVR PC Service 守护进程**(约 100 MB 的 `.deb`,装到 `/opt/apps/roboticsservice`)
 - 构建 `third_party` 下的 SDK:`xensevr_pc_service_sdk`(Pico4 Ultra 企业版)与 `xense.taccap`(夹爪)
+- 安装 `pyinsight`(Insight 头戴相机接口)
+
+!!! note "pyinsight 失败不会中断安装"
+    该步骤失败只打印 `[WARN] pyinsight installation skipped or failed`,不影响其余组件。
+    子模块没拉时先 `git submodule update --init third_party/pyinsight` 再重跑。
+    设备/HID 就绪情况另用 `pyinsight-check-env --hidraw` 检查。
 
 !!! note "XenseVR PC Service 的 .deb 从哪来"
     `./setup_env.sh --install` 会直接从
@@ -97,6 +104,12 @@ mamba activate xense-taccap
 python -c 'import xensevr_pc_service_sdk; print("xensevr_pc_service_sdk OK ->", xensevr_pc_service_sdk.__file__)'
 python -c 'import xensesdk; print("xensesdk OK ->", xensesdk.__file__)'
 python -c 'import xense.taccap; print("xense.taccap OK ->", xense.taccap.__file__)'
+```
+
+用 Insight 头戴相机时再补一条:
+
+```bash
+python -c 'import importlib.metadata as M; from pyinsight import find_library; print("pyinsight v" + M.version("pyinsight"), "->", find_library())'
 ```
 
 可选:确认视频编解码依赖可加载(`torchcodec` 按 PyTorch 兼容矩阵固定,PyAV 固定为 `15.1.0`;FFmpeg 不参与 conda 求解):

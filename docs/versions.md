@@ -12,7 +12,7 @@
 | NVIDIA GPU / 驱动 | GPU 可选;多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 |
 | Python | ≥ 3.10 | 3.12.13 |
 | PyTorch | 由 `setup_env.sh` 与依赖锁定文件统一安装 | 2.10.0 |
-| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@d7b74a6c` |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制 | `main@6f039961` |
 | `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.4 |
 | 夹爪固件协议 | 帧格式 V1.8 + 命令集 V1.7 | V1.8 / V1.7 |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
@@ -69,6 +69,6 @@ python -c "import torchcodec; print('torchcodec', torchcodec.__version__)"
 ## 兼容性与发布维护
 
 - 当前站点文档版本为 `v0.0.3`;内容变更可通过文档仓库 Git 提交历史追踪。
-- 主仓库版本号与本页文档版本对齐:`xense-taccap-lerobot` 的 `pyproject.toml` 记 `0.5.1+xtac.0.0.3`,其中 `0.5.1` 是上游 lerobot 基线,`xtac.0.0.3` 是与本文档同步的产品版本。
+- 主仓库版本号与本页文档版本共用同一序号:`xense-taccap-lerobot` 的 `pyproject.toml` 形如 `0.5.1+xtac.<文档版本>`(如 `0.5.1+xtac.0.0.3`),其中 `0.5.1` 是上游 lerobot 基线,`xtac.*` 是与本文档同步的产品版本。实际值以你 checkout 的 `pyproject.toml` 为准。
 - 精确兼容关系以主仓库依赖锁定文件、子模块 commit 和本页“已验证基线”为准,不要仅按包名猜测兼容性。
 - 升级主仓库、SDK、固件或 XenseVR PC Service 后,应重新执行环境验证、设备自检和一条短 episode 校验。
