@@ -10,8 +10,8 @@
     - Linux kernel: `7.0.0-28-generic`(测试机 `uname -r` 输出,非最低内核要求)
     - 机器架构: `x86_64`
     - Python: `3.12.13`
-    - 测试仓库: `xense-taccap-lerobot` `main@d7b74a6c`
-    - 关键包: `lerobot 0.5.1`, `xense.taccap 0.1.4`, `xensesdk 2.1.1`, `torch 2.10.0`, `torchcodec 0.10.0`, `av 15.1.0`
+    - 测试仓库: `xense-taccap-lerobot` `main@30bc58b9`
+    - 关键包: `lerobot 0.5.1`, `xense.taccap 0.1.6`, `xensesdk 2.1.1`, `torch 2.10.0`, `torchcodec 0.10.0`, `av 15.1.0`
 
     Ubuntu 22.04 LTS 也是本章覆盖的目标环境;其它发行版或架构需按实际驱动、UVC、串口权限和 `.deb` 包支持情况单独验证。
 
@@ -58,6 +58,30 @@ git submodule update --init --recursive --progress
 !!! note "xensesdk 不是子模块"
     `xensesdk` 是视触觉传感器 SDK,由 `setup_env.sh --install` 自动安装,
     无需单独拉取子模块。
+
+!!! danger "更新子模块后必须重新编译 `xense.taccap`"
+    `taccap-gripper` 的 Python 包里带一个**编译好的原生扩展**(`_taccap_native*.so`)。
+    `git submodule update` 只换源码,不重编译——源码更新而 `.so` 还是旧的时候,
+    `import xense.taccap` 会直接失败,例如:
+
+    ```text
+    AttributeError: module 'xense.taccap._taccap_native' has no attribute 'GripperAutoCalConfig'
+    ```
+
+    拉取任何含 `cpp/` 或 `python/bindings/` 改动的子模块更新后,重新构建:
+
+    ```bash
+    cd ~/xense-taccap-lerobot
+    LIBRARY_PATH="${CONDA_PREFIX}/lib" \
+      uv pip install -e third_party/taccap-gripper --no-deps --no-build-isolation
+    ```
+
+    或直接 `bash setup_env.sh --install`(会一并处理其他 SDK)。**不需要 sudo。**
+    完成后验证:
+
+    ```bash
+    python -c "import xense.taccap as t; print(t.__version__)"
+    ```
 
 ## 2.3 创建并激活环境
 

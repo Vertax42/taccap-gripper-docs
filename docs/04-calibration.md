@@ -1,41 +1,102 @@
 # 4. 标定与自检
 
-对应参考手册的"测试网络连接"并扩展。正式录制前先检查夹爪完全闭合时的编码器读数,
-确认整条链路可用。读数正常时无需重复标定。
+对应参考手册的"测试网络连接"并扩展。正式录制前先完成夹爪标定,再逐项确认整条链路可用。
 
-## 4.1 编码器零点检查与按需标定
+## 4.1 夹爪标定(零点 + 行程)
 
-**零点标定不需要每次执行。**先将夹爪完全闭合并检查读数;只有完全闭合时读数仍不为 0,
-或出现明确的零点漂移 / 告警时,才使用 SDK 标定 CLI 调用 `Encoder.set_zero()` 重新锁定零点、校验
-零点后残差,并可选检查开合角。
+### 4.1.1 为什么必须标
 
-```bash
-python third_party/taccap-gripper/python/examples/calibrate.py SN000003
-```
+数据集里的 `gripper.pos` 是**归一化开度**:`0.0` 完全闭合,`1.0` 完全张开。这两个端点不是
+算出来的,是标定写进 MCU flash 的两个数:
 
-先列出可用的固件 SN:
+| 端点 | 来源 | 命令 |
+| --- | --- | --- |
+| `0.0` 闭合 | 编码器零点 | `Cmd::SetEncoderZero` |
+| `1.0` 张开 | 该夹爪的行程上限(encoder max) | `Cmd::EncoderMaxCal`(固件 ≥ V2.1) |
+
+**没标行程上限会怎样。**软件回退成除以配置常量 `gripper_open_rad`(默认 `1.7`)——一个数
+代表所有出厂夹爪。但每台的真实行程不同:实测某台是 **1.1486 rad(65.8°)**,在回退算法下
+张到底只能读到
+
+$$1.1486 / 1.7 = 0.676$$
+
+**永远够不到 1.0**,而且这个上限每台各异。策略学到的"完全张开"因此和物理动作对不上。
+
+!!! danger "双臂只标一侧,比两侧都不标更糟"
+    两侧都没标时刻度至少一致;只标一侧会让 `left_gripper.pos` 和 `right_gripper.pos`
+    落在**不同刻度**上——同一个握持动作左右读数不同,而数据里看不出任何异常。
+    **要标就两侧都标。**
+
+### 4.1.2 怎么标
+
+先列出在线夹爪的固件 SN:
 
 ```bash
 python -c "from xense.taccap import scan_grippers, Side; \
   [print(f'{\"L\" if g.side==Side.Left else \"R\"} fw={g.firmware_sn} mcu={g.mcu_serial}') for g in scan_grippers()]"
 ```
 
-标定 CLI 的流程:
+对**每一台** leader 夹爪执行(SN 换成上一步列出的):
 
-1. 把固件 SN 解析到对应的 `mcu_device`。
-2. 打印当前编码器读数(`raw` 与钳位后)以便看到现有漂移。
-3. 提示"**保持夹爪完全闭合**,按 [Enter]"。
-4. 发送 `Cmd::SetEncoderZero`,重读,校验新 `raw` 在容差内(默认 ±0.01 rad)。
-5. 可选 `Step 2/2`:探测机械最大开合角,与期望包络比较(默认 1.7 rad ≈ 97°,
-   `--expected-max-open-rad` 可调)。
-6. 10 Hz 实时读数(`raw | cooked`)直到 Ctrl+C。
+```bash
+python third_party/taccap-gripper/python/examples/calibrate.py TCGU01A28Z0024m
+```
 
-!!! tip "闭合 = 0,是约定"
-    零点锁定后,`position_rad` 闭合时读 0,机械极限时升到 ~1.7 rad。**没有
-    `gripper_closed_rad` 配置**——闭合永远是 0;每台只可配 `gripper_open_rad`(默认 1.7)。
+一条命令走完两步,按提示操作:
 
-!!! warning "必须先摆好姿态再按 Enter"
-    固件在处理命令的瞬间锁存当时看到的原始计数,所以按 Enter 前夹爪必须已在目标(闭合)姿态。
+1. **保持夹爪完全闭合** → 回车。锁存为编码器零点,随后复读校验残差(容差 ±0.01 rad)。
+2. **张开到机械极限** → 回车。采样该姿态的角度,确认后写入 MCU flash 作为 encoder max。
+
+输出形如:
+
+```text
+Step 1 — hold the gripper FULLY CLOSED
+  post-zero reading: +0.0058 rad
+Step 2 — open the gripper to its mechanical limit
+  full-open reading: 1.1486 rad (65.8°)
+Write 1.1486 rad (65.8°) to MCU flash? [y/N] y
+✓ stored: max_rad = 1.1486 rad (65.8°)
+```
+
+!!! warning "先摆好姿态,再按 Enter"
+    固件在收到命令的瞬间锁存当时的原始计数。按 Enter 前夹爪必须**已经**在目标姿态
+    (第 1 步完全闭合、第 2 步顶到机械极限),中途再动就白标了。
+
+!!! tip "闭合恒为 0"
+    零点写在固件里,**没有 `gripper_closed_rad` 配置**。`position_rad` 保持输出原始弧度,
+    归一化只是新增 `position` 字段,不改变原有读数。
+
+### 4.1.3 确认标定生效
+
+**一、看启动日志。**采集程序连接时每侧会打印一行:
+
+```text
+[left]  Jaw normalised by the firmware's encoder-max calibration    ← 已生效
+[left]  Firmware encoder-max calibration unavailable (...)          ← 未标定，走回退
+```
+
+**二、在 Rerun 里看曲线。**开 `--display_data=true`,标量面板里找 `gripper.pos`:
+
+| 动作 | 期望 |
+| --- | --- |
+| 完全张开 | 顶到 **1.0** |
+| 完全闭合 | 落到 **0.0** |
+
+顶不到 1.0(例如停在 0.68)就是没标定,和日志的第二种情况对应。
+
+### 4.1.4 适用范围
+
+- **仅 leader(主夹爪)。**`Cmd::EncoderMaxCal` 是 leader 专有,follower 会 NACK
+  `InvalidCmd`(它没有 MT6816 编码器)。follower 采集的数据两侧都走
+  `gripper_open_rad` 回退,新旧算法一致。
+- **需要固件 ≥ V2.1。**更低版本没有这条命令,构造时会告警并自动退回旧算法——不会中断
+  会话,但也不会生效。固件版本见 [版本与支持](versions.md)。
+- **标定是一次性的。**值写在 MCU flash 里,断电不丢,换主机不用重标。只有拆装编码器、
+  更换机械限位或固件擦除后才需要重做。
+
+!!! note "固件的上电自动标定不替代这一步"
+    V1.9 引入了 `GripperAutoCalConfig`(上电时闭合到堵转⇒零点、张开到堵转⇒max_open),
+    但该接口挂在 **follower** 上,leader 没有。采集用的是 leader,所以手动标定仍然必要。
 
 ## 4.2 Pico4 Ultra 企业版追踪器自检
 
