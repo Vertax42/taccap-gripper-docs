@@ -113,20 +113,23 @@ python python/examples/motor_mit_control.py --hz 200 --seconds 5
 python python/examples/gripper_control_test.py
 ```
 
-## 编码器零点检查与按需标定
+## 夹爪标定(零点 + 行程)
 
-`calibrate.py` 无需在每次采集前运行。只有夹爪完全闭合但读数不为 0,或确认出现零点漂移时才重新标定。
+`calibrate.py` **每台主夹爪需执行一次**:标定编码器零点,并把该夹爪的行程上限写入 MCU flash。
+后者是 `gripper.pos` 归一化到 `1.0` 的依据,缺了它软件会退回除以配置常量。值存在 flash 中,
+之后无需重复运行。
 
 ```bash
 python python/examples/calibrate.py TCGU01A24A0002m   # 右主爪
 ```
 
 流程:解析 SN → 打印当前读数(raw 与钳位)→ 提示"保持完全闭合按 Enter" →
-发送 `SetEncoderZero` → 校验残差 → 可选检查最大开合角 → 10 Hz 实时读数。
+发送 `SetEncoderZero` → 校验残差 → 提示"张开到机械极限按 Enter" →
+采样并写入 `EncoderMaxCal` → 10 Hz 实时读数。
 
 !!! tip "标定细节"
     闭合恒为 0;负向漂移会被钳到 0(原始值保留在 `raw_position_rad`);raw 负漂
-    超过 -0.1 rad 会限频告警。完整说明见 [4.1 编码器零点检查与按需标定](04-calibration.md)。
+    超过 -0.1 rad 会限频告警。完整说明见 [4.1 夹爪标定](04-calibration.md#41)。
 
 ## Pico4 Ultra 企业版追踪器绑定(按台)
 

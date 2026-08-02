@@ -8,7 +8,8 @@
     - 已了解设备并**连接好硬件、上电**(见 [硬件介绍](hardware.md#install))。
     - 已完成 [环境安装](02-environment.md)(`setup_env.sh --install` 通过、三个包能 import)。
     - 已做 [串口权限 + ModemManager](03-host-hardware.md#31) 一次性主机配置。
-    - 已确认[编码器零点](04-calibration.md#41)有效(完全闭合读数≈0;出现漂移时再标定)。
+    - 已完成[夹爪标定](04-calibration.md#41)——**每台主夹爪一次**,零点 + 行程上限。
+      未标行程上限时 `gripper.pos` 到不了 1.0,双臂只标一侧还会让左右刻度不一致。
     - `mamba activate xense-taccap`。
 
 ## 1. 上电顺序
