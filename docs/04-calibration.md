@@ -41,13 +41,31 @@ python -c "from xense.taccap import scan_grippers, Side; \
 
 ```bash
 python -m lerobot.robots.taccap_gripper.calibrate_tracker
-# 或指定某个 tracker SN:
-python -m lerobot.robots.taccap_gripper.calibrate_tracker LHR-XXXXXXXX
+# 指定某个 tracker SN(格式见 3.3,形如 PC2310MLL3200496G):
+python -m lerobot.robots.taccap_gripper.calibrate_tracker <tracker SN>
+# 应用该侧内置的 tracker→TCP 安装变换:
+python -m lerobot.robots.taccap_gripper.calibrate_tracker --side right
 ```
 
-挥动夹爪时观察 `raw xyz` 是否平滑变化。`ee xyz` 是 `raw` 经过刚性
-`tracker_to_ee_*` 安装变换后的结果(默认单位变换)。测量你的物理安装偏移并写入配置
-(`tracker_to_ee_pos`、`tracker_to_ee_quat`)。
+以 10 Hz 打印 `raw`(追踪器自身位姿)与 `ee`(经刚性安装变换后的 TCP)。挥动夹爪,
+`raw xyz` 应平滑变化、SN 与预期一致。
+
+!!! note "安装变换是内置的,不需要你测"
+    追踪器拧在夹爪上,它报的是**追踪器**的位姿,不是我们要记的 TCP。两者之间的刚性偏移
+    由 `ee_transform.tracker_to_tcp` 内置(取自 CAD 装配实测),**左右两侧各自实测**——
+    两侧接近镜像但不完全相同(旋转差 0.03°、平移差 1.27 mm),所以左值不是把右值镜像出来的。
+
+    `--side` 决定套用哪一侧的内置值;**不带 `--side` 时变换是单位阵**,`ee` 会完全跟随 `raw`。
+    需要覆盖(如重新加工过的安装座)才设 `--robot.tracker_to_ee_pos` /
+    `--robot.tracker_to_ee_quat`,两者独立,可以只钉平移、旋转仍用内置值。
+
+!!! tip "支点检查:不用任何额外硬件就能验证安装变换"
+    把夹爪**两指的中点**抵在一个固定点上,握着手柄尽可能多地变换姿态摆动。
+    **`ee xyz` 应基本不动,而 `raw xyz` 大幅摆动**——这就是全部测试内容,
+    看到的漂移量即该变换的误差。**左右两侧都要测**;若左侧的值镜像方向错了,
+    表现为 `ee` 的摆动幅度约为应有的两倍。
+
+四元数出现半球翻转(符号跳变)时,reader 内有连续性修正;**若仍看到跳变请报 bug**。
 
 ## 4.3 端到端冒烟测试
 
@@ -107,7 +125,11 @@ lerobot-teleoperate \
 Rerun 查看器会多出一个 `/world` 3D 视图:夹爪以带标签的椭球 + 坐标三轴在其实时
 Pico4 Ultra 企业版位姿(`tcp.*`)处绘制,并拖出一条走过的轨迹面包屑。
 
-- 我们的位姿已在重力对齐世界系,场景是 `RIGHT_HAND_Z_UP`。
+- 我们的位姿已在重力对齐世界系,场景是 `RIGHT_HAND_Z_UP`,世界轴带
+  `+X forward / +Y left / +Z up` 标注。
+- 机器人同时发布追踪器自身位姿时,Rerun 会**在 EE 坐标系旁再画一个更小更暗的追踪器坐标系**
+  (仅显示,不落盘),两者之间连一条虚线并标出**长度(mm)**。这条长度是**判断安装变换对不对
+  最快的一眼**:采集全程它应保持恒定;数值跳动或明显偏离机械尺寸,说明变换或装配有问题。
 - `--show_trajectory` 默认开启;设为 `false` 可关闭。当 `--robot.enable_tracker=false`
   (无位姿可画)时会自动跳过。
 
