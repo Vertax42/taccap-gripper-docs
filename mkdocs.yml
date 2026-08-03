@@ -119,6 +119,15 @@ markdown_extensions:
   - toc:
       permalink: true
       permalink_title: 锚点链接
+      # Unicode-aware slugs. The stock slugify strips non-ASCII, so a pure
+      # Chinese heading gets no slug at all and falls back to a positional
+      # _1/_2/_3 that renumbers whenever a section is inserted above it —
+      # every permalink a reader copied breaks on the next edit. Worse is the
+      # heading that leaves ASCII residue and silently works: "2.5 验证安装"
+      # slugged to "25", so a link to it resolved in the Chinese build and
+      # 404'd in the English one, where that heading reads "2.5 Verify the
+      # install". Explicit {#anchor} attrs still override this.
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}
   - pymdownx.betterem
   - pymdownx.caret
   - pymdownx.mark
