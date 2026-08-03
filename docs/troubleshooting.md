@@ -123,8 +123,7 @@
     `third_party/taccap-gripper/firmware/`,不再需要固件源码:
     ```bash
     python third_party/taccap-gripper/python/examples/ota_update.py \
-        third_party/taccap-gripper/firmware/tc-gu-01-master.bin \
-        --side left --target-version 1.2.0.0
+        tc-gu-01-master.bin --side left --target-version 1.2.0.0
     ```
     **先升 SDK 再刷固件**(顺序反了会踩到"失败却报成功"的旧 bug),镜像**按角色选**——
     看固件 SN 末位 `m`/`s`,不是看左右手。完整步骤与风险见
@@ -133,8 +132,9 @@
 ??? failure "旧脚本提示去 `third_party/firmware/tc-gu-01/build/…` 找 .bin"
     **原因**:那是**固件源码仓库的编译产物路径**,源码在内网、且该目录被 gitignore,
     客户侧根本不存在。
-    **解决**:改用随 SDK 附带的镜像 `third_party/taccap-gripper/firmware/tc-gu-01-{master,slave}.bin`,
-    见 [固件 OTA 升级](versions.md#ota)。
+    **解决**:改用随 SDK 附带的镜像,镜像名直接写 `tc-gu-01-master.bin` / `tc-gu-01-slave.bin`
+    即可(脚本会去 SDK 的 `firmware/` 里找),见 [固件 OTA 升级](versions.md#ota)。
+    该提示已在 SDK `c61b4f1` 修正,升级子模块后不会再出现。
 
 ??? failure "腕相机/视触觉打不开、`video ... busy`"
     **原因**:相机由外部相机服务占用,或用户不在 `video` 组。

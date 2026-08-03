@@ -12,8 +12,8 @@
 | NVIDIA GPU / 驱动 | GPU 可选;多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 |
 | Python | ≥ 3.10 | 3.12.13 |
 | PyTorch | 由 `setup_env.sh` 与依赖锁定文件统一安装 | 2.10.0 |
-| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@85b0fb9a` |
-| `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`9804e41`) |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@395e2786` |
+| `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`c61b4f1`) |
 | 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0(镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
 | `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` | v0.1.0 release |
@@ -84,10 +84,9 @@ SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,升级不再需要�
 python -c "from xense.taccap import scan_grippers
 for g in scan_grippers(): print(g.firmware_sn, '->', 'master' if g.firmware_sn.endswith('m') else 'slave')"
 
-# 2. 刷写(路径相对当前目录;下面假设在 xense-taccap-lerobot 仓库根目录)
+# 2. 刷写(镜像只写文件名即可,脚本会去 SDK 的 firmware/ 里找)
 python third_party/taccap-gripper/python/examples/ota_update.py \
-    third_party/taccap-gripper/firmware/tc-gu-01-master.bin \
-    --side left --target-version 1.2.0.0
+    tc-gu-01-master.bin --side left --target-version 1.2.0.0
 
 # 3. 确认:GetVersion 返回固件编译进去的常量,读回的版本就是实际刷上去的版本
 python -c "from xense.taccap import scan_grippers
@@ -103,10 +102,11 @@ for g in scan_grippers(): print(g.firmware_sn, g.role.name)"
 
     升级期间**不要断电或拔线**(此时夹爪指示灯蓝色闪烁,见 [硬件介绍](hardware.md))。
 
-!!! note "镜像路径相对当前目录,manifest 不是"
-    `ota_update.py` 自己找 `manifest.json`(相对脚本位置),在哪个目录运行都对;但**镜像
-    路径是相对你的当前目录的**。SDK 自己的 README 写成 `firmware/…`,那是假设你在 SDK
-    根目录;从主仓库根目录要写 `third_party/taccap-gripper/firmware/…`。
+!!! note "镜像只写文件名,不用管在哪个目录运行"
+    `ota_update.py` 会依次尝试:你给的原始路径 → SDK 根目录下的同名路径 →
+    SDK `firmware/` 下的同名文件。所以 `tc-gu-01-master.bin` 在主仓库根目录、
+    SDK 目录里、以及其它任何位置都能解析到同一个镜像,不需要按仓库拼前缀。
+    路径在**连接设备之前**就检查,写错文件名不会白等一次设备发现。
 
 升到 V2.1 之后,回到 [4.1 夹爪标定](04-calibration.md#41) 把零点和行程上限标上——
 升级本身不产生标定值,`gripper.pos` 仍会走回退直到标定完成。
