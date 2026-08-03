@@ -23,7 +23,7 @@
 | `--robot.tactile_diff_gain` | `1.0` | `difference` 图的线性增益(只影响显示流);`None` = 用传感器出厂值 |
 | `--robot.expected_tactiles_per_side` | `2` | 校验每侧触觉数量 |
 | `--robot.enable_gripper` / `--robot.enable_imu` | `true` / `false` | 夹爪本体读数 / IMU 通道 |
-| `--robot.gripper_open_rad` | `1.7` | 该单元最大开合角(闭合恒为 0) |
+| `--robot.gripper_open_rad` | `1.7` | **仅回退用**的全局常量。夹爪按 [4.1](04-calibration.md#41) 标定后,`gripper.pos` 用的是该台**固件里实测的行程上限**,本项不参与;只有未标定、固件低于 V2.1 或 follower 才会退回除以这个数 |
 | `--robot.tracker_to_ee_pos` | `None` | 覆盖 tracker→EE 平移;`None` = 用该侧**内置实测值** |
 | `--robot.tracker_to_ee_quat` | `None` | 覆盖 tracker→EE 旋转(同上,两者可独立覆盖) |
 | `--robot.tracker_wait_timeout` | `10.0` | connect 时等待追踪器数据的秒数 |

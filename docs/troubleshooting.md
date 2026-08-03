@@ -129,12 +129,11 @@
     看固件 SN 末位 `m`/`s`,不是看左右手。完整步骤与风险见
     [固件 OTA 升级](versions.md#ota)。刷完回来重跑 `calibrate.py`。
 
-??? failure "旧脚本提示去 `third_party/firmware/tc-gu-01/build/…` 找 .bin"
-    **原因**:那是**固件源码仓库的编译产物路径**,源码在内网、且该目录被 gitignore,
-    客户侧根本不存在。
-    **解决**:改用随 SDK 附带的镜像,镜像名直接写 `tc-gu-01-master.bin` / `tc-gu-01-slave.bin`
-    即可(脚本会去 SDK 的 `firmware/` 里找),见 [固件 OTA 升级](versions.md#ota)。
-    该提示已在 SDK `c61b4f1` 修正,升级子模块后不会再出现。
+??? failure "旧版本提示到 `third_party/firmware/…` 下找 .bin,但该目录不存在"
+    **原因**:旧版本脚本里的一处过时路径,指向的目录不随 SDK 分发。
+    **解决**:改用随 SDK 附带的镜像,镜像名直接写 `tc-gu-01-master.bin` /
+    `tc-gu-01-slave.bin` 即可(脚本会去 SDK 的 `firmware/` 里找),见
+    [固件 OTA 升级](versions.md#ota)。SDK 0.1.7 之后已修正,按本页升级后不会再出现。
 
 ??? failure "腕相机/视触觉打不开、`video ... busy`"
     **原因**:相机由外部相机服务占用,或用户不在 `video` 组。

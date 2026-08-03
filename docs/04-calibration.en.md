@@ -96,9 +96,9 @@ Topping out below 1.0 (0.68, say) means it was never calibrated — matching the
   sides, which is unchanged from the older behaviour.
 - **Firmware >= V2.1 (leader 1.2.0) required.** Older firmware does not have the command:
   `calibrate.py` **exits without changing anything**, and during collection the software warns and
-  falls back automatically — the session continues, but the calibration has no effect. Since 0.1.7
-  the SDK ships the released firmware images, so you can flash it yourself:
-  → [Firmware OTA upgrade](versions.md#ota). **Update the SDK before the firmware** — the other
+  falls back automatically — the session continues, but the calibration has no effect. Any gripper
+  below V2.1 **must be upgraded**; the images ship with the SDK →
+  [Firmware OTA upgrade](versions.md#ota). **Update the SDK before the firmware** — the other
   order runs into an old bug where a failed update reported success.
 - **Calibration is one-off.** The values live in MCU flash: they survive power cycles and moving
   to another host. Only redo it after removing or refitting the encoder, changing the mechanical

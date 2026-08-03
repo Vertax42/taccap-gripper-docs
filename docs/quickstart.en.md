@@ -6,8 +6,15 @@ through, do [Getting Ready](hardware.md) first: [Hardware](hardware.md) →
 [Installation](02-environment.md) → [Host & Device Setup](03-host-hardware.md),
 then come back.
 
+!!! danger "Check your versions first — repo, SDK and firmware must all be current"
+    On a mismatched stack, collection **still runs to completion and writes a dataset**; only
+    `gripper.pos` ends up on a scale that does not match anyone else's, and nothing in the data
+    shows it. One-off upgrade steps → [Required versions](versions.md#required).
+
 !!! note "Prerequisites (Getting Ready)"
     - Device understood, **hardware connected and powered** (see [Hardware](hardware.md#install)).
+    - Repo, submodules and **gripper firmware (V2.1)** upgraded per
+      [Required versions](versions.md#required).
     - [Installation](02-environment.md) done (`setup_env.sh --install` passed, all three packages import).
     - [Serial permissions + ModemManager](03-host-hardware.md#31) one-off host setup done.
     - [Gripper calibration](04-calibration.md#41) done — **once per leader gripper**, zero + travel span.

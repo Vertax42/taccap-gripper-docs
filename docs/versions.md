@@ -2,6 +2,48 @@
 
 本手册对应的版本基线、如何查版本、如何升级,以及遇到问题怎么反馈。
 
+## 必须升级到最新版本 {#required}
+
+!!! danger "这不是可选项——采集前请先把四项都升到下表版本"
+    整条链路是**配套**的:固件 V2.1 才有 `Cmd::EncoderMaxCal`,SDK 0.1.7 才能安全刷这版固件,
+    而 `gripper.pos` 的 0–1 归一化要固件、SDK、标定三者齐了才成立。缺任何一环,
+    **采集仍会"正常"跑完并落盘**,只是数据的开度刻度和别人对不上——事后从数据里看不出来。
+
+| 组件 | 最低要求版本 | 怎么查 |
+|---|---|---|
+| `xense-taccap-lerobot` | `0.5.1+xtac.0.0.3` | `pip show lerobot` 或看 `pyproject.toml` |
+| `xense.taccap` SDK | **0.1.7** | `python -c "import xense.taccap as t; print(t.__version__)"` |
+| 夹爪固件 | **V2.1**(leader 1.2.0 / follower 1.1.0) | 见下方自检 |
+| 每台 leader 的编码器标定 | 零点 + 行程上限已写入 flash | [4.1 夹爪标定](04-calibration.md#41) |
+
+一条命令查完前三项:
+
+```bash
+python - <<'EOF'
+import xense.taccap as t
+from xense.taccap import scan_grippers
+print("xense.taccap", t.__version__, "(需要 >= 0.1.7)")
+for g in scan_grippers():
+    print(f"  {g.firmware_sn}  role={g.role.name}")
+EOF
+```
+
+**升级顺序不能乱**,每一步都依赖上一步:
+
+```mermaid
+flowchart LR
+    A[拉仓库 + 子模块] --> B[重新编译 xense.taccap] --> C[刷固件 OTA] --> D[每台 leader 标定]
+```
+
+1. [拉仓库与子模块](#repo-update) —— 子模块要跟着一起更新。
+2. **重新编译原生扩展**,否则源码新、`.so` 旧,`import xense.taccap` 直接失败。
+3. [固件 OTA 升级](#ota) —— **必须在第 2 步之后**,理由见该节。
+4. [夹爪标定](04-calibration.md#41) —— 升级本身**不产生标定值**,不标就还是走回退。
+
+!!! note "已经采过的数据不用重采"
+    这里要求的是**今后采集**用统一版本。历史数据保持原样即可;若要和升级后的数据混用,
+    先确认两批的 `gripper.pos` 是否落在同一刻度上(升级+标定前后不一定一致)。
+
 ## 版本兼容基线
 
 本页将“支持范围”和“已验证基线”分开列出。实际命令与字段仍以本地 checkout 为准。
@@ -39,7 +81,7 @@ python -c "import torchcodec; print('torchcodec', torchcodec.__version__)"
 
 ## 升级与更新
 
-### 仓库 + 子模块
+### 仓库 + 子模块 {#repo-update}
 
 ```bash
 git pull --recurse-submodules
@@ -53,12 +95,11 @@ git submodule update --init --recursive --progress
 
 ### 固件 OTA 升级 {#ota}
 
-**什么时候需要**:固件低于 V2.1(leader 1.2.0)时没有 `Cmd::EncoderMaxCal`,
-[夹爪标定](04-calibration.md#41)的第 2 步做不了,`gripper.pos` 只能走
-`gripper_open_rad` 回退、够不到 1.0。除此之外不必主动升级。
+**所有夹爪都要升到 V2.1**(见 [必须升级到最新版本](#required))。低于 V2.1 的固件没有
+`Cmd::EncoderMaxCal`,[夹爪标定](04-calibration.md#41)的第 2 步做不了,`gripper.pos`
+只能走回退、够不到 1.0。
 
-SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,升级不再需要固件源码
-(源码在内网仓库,不随 SDK 分发):
+SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,直接刷即可:
 
 | 镜像 | 适用角色 | 版本 |
 |---|---|---|
@@ -66,7 +107,7 @@ SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,升级不再需要�
 | `tc-gu-01-slave.bin` | 从夹爪(SN 末位 **`s`**) | 1.1.0.0 |
 
 路径 `third_party/taccap-gripper/firmware/`,同目录 `manifest.json` 记录了每个镜像的
-版本、字节数、CRC32 和构建来源 commit。只保留当前发布版,历史镜像从该目录的 git 历史取。
+版本、字节数与 CRC32,可用于核对文件是否完整。该目录只保留当前发布版。
 
 !!! warning "顺序:**先升级 SDK,再刷固件**"
     0.1.7 之前的 `OtaSession` 只检查 `ack.is_nack`,而固件侧的错误是从**回显命令**这条路
@@ -96,7 +137,7 @@ for g in scan_grippers(): print(g.firmware_sn, g.role.name)"
 约 1 秒写完,MCU 重启并重新枚举 USB 约 1–3 秒。写入走的是**非活动 flash bank**,
 `OtaApply` 之前不覆盖任何东西,CRC 不匹配时固件拒绝切换——传输失败不会损坏正在运行的固件。
 
-!!! danger "刷错角色会变砖,需要 SWD 探针才能救回"
+!!! danger "刷错角色会导致夹爪无法启动,需返厂恢复"
     `ota_update.py` 会按 CRC32 与 `manifest.json` 比对识别镜像,**角色不匹配时直接拒绝**
     (不是告警),`--force` 才能强制。手工编译的镜像识别不出来,会带一条提示放行。
 

@@ -17,7 +17,7 @@ XTac-UMI G1 主控固件(TC-GU-01)与通信协议。
 | 层面 | 版本 | 要点 |
 |---|---|---|
 | 帧格式(wire framing) | **V1.8** | HEAD..PAYLOAD 之间字节填充(byte-stuffing);CRC16(modbus)对未填充数据计算 |
-| 命令集(command set) | **V1.7** | OTA、磁校准(MagCal)、KeyStatus、传感器错误、电机 / CAN-id / 夹爪配置 |
+| 命令集(command set) | **V2.1** | OTA、磁校准(MagCal)、KeyStatus、传感器错误、电机 / CAN-id / 夹爪配置;V2.1 新增鱼眼内参与**编码器行程上限标定**(`Cmd::EncoderMaxCal`) |
 
 - 传输层:异步 `Transport`,后台读线程 + ACK 匹配(seq→promise),每命令 DATA 订阅。
 - SDK 的 `commands.hpp` / `payloads.hpp` 与固件 `protocol_cmd.h` / `protocol_data.h`
