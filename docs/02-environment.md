@@ -119,7 +119,7 @@ mamba activate xense-taccap
     下载当前机器架构对应的 `.deb` 包(可用 `$XENSEVR_DEB_URL` 覆盖下载地址),
     再执行 `sudo dpkg -i` 安装;已安装同版本时会跳过。
 
-## 2.5 验证安装
+## 2.5 验证安装 {#25}
 
 三个包全部能 import 即成功:
 

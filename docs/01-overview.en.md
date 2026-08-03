@@ -8,11 +8,11 @@ integrates:
 
 | Part | Notes | Rate |
 |---|---|---|
-| Motor jaw | **Not powered** during collection; driven by hand | — |
-| Encoder | Jaw open angle; after calibration closed = 0, max ~1.7 rad (~97°) | 100 Hz |
+| Encoder | Jaw opening angle; [calibration](04-calibration.md#41) normalises it to closed = 0, open = 1 (the physical travel differs per unit) | 100 Hz |
 | IMU | Accel / gyro / mag / temperature | 100 Hz |
 | Two visuotactile sensors (GSPS, one per finger) | Rectified image ~`(400, 700, 3)` | ~30 Hz |
 | Wrist camera (XC, UVC) | Wrist-view RGB | ~30 Hz |
+| Motor jaw | **Follower units only**; for robot-side execution or replay | — |
 
 !!! warning "The device is passive / self-driven"
     During collection `send_action()` is a **no-op** and the motor is never enabled. The
