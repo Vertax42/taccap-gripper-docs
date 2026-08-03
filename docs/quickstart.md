@@ -105,7 +105,6 @@ lerobot-record \
 - 位姿默认就录;不需要时才加 `--robot.enable_tracker=false`。
 
 全部参数(数据集 / 录制控制 / 设备三类)→ [5.2 参数详解](05-data-collection.md#params)
-    本项目的设备参数与采集说明见 [数据采集](05-data-collection.md)。
 
 ## 5. 检查本地数据完整性
 
