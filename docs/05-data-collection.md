@@ -74,6 +74,7 @@ lerobot-record \
 | 参数 | 默认 | 含义 |
 |---|---|---|
 | `--robot.type` | **必填** | `taccap_gripper`(单夹爪)/ `bi_taccap_gripper`(双夹爪) |
+| `--fps` | `30` | **主循环**帧率(设备读取与预览)。与 `--dataset.fps`(落盘采样率)是两个参数,通常设成相同值 |
 | `--display_data` | `false` | 在 Rerun 中显示相机画面与 3D 视图 |
 | `--show_trajectory` | `true` | Rerun 中叠加 3D 位姿 + 轨迹(需 `display_data` 且有 `tcp.*`) |
 | `--display_compressed_images` | `true` | Rerun 用 JPEG 显示以降内存;要无损设 `false` |

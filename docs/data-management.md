@@ -78,7 +78,7 @@ mv -- ~/.cache/huggingface/lerobot/<你的org>/<旧数据集名> /data/lerobot-t
 | 任务描述 | `Pick up the object` |
 | 用的夹爪 / 追踪器 SN | `TCGU01A24Z0001m` / `PC2310MLL...` |
 | 标定时间 | 2026-07-03 |
-| 软件版本 / commit | `xense-taccap-lerobot main@30bc58b9`;`xense.taccap 0.1.6` |
+| 软件版本 / commit | 采集当时的 `xense-taccap-lerobot main@<SHA>` 与 `xense.taccap <版本>` |
 | 世界系会话 | XenseVR-Toolkit 启动时间 / 操作者朝向 |
 | 完整性检查 | `lerobot-check-dataset` 通过;异常 episode 列表 |
 | 集数 / 单集时长 | 50 / 15s |

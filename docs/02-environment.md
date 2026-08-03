@@ -10,8 +10,7 @@
     - Linux kernel: `7.0.0-28-generic`(测试机 `uname -r` 输出,非最低内核要求)
     - 机器架构: `x86_64`
     - Python: `3.12.13`
-    - 测试仓库: `xense-taccap-lerobot` `main@30bc58b9`
-    - 关键包: `lerobot 0.5.1`, `xense.taccap 0.1.6`, `xensesdk 2.1.1`, `torch 2.10.0`, `torchcodec 0.10.0`, `av 15.1.0`
+    - 仓库 commit 与各包版本: 见 [版本与支持](versions.md)(唯一出处,避免多处抄写走样)
 
     Ubuntu 22.04 LTS 也是本章覆盖的目标环境;其它发行版或架构需按实际驱动、UVC、串口权限和 `.deb` 包支持情况单独验证。
 

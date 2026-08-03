@@ -98,15 +98,13 @@ lerobot-record \
     --dataset.single_task='Pick up the object'
 ```
 
-- `--robot.side=right` 指定右侧夹爪,并参与按侧别发现和匹配设备序列号。
-- 位姿默认会**自动录制**;如不需要,可添加 `--robot.enable_tracker=false`。
-- `--fps=30` 控制预览帧率;`--dataset.fps=30` 控制录制采样帧率。
-- `--display_data=true` 会在录制过程中打开实时 Rerun 可视化。
-- `--dataset.push_to_hub=false` 表示仅保存到本地,不自动上传 Hugging Face Hub。
+三个容易搞错的:
 
-!!! info "lerobot-record 参数详细说明"
-    `lerobot-record` 的通用参数见 [LeRobot v0.5.1 官方 Record function 文档](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robots#record-function)——
-    本项目基于 lerobot **0.5.1** 定制,查文档时注意别看成其他版本。设备相关参数以本站为准。
+- `--robot.side` 只在**两只夹爪都接着**时才需要;单只会自动选中。
+- `--fps` 是主循环帧率,`--dataset.fps` 是落盘采样率——**两个参数**,通常设成一样。
+- 位姿默认就录;不需要时才加 `--robot.enable_tracker=false`。
+
+全部参数(数据集 / 录制控制 / 设备三类)→ [5.2 参数详解](05-data-collection.md#params)
     本项目的设备参数与采集说明见 [数据采集](05-data-collection.md)。
 
 ## 5. 检查本地数据完整性

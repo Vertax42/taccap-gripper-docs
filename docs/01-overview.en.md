@@ -54,15 +54,22 @@ time alignment and episode handling live in `xense-taccap-lerobot`.
 
 ## 1.4 Supported platforms & dependency versions
 
-| Item | Requirement |
-|---|---|
-| OS | Ubuntu 22.04 / 24.04 (tested); V4L2 + UVC capture path, macOS / Windows unsupported |
-| GPU / driver | Optional; NVIDIA GPU recommended for multi-stream video. Driver 570.144 tested |
-| Python | ≥ 3.10 |
-| PyTorch | Installed from the project lock files by `setup_env.sh`; 2.10.0 tested |
-| Gripper SDK | `xense.taccap` 0.1.4; built locally from `third_party/taccap-gripper` |
-| Env manager | [Mamba / Miniforge](https://github.com/conda-forge/miniforge) strongly recommended (~10× faster dependency solving than conda) |
-| Video codec | `torchcodec` is pinned according to the PyTorch compatibility matrix; PyAV is pinned to `15.1.0`. Both use wheels, while FFmpeg is excluded from the conda solve |
+**Exact version numbers live in [Versions & support](versions.md)** — the single
+source, listing "supported range" and "validated baseline" separately. What
+follows are only the constraints that decide whether, and how, this installs:
+
+- **Linux only.** The capture path is V4L2 + UVC; macOS and Windows cannot run it.
+  Ubuntu 22.04 / 24.04 are tested.
+- **GPU optional.** NVIDIA hardware encoding is recommended for multi-stream video,
+  but capture works without a GPU.
+- **Mamba / Miniforge strongly recommended** — roughly 10× faster dependency solving
+  than conda.
+- **The gripper SDK is built from source** (`third_party/taccap-gripper`), not
+  installed from PyPI, so it must be [rebuilt](02-environment.md) after a submodule
+  update.
+- **Video codecs come from wheels**: `torchcodec` pinned to the PyTorch compatibility
+  matrix, PyAV pinned, FFmpeg kept out of the conda solve so it cannot fight the ROS
+  stack.
 
 !!! danger "Prerequisites"
     - Your user must be in the `dialout` / `video` groups (see [3.1](03-host-hardware.md#31)).

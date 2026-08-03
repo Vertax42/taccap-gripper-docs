@@ -90,15 +90,16 @@ flowchart TB
 
 对应参考手册的"支持的平台与系统要求"。
 
-| 项 | 要求 |
-|---|---|
-| 操作系统 | Ubuntu 22.04/24.04(已验证);采集路径为 V4L2 + UVC,不支持 macOS / Windows |
-| GPU / 显卡驱动 | GPU 可选;多路视频推荐 NVIDIA GPU。已验证驱动为 570.144 |
-| Python | ≥ 3.10 |
-| PyTorch | 由 `setup_env.sh` 与依赖锁定文件安装;已验证 2.10.0 |
-| 夹爪 SDK | `xense.taccap` 0.1.4;由 `third_party/taccap-gripper` 源码本地构建安装 |
-| 环境管理 | 强烈推荐 [Mamba / Miniforge](https://github.com/conda-forge/miniforge)(依赖求解比 conda 快约 10×) |
-| 视频编解码 | `torchcodec` 按 PyTorch 兼容矩阵固定,PyAV 固定为 `15.1.0`;均通过 wheel 安装,FFmpeg 不参与 conda 求解 |
+**具体版本号见 [版本与支持](versions.md)** —— 那一页是唯一出处,同时列出"支持范围"和
+"已验证基线"。这里只讲几条会影响能不能装、怎么装的硬约束:
+
+- **只支持 Linux。**采集路径是 V4L2 + UVC,macOS / Windows 用不了。已验证 Ubuntu 22.04 / 24.04。
+- **GPU 可选。**多路视频建议用 NVIDIA 硬件编码,但没有 GPU 也能采。
+- **强烈推荐 Mamba / Miniforge** 管理环境,依赖求解比 conda 快约 10×。
+- **夹爪 SDK 从源码本地构建**(`third_party/taccap-gripper`),不是从 PyPI 装的。
+  更新子模块后需要[重新编译](02-environment.md)。
+- **视频编解码走 wheel**:`torchcodec` 按 PyTorch 兼容矩阵固定,PyAV 固定版本,
+  FFmpeg 不参与 conda 求解——避免与 ROS 栈相互拉扯。
 
 !!! danger "先决条件"
     - 用户需加入 `dialout`、`video` 用户组(见 [3.1 串口权限](03-host-hardware.md#31))。
