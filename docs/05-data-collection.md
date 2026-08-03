@@ -9,7 +9,7 @@
 处理(通过 `SELF_DRIVEN_RECORD_ROBOTS` 路由)。
 
 **移位帧(shifted-frame)配对**:每条记录用 *t-1* 步的观测,配 *t* 步的位姿
-(Pico4 Ultra 企业版位姿 + 归一化 `gripper.pos`)作为动作——动作**领先观测一步**,是真正的
+(EEF TCP 位姿 + 归一化 `gripper.pos`)作为动作——动作**领先观测一步**,是真正的
 "移动到下一步"目标,而非退化的同帧位姿。每集丢弃 1 帧(首帧没有前驱)。集与集之间的
 复位阶段是被动等待:重新摆放设备即可,无需遥操。
 
@@ -39,7 +39,7 @@ lerobot-record \
 
 `lerobot-record` 参数分三类:**数据集**(`--dataset.*`)、**录制控制**(顶层)、
 **设备**(`--robot.*`)。完整定义参考 lerobot 官方
-[录制指南](https://huggingface.co/docs/lerobot/v0.6.0/en/il_robots#record-a-dataset)。
+[录制指南](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robots#record-a-dataset)(对应本项目定制的 lerobot 基线 0.5.1)。
 
 #### 数据集参数 `--dataset.*`
 
@@ -129,17 +129,33 @@ lerobot-record \
 
 | Key | 来源 | 形状 / 类型 |
 |---|---|---|
-| `tcp.x`, `tcp.y`, `tcp.z` | Pico4 Ultra 企业版追踪器 → EE | float(米) |
+| `tcp.x`, `tcp.y`, `tcp.z` | 追踪器位姿 → 经安装变换得到的 **EEF TCP** | float(米) |
 | `tcp.r1`..`tcp.r6` | EE 的 6-D 旋转 | float |
 | `gripper.pos` | XTac-UMI G1 编码器,归一化 | float ∈ [0, 1] |
-| `imu.accel.{x,y,z}`(可选) | XTac-UMI G1 IMU | float(m/s²) |
-| `imu.gyro.{x,y,z}`(可选) | XTac-UMI G1 IMU | float(rad/s) |
-| `imu.mag.{x,y,z}`(可选) | XTac-UMI G1 IMU | float(µT) |
+| `imu.accel.{x,y,z}`(默认关) | XTac-UMI G1 IMU | float(m/s²) |
+| `imu.gyro.{x,y,z}`(默认关) | XTac-UMI G1 IMU | float(rad/s) |
+| `imu.mag.{x,y,z}`(默认关) | XTac-UMI G1 IMU | float(µT) |
 | `tactile_left` / `tactile_right` | 视触觉校正图 | uint8,约 `(400, 700, 3)` |
 | `wrist_cam` | 腕部相机 | uint8 `(H, W, 3)` |
 
 !!! note "6-D 旋转约定"
     `r1..r3` 是旋转矩阵第一列,`r4..r6` 是旋转矩阵第二列。
+
+!!! info "`tcp.*` 记的是夹爪末端,不是追踪器"
+    追踪器拧在夹爪手柄上,它自己的位姿离**两指中点**约 195 mm。落盘前会乘上一个内置的
+    刚性安装变换(取自 CAD 装配实测,左右各一套),所以 `tcp.*` 是 **EEF TCP 位姿**。
+
+    该变换是**机体固连**的——随夹爪一起转,任意姿态下都成立,采集时朝哪个方向起手都行。
+    TCP 取两指中点,对称张合时该点不动,因此与 `gripper.pos` 无关。
+    想直观确认,看 Rerun `/world` 里 EE 与 TRACKER 两个坐标系及其连线
+    → [4.4 3D 轨迹可视化](04-calibration.md#44)。
+
+!!! tip "IMU 默认不采集"
+    上表的 `imu.*` 共 9 个通道**默认关闭**,加 `--robot.enable_imu=true` 才会记录
+    (双臂同样是这个开关,两侧一起生效,键名带 `left_` / `right_` 前缀)。
+
+    开启后 `observation.state` 维度相应增加:单夹爪 10 → 19,双夹爪 20 → 38。
+    不需要惯性数据就保持关闭,可少写 9 列。
 
 **观测键调节**:
 

@@ -83,7 +83,7 @@ flowchart TB
     - **触觉图像流**:`XenseTactileCamera` 直接通过 `xensesdk` 采集,每个传感器由后台线程异步读取。
     - `get_observation()` 调用各 camera 类的 `async_read()`,将最新图像与夹爪状态、Pico4 位姿汇总成一帧观测。
 
-**每帧最终会记录**:Pico4 Ultra 企业版位姿(`tcp.*`)、归一化夹爪开度(`gripper.pos`)、
+**每帧最终会记录**:夹爪末端(EEF TCP)位姿(`tcp.*`)、归一化夹爪开度(`gripper.pos`)、
 可选 IMU、左右触觉图、腕相机图——详见 [5.4 每帧记录内容](05-data-collection.md#54)。
 
 ## 1.4 支持的平台与依赖版本

@@ -105,7 +105,8 @@ lerobot-record \
 - `--dataset.push_to_hub=false` 表示仅保存到本地,不自动上传 Hugging Face Hub。
 
 !!! info "lerobot-record 参数详细说明"
-    `lerobot-record` 的完整参数定义与用法请查阅 [LeRobot v0.6.0 官方 Record function 文档](https://huggingface.co/docs/lerobot/v0.6.0/en/il_robots#record-function)。
+    `lerobot-record` 的通用参数见 [LeRobot v0.5.1 官方 Record function 文档](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robots#record-function)——
+    本项目基于 lerobot **0.5.1** 定制,查文档时注意别看成其他版本。设备相关参数以本站为准。
     本项目的设备参数与采集说明见 [数据采集](05-data-collection.md)。
 
 ## 5. 检查本地数据完整性
