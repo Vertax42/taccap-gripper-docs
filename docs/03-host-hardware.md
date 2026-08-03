@@ -347,7 +347,8 @@ flowchart LR
     每台执行一次即可(值存在 flash,断电不丢):
 
     ```bash
-    python third_party/taccap-gripper/python/examples/calibrate.py <固件SN>
+    python third_party/taccap-gripper/python/examples/calibrate.py left
+    python third_party/taccap-gripper/python/examples/calibrate.py right
     ```
 
     完整步骤、如何确认生效、适用范围 → [4.1 夹爪标定(零点 + 行程)](04-calibration.md#41)

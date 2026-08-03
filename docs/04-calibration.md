@@ -26,34 +26,49 @@
 
 ### 4.1.2 怎么标
 
-先列出在线夹爪的固件 SN:
+按**左右**指定要标的夹爪,**两台各跑一次**:
 
 ```bash
-python -c "from xense.taccap import scan_grippers, Side; \
-  [print(f'{\"L\" if g.side==Side.Left else \"R\"} fw={g.firmware_sn} mcu={g.mcu_serial}') for g in scan_grippers()]"
+python third_party/taccap-gripper/python/examples/calibrate.py left
+python third_party/taccap-gripper/python/examples/calibrate.py right
 ```
 
-对**每一台** leader 夹爪执行(SN 换成上一步列出的):
-
-```bash
-python third_party/taccap-gripper/python/examples/calibrate.py TCGU01A28Z0024m
-```
+左右由固件烧录的 SN 走线读回(`Cmd::GetSn`)判定,和采集程序里 `left_gripper.pos`
+用的是同一条规则,所以 `calibrate.py left` 标的一定就是 `left` 那一台。脚本会把解析出的
+固件 SN 连同**扫到的全部夹爪**一起打印,方便在写 flash 之前确认没选错。想显式锁定某台时,
+仍可直接传固件 SN(`calibrate.py TCGU01A28Z0024m`)。
 
 一条命令走完两步,按提示操作:
 
 1. **保持夹爪完全闭合** → 回车。锁存为编码器零点,随后复读校验残差(容差 ±0.01 rad)。
-2. **张开到机械极限** → 回车。采样该姿态的角度,确认后写入 MCU flash 作为 encoder max。
+2. **张开到机械极限** → 回车。采样该姿态的角度并**直接写入** MCU flash 作为 encoder max
+   (没有二次确认,按回车前请先摆好姿态),随后进入 10 Hz 实时读数便于目视核对。
 
 输出形如:
 
 ```text
-Step 1 — hold the gripper FULLY CLOSED
-  post-zero reading: +0.0058 rad
-Step 2 — open the gripper to its mechanical limit
-  full-open reading: 1.1486 rad (65.8°)
-Write 1.1486 rad (65.8°) to MCU flash? [y/N] y
-✓ stored: max_rad = 1.1486 rad (65.8°)
+================================================================
+  TacCap leader-gripper encoder calibration
+================================================================
+  requested    : left  (resolved by side)
+  firmware SN  : TCGU01A28Z0031m
+  side         : Left
+  mcu serial   : 5C96089694
+  mcu device   : /dev/serial/by-id/usb-1a86_USB_Dual_Serial_5C96089694-if02
+  visible      : TCGU01A28Z0032m (Right), TCGU01A28Z0031m (Left)
+
+Step 1/2: hold the gripper FULLY CLOSED.
+  → press [Enter] when held closed:
+  post-latch reading: raw=+0.0058 rad (+0.33°)   cooked=+0.0058
+  ✓ zero latched OK (|raw post-zero| ≤ 0.010 rad)
+
+Step 2/2: open the gripper to its MECHANICAL LIMIT.
+  → press [Enter] when fully open:
+  fully-open reading: +1.1486 rad  (+65.81°)
+  ✓ stored: max_rad = 1.1486 rad (65.81°)
 ```
+
+若这台之前标过,抬头还会多一行 `existing span: … — will be overwritten`。
 
 !!! warning "先摆好姿态,再按 Enter"
     固件在收到命令的瞬间锁存当时的原始计数。按 Enter 前夹爪必须**已经**在目标姿态

@@ -29,36 +29,53 @@ physical motion.
 
 ### 4.1.2 How to calibrate
 
-List the firmware SNs of the connected grippers:
+Pick the gripper by side and run it once per unit — **both** of them:
 
 ```bash
-python -c "from xense.taccap import scan_grippers, Side; \
-  [print(f'{\"L\" if g.side==Side.Left else \"R\"} fw={g.firmware_sn} mcu={g.mcu_serial}') for g in scan_grippers()]"
+python third_party/taccap-gripper/python/examples/calibrate.py left
+python third_party/taccap-gripper/python/examples/calibrate.py right
 ```
 
-Run this for **every** leader gripper (substitute the SN from above):
-
-```bash
-python third_party/taccap-gripper/python/examples/calibrate.py TCGU01A28Z0024m
-```
+Side is read from the firmware-burned SN over the wire (`Cmd::GetSn`), the same rule the
+collection program applies to `left_gripper.pos` — so `calibrate.py left` is guaranteed to be the
+gripper `left` means everywhere else. The script prints the firmware SN it resolved along with
+**every gripper the scan saw**, so a wrong pick is visible before anything reaches flash. To pin a
+unit explicitly, pass its firmware SN instead (`calibrate.py TCGU01A28Z0024m`).
 
 One command, two steps, following the prompts:
 
 1. **Hold the gripper fully closed** → Enter. Latched as the encoder zero, then re-read to verify
    the residual (tolerance ±0.01 rad).
-2. **Open to the mechanical limit** → Enter. That angle is sampled and, once confirmed, written to
-   MCU flash as the encoder max.
+2. **Open to the mechanical limit** → Enter. That angle is sampled and written **straight** to MCU
+   flash as the encoder max (there is no second confirmation — hold the pose before pressing
+   Enter), followed by a 10 Hz live readout so you can eyeball the result.
 
 Output looks like:
 
 ```text
-Step 1 — hold the gripper FULLY CLOSED
-  post-zero reading: +0.0058 rad
-Step 2 — open the gripper to its mechanical limit
-  full-open reading: 1.1486 rad (65.8°)
-Write 1.1486 rad (65.8°) to MCU flash? [y/N] y
-✓ stored: max_rad = 1.1486 rad (65.8°)
+================================================================
+  TacCap leader-gripper encoder calibration
+================================================================
+  requested    : left  (resolved by side)
+  firmware SN  : TCGU01A28Z0031m
+  side         : Left
+  mcu serial   : 5C96089694
+  mcu device   : /dev/serial/by-id/usb-1a86_USB_Dual_Serial_5C96089694-if02
+  visible      : TCGU01A28Z0032m (Right), TCGU01A28Z0031m (Left)
+
+Step 1/2: hold the gripper FULLY CLOSED.
+  → press [Enter] when held closed:
+  post-latch reading: raw=+0.0058 rad (+0.33°)   cooked=+0.0058
+  ✓ zero latched OK (|raw post-zero| ≤ 0.010 rad)
+
+Step 2/2: open the gripper to its MECHANICAL LIMIT.
+  → press [Enter] when fully open:
+  fully-open reading: +1.1486 rad  (+65.81°)
+  ✓ stored: max_rad = 1.1486 rad (65.81°)
 ```
+
+A unit that was calibrated before also gets an `existing span: … — will be overwritten` line in
+the header.
 
 !!! warning "Get the pose right before pressing Enter"
     The firmware latches the raw count at the instant it receives the command. The gripper must

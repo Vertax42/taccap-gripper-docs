@@ -396,7 +396,8 @@ flowchart LR
     Once per unit is enough (the values live in flash and survive power cycles):
 
     ```bash
-    python third_party/taccap-gripper/python/examples/calibrate.py <firmware SN>
+    python third_party/taccap-gripper/python/examples/calibrate.py left
+    python third_party/taccap-gripper/python/examples/calibrate.py right
     ```
 
     Full procedure, how to confirm it took effect, and scope →

@@ -79,7 +79,7 @@ SDK 示例脚本位于 `python/examples/`(C++ 示例需 `-DTACCAP_BUILD_EXAMPLES
 | 脚本 | 作用 |
 |---|---|
 | `rerun_dual_with_tracker.py` | 双夹爪 IMU/编码器 + Pico4 Ultra 企业版追踪器 6-DoF 位姿,在 Rerun 单视图中可视化。需 `xensevr_pc_service_sdk` 与 XenseVR PC Service 运行 |
-| `calibrate.py` | 按 SN 检查编码器零点并按需重新标定(见 [标定与自检](04-calibration.md)) |
+| `calibrate.py` | 按 `left`/`right`(或固件 SN)选定夹爪,标定编码器零点与行程上限(见 [标定与自检](04-calibration.md)) |
 | `ota_update.py` | 固件 OTA 刷写 CLI,带进度与刷后状态探测。镜像随 SDK 附带于 `firmware/`;按 CRC32 识别镜像并**拒绝角色不匹配的刷写**(`--force` 可强制)。步骤见 [固件 OTA 升级](versions.md#ota) |
 | `fisheye_cal.py` | 鱼眼内参与编码器行程上限的读写 CLI(`show` / `set-fisheye` / `set-encoder-max` / 引导式 `measure-encoder-max`) |
 | `v4l2_probe.py` / `v4l2_sweep.py` | 直接用 SDK `Camera` 调试 V4L2/UVC 节点;仅用于底层排障,不代表正式 LeRobot / `xensesdk` 图像采集路径 |
@@ -121,12 +121,17 @@ python python/examples/gripper_control_test.py
 之后无需重复运行。
 
 ```bash
-python python/examples/calibrate.py TCGU01A24A0002m   # 右主爪
+python python/examples/calibrate.py right              # 按左右指定
+python python/examples/calibrate.py TCGU01A24A0002m    # 或显式指定固件 SN
 ```
 
-流程:解析 SN → 打印当前读数(raw 与钳位)→ 提示"保持完全闭合按 Enter" →
+流程:把 `left`/`right`(或传入的 SN)解析到唯一一台夹爪 → 打印解析出的固件 SN
+与扫到的全部夹爪 → 打印当前读数(raw 与钳位)→ 提示"保持完全闭合按 Enter" →
 发送 `SetEncoderZero` → 校验残差 → 提示"张开到机械极限按 Enter" →
 采样并写入 `EncoderMaxCal` → 10 Hz 实时读数。
+
+左右取自固件烧录 SN(`Cmd::GetSn` 走线读回),不是 CH343 芯片序列号;同一侧扫到两台会
+直接报错并列出两个固件 SN,不会替你猜。
 
 !!! tip "标定细节"
     闭合恒为 0;负向漂移会被钳到 0(原始值保留在 `raw_position_rad`);raw 负漂

@@ -112,7 +112,7 @@
     **原因**:编码器零点漂移或未标定。
     **解决**:重新标定零点:
     ```bash
-    python third_party/taccap-gripper/python/examples/calibrate.py <固件SN>
+    python third_party/taccap-gripper/python/examples/calibrate.py left    # 或 right
     ```
     该命令同时重标零点与行程上限,两者都会写入 MCU flash。见 [4.1 夹爪标定](04-calibration.md#41)。
 
