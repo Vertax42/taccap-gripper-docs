@@ -12,9 +12,9 @@
 | NVIDIA GPU / 驱动 | GPU 可选;多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 |
 | Python | ≥ 3.10 | 3.12.13 |
 | PyTorch | 由 `setup_env.sh` 与依赖锁定文件统一安装 | 2.10.0 |
-| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@30bc58b9` |
-| `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.6 |
-| 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0 |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@85b0fb9a` |
+| `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`9804e41`) |
+| 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0(镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
 | `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` | v0.1.0 release |
 
@@ -39,16 +39,77 @@ python -c "import torchcodec; print('torchcodec', torchcodec.__version__)"
 
 ## 升级与更新
 
-- **仓库 + 子模块**:
-  ```bash
-  git pull --recurse-submodules
-  git submodule update --init --recursive --progress
-  ./setup_env.sh --install     # 重新对齐依赖
-  ```
-- **固件 OTA**:通过 SDK 的 `OtaSession` / `ota_update.py`,见 [SDK 示例](sdk-examples.md)。
+### 仓库 + 子模块
 
-!!! danger "OTA 有风险"
-    刷错固件会**变砖 MCU**。核对目标固件与设备型号后再操作。
+```bash
+git pull --recurse-submodules
+git submodule update --init --recursive --progress
+./setup_env.sh --install     # 重新对齐依赖
+```
+
+!!! danger "拉完子模块必须重新编译 `xense.taccap`"
+    `git submodule update` 只换源码,不重编译原生扩展。见
+    [2.2 克隆仓库与子模块](02-environment.md)。
+
+### 固件 OTA 升级 {#ota}
+
+**什么时候需要**:固件低于 V2.1(leader 1.2.0)时没有 `Cmd::EncoderMaxCal`,
+[夹爪标定](04-calibration.md#41)的第 2 步做不了,`gripper.pos` 只能走
+`gripper_open_rad` 回退、够不到 1.0。除此之外不必主动升级。
+
+SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,升级不再需要固件源码
+(源码在内网仓库,不随 SDK 分发):
+
+| 镜像 | 适用角色 | 版本 |
+|---|---|---|
+| `tc-gu-01-master.bin` | 主夹爪(SN 末位 **`m`**) | 1.2.0.0 |
+| `tc-gu-01-slave.bin` | 从夹爪(SN 末位 **`s`**) | 1.1.0.0 |
+
+路径 `third_party/taccap-gripper/firmware/`,同目录 `manifest.json` 记录了每个镜像的
+版本、字节数、CRC32 和构建来源 commit。只保留当前发布版,历史镜像从该目录的 git 历史取。
+
+!!! warning "顺序:**先升级 SDK,再刷固件**"
+    0.1.7 之前的 `OtaSession` 只检查 `ack.is_nack`,而固件侧的错误是从**回显命令**这条路
+    返回的——传输层无法与"1 字节的成功应答"区分。结果是写入被固件拒绝却不报错,
+    **失败的升级会报成功**;它还会用新的序列号重试,而固件把这当成一次新请求并因偏移不连续
+    整段拒绝,一次仅仅是慢了的 ACK 就能毁掉一次本来正常的升级。两者都在 0.1.7 修好了。
+
+    新 SDK 与旧固件通信不变(V1.9 以前的命令集没动),所以**先升 SDK 总是安全的**。
+
+**按角色选镜像,不是按左右手。**角色看固件 SN 的**最后一个字符**:
+`TCGU01A28Z0023m` → `m` → master。同一套双臂设备上两只夹爪常常**都是 master**。
+
+```bash
+# 1. 确认每只夹爪的角色
+python -c "from xense.taccap import scan_grippers
+for g in scan_grippers(): print(g.firmware_sn, '->', 'master' if g.firmware_sn.endswith('m') else 'slave')"
+
+# 2. 刷写(路径相对当前目录;下面假设在 xense-taccap-lerobot 仓库根目录)
+python third_party/taccap-gripper/python/examples/ota_update.py \
+    third_party/taccap-gripper/firmware/tc-gu-01-master.bin \
+    --side left --target-version 1.2.0.0
+
+# 3. 确认:GetVersion 返回固件编译进去的常量,读回的版本就是实际刷上去的版本
+python -c "from xense.taccap import scan_grippers
+for g in scan_grippers(): print(g.firmware_sn, g.role.name)"
+```
+
+约 1 秒写完,MCU 重启并重新枚举 USB 约 1–3 秒。写入走的是**非活动 flash bank**,
+`OtaApply` 之前不覆盖任何东西,CRC 不匹配时固件拒绝切换——传输失败不会损坏正在运行的固件。
+
+!!! danger "刷错角色会变砖,需要 SWD 探针才能救回"
+    `ota_update.py` 会按 CRC32 与 `manifest.json` 比对识别镜像,**角色不匹配时直接拒绝**
+    (不是告警),`--force` 才能强制。手工编译的镜像识别不出来,会带一条提示放行。
+
+    升级期间**不要断电或拔线**(此时夹爪指示灯蓝色闪烁,见 [硬件介绍](hardware.md))。
+
+!!! note "镜像路径相对当前目录,manifest 不是"
+    `ota_update.py` 自己找 `manifest.json`(相对脚本位置),在哪个目录运行都对;但**镜像
+    路径是相对你的当前目录的**。SDK 自己的 README 写成 `firmware/…`,那是假设你在 SDK
+    根目录;从主仓库根目录要写 `third_party/taccap-gripper/firmware/…`。
+
+升到 V2.1 之后,回到 [4.1 夹爪标定](04-calibration.md#41) 把零点和行程上限标上——
+升级本身不产生标定值,`gripper.pos` 仍会走回退直到标定完成。
 
 ## 支持与反馈 {#support}
 

@@ -94,9 +94,12 @@ Topping out below 1.0 (0.68, say) means it was never calibrated — matching the
 - **Leaders only.** `Cmd::EncoderMaxCal` is leader-only; a follower NACKs `InvalidCmd` (it has no
   MT6816 encoder). Data collected with followers uses the `gripper_open_rad` fallback on both
   sides, which is unchanged from the older behaviour.
-- **Firmware >= V2.1 required.** Older firmware does not have the command; the software warns and
-  falls back automatically — the session continues, but the calibration has no effect. Firmware
-  versions are in [Versions & support](versions.md).
+- **Firmware >= V2.1 (leader 1.2.0) required.** Older firmware does not have the command:
+  `calibrate.py` **exits without changing anything**, and during collection the software warns and
+  falls back automatically — the session continues, but the calibration has no effect. Since 0.1.7
+  the SDK ships the released firmware images, so you can flash it yourself:
+  → [Firmware OTA upgrade](versions.md#ota). **Update the SDK before the firmware** — the other
+  order runs into an old bug where a failed update reported success.
 - **Calibration is one-off.** The values live in MCU flash: they survive power cycles and moving
   to another host. Only redo it after removing or refitting the encoder, changing the mechanical
   limit, or erasing the firmware.

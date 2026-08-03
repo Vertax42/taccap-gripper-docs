@@ -80,7 +80,8 @@ SDK 示例脚本位于 `python/examples/`(C++ 示例需 `-DTACCAP_BUILD_EXAMPLES
 |---|---|
 | `rerun_dual_with_tracker.py` | 双夹爪 IMU/编码器 + Pico4 Ultra 企业版追踪器 6-DoF 位姿,在 Rerun 单视图中可视化。需 `xensevr_pc_service_sdk` 与 XenseVR PC Service 运行 |
 | `calibrate.py` | 按 SN 检查编码器零点并按需重新标定(见 [标定与自检](04-calibration.md)) |
-| `ota_update.py` | 固件 OTA 刷写 CLI,带进度与刷后状态探测。**有风险——刷错会变砖** |
+| `ota_update.py` | 固件 OTA 刷写 CLI,带进度与刷后状态探测。镜像随 SDK 附带于 `firmware/`;按 CRC32 识别镜像并**拒绝角色不匹配的刷写**(`--force` 可强制)。步骤见 [固件 OTA 升级](versions.md#ota) |
+| `fisheye_cal.py` | 鱼眼内参与编码器行程上限的读写 CLI(`show` / `set-fisheye` / `set-encoder-max` / 引导式 `measure-encoder-max`) |
 | `v4l2_probe.py` / `v4l2_sweep.py` | 直接用 SDK `Camera` 调试 V4L2/UVC 节点;仅用于底层排障,不代表正式 LeRobot / `xensesdk` 图像采集路径 |
 | `motor_mit_control.py` | 从夹爪原始弧度坐标下的 MIT 阻抗控制演示;会驱动真实电机 |
 | `gripper_control_test.py` | 从夹爪归一化开度 `[0,1]` 与 `ControlLoop` 交互测试;要求从夹爪配置已标定 |

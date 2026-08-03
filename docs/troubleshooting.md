@@ -116,6 +116,26 @@
     ```
     该命令同时重标零点与行程上限,两者都会写入 MCU flash。见 [4.1 夹爪标定](04-calibration.md#41)。
 
+??? failure "标定报 `encoder-max calibration needs firmware >= V2.1`"
+    **原因**:这台夹爪的固件低于 V2.1(leader 1.2.0),没有 `Cmd::EncoderMaxCal`。
+    `calibrate.py` 会**原样退出,不改动任何东西**——不会留下"标了零点但没标行程"的半成品。
+    **解决**:刷固件。SDK 自 0.1.7 起把已发布镜像放在
+    `third_party/taccap-gripper/firmware/`,不再需要固件源码:
+    ```bash
+    python third_party/taccap-gripper/python/examples/ota_update.py \
+        third_party/taccap-gripper/firmware/tc-gu-01-master.bin \
+        --side left --target-version 1.2.0.0
+    ```
+    **先升 SDK 再刷固件**(顺序反了会踩到"失败却报成功"的旧 bug),镜像**按角色选**——
+    看固件 SN 末位 `m`/`s`,不是看左右手。完整步骤与风险见
+    [固件 OTA 升级](versions.md#ota)。刷完回来重跑 `calibrate.py`。
+
+??? failure "旧脚本提示去 `third_party/firmware/tc-gu-01/build/…` 找 .bin"
+    **原因**:那是**固件源码仓库的编译产物路径**,源码在内网、且该目录被 gitignore,
+    客户侧根本不存在。
+    **解决**:改用随 SDK 附带的镜像 `third_party/taccap-gripper/firmware/tc-gu-01-{master,slave}.bin`,
+    见 [固件 OTA 升级](versions.md#ota)。
+
 ??? failure "腕相机/视触觉打不开、`video ... busy`"
     **原因**:相机由外部相机服务占用,或用户不在 `video` 组。
     **解决**:确认相机服务状态;把用户加入 `video` 组
