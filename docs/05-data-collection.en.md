@@ -100,6 +100,11 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
 | `--robot.tracker_serial` | unset | Pin the tracker SN, bypassing automatic side matching |
 | `--robot.enable_wrist_camera` | `true` | Turn the wrist camera off |
 | `--robot.wrist_camera_width/_height/_fps` | — | Wrist camera resolution / frame rate |
+| `--robot.enable_head_camera` | `false` | Record the Pico4 Ultra Enterprise **headset camera** — see [§5.7](#57) |
+| `--robot.head_camera_eyes` | `both` | `both` records each eye as its own key; `left` / `right` records one |
+| `--robot.head_camera_width/_height` | `1024` / `768` | **Per-eye** size; only `1024x768` or `1280x960` are accepted |
+| `--robot.head_camera_fps` | `30` | Head camera recording frame rate |
+| `--robot.head_camera_pair_max_skew_ms` | `20.0` | Max timestamp gap still counted as one stereo capture when the eyes' sequence numbers differ |
 | `--robot.tactile_fps` | `30` | Tactile recording frame rate |
 | `--robot.tactile_output_types` | `["rectify"]` | Tactile stream **written to disk**, **exactly one** |
 | `--robot.tactile_display_output_types` | `["difference"]` | Extra tactile streams that are **display-only**, never recorded |
@@ -148,6 +153,9 @@ lerobot-record \
 | `imu.mag.{x,y,z}` (off by default) | XTac-UMI G1 IMU | float (µT) |
 | `tactile_left` / `tactile_right` | Rectified visuotactile image | uint8, about `(400, 700, 3)` |
 | `wrist_cam` | Wrist camera | uint8 `(H, W, 3)` |
+| `left_head` / `right_head` (off by default) | Headset camera, **one key per eye** | uint8, `(768, 1024, 3)` by default |
+| `head_camera.x/y/z` (off by default) | Headset position, same world frame as `tcp.*` | float (metres) |
+| `head_camera.r1..r6` (off by default) | Headset orientation, 6-D rotation | float |
 
 !!! note "6-D rotation convention"
     `r1..r3` is the rotation matrix's first column, `r4..r6` its second column.
@@ -160,8 +168,8 @@ lerobot-record \
     That transform is **body-fixed** — it turns with the gripper and holds in any orientation, so
     it does not matter which way you start out. The TCP is the two-finger midpoint, which does not
     move when the jaw opens and closes symmetrically, so it is independent of `gripper.pos`. To
-    see it for yourself, look at the EE and TRACKER frames and the line between them in Rerun's
-    `/world` → [4.4 3D trajectory visualisation](04-calibration.md#44).
+    see it for yourself, lay the gripper flat and check that the EE marker in Rerun's `/world`
+    sits at the two-finger midpoint → [4.4 3D trajectory visualisation](04-calibration.md#44).
 
 !!! tip "IMU is off by default"
     The 9 `imu.*` channels above are **off by default**; add `--robot.enable_imu=true` to record
@@ -202,6 +210,8 @@ lerobot-record \
     **does not change the signal-to-noise ratio** — it only leaves headroom.
 - **Wrist camera** → `wrist_cam`; skip it with `--robot.enable_wrist_camera=false`, tune with
   `--robot.wrist_camera_width/_height/_fps`.
+- **Headset camera** → `left_head` / `right_head` plus `head_camera.*`; **off by default**, turn
+  it on with `--robot.enable_head_camera=true` — see [§5.7](#57).
 - **Role** → `--robot.role=follower` binds the slave unit (default `leader`).
 
 ## 5.5 Recording options: streaming encoding and encoder warm-up {#55}
@@ -252,5 +262,87 @@ lerobot-record \
     [Best Practices](best-practices.md) — origin discipline, tactile contact, demonstration
     consistency and incremental verification are what actually decide the quality of what lands on
     disk.
+
+## 5.7 Optional: the headset camera (first-person view) {#57}
+
+**Off by default.** Turning it on records the Pico4 Ultra Enterprise headset's **own stereo
+camera** plus the headset's pose — the operator's first-person view and where they were looking.
+Both `taccap_gripper` (single) and `bi_taccap_gripper` support it, with the same flags.
+
+```bash
+lerobot-record \
+    --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=true \
+    --display_data=true \
+    --dataset.repo_id=<your_org>/<your_dataset> \
+    --dataset.single_task='Pick up the object' \
+    --dataset.fps=30 \
+    --dataset.push_to_hub=false
+```
+
+It produces three groups of keys:
+
+| Key | Meaning |
+|---|---|
+| `left_head` / `right_head` | Headset camera, **one video key per eye**, `(768, 1024, 3)` each by default |
+| `head_camera.x/y/z` | Headset position (metres) |
+| `head_camera.r1..r6` | Headset orientation, 6-D rotation (same convention as `tcp.*`) |
+
+!!! warning "`left_` / `right_` here means the **eyes**, not the arms"
+    On a bimanual rig `{side}_wrist` and `{side}_tcp.*` are per-**arm**, but there is only one
+    headset: `left_head` / `right_head` are the headset's **left and right eye**. By the same
+    token, enabling the head camera on two single-gripper processes gives you **the same stream
+    from the same headset twice**, not two independent views.
+
+### Prerequisites
+
+1. **XenseVR PC Service ≥ v0.2.0** (amd64). v0.1.0 drops the `0x30` messages that carry camera
+   frames; arm64 hosts are currently pinned to v0.1.0, i.e. **no head camera there**. See
+   [2.4 One-shot install](02-environment.md).
+2. **The headset app must be streaming.** The camera and the trackers **share one SDK
+   connection**, so the headset has to be connected to the PC Service (see
+   [3.5 Start the XenseVR PC Service](03-host-hardware.md#35)). Conversely, turning the camera off
+   does not drop the trackers' connection, and vice versa.
+
+### Resolution and recording a single eye
+
+`--robot.head_camera_width/_height` accept **only `1024x768` (default) and `1280x960`**. Anything
+else is an error rather than a silent downgrade, and so is a first frame whose size disagrees with
+the config — rescaling would quietly change the recorded field of view. Both modes are 4:3,
+matching the sensor (PICO's camera-access API caps a frame at 2328x1748, which is also 4:3, so a
+16:9 request would be a crop or a stretch rather than more field of view).
+
+`--robot.head_camera_eyes=left` (or `right`) records one eye: half the JPEG decoding, half the
+encoder load, and one head video key in the dataset instead of two.
+
+!!! danger "Changing the size or the eye selection changes the data"
+    Either change alters the recorded frame, so **episodes either side of it are not comparable**.
+    Decide before you start recording, and note it in [Data management](data-management.md).
+
+### Pairing the two eyes
+
+The eyes arrive as **two independent messages**, and once they are separate video keys a
+mismatched pair leaves **no trace in the data**. So each frame the two eyes' newest frames are
+compared: identical sequence numbers are a definitive match; otherwise their timestamps must agree
+within `--robot.head_camera_pair_max_skew_ms` (default 20 ms, against a ~33 ms frame period at
+30 fps). Exceeding it does not stop recording — it raises a **rate-limited warning naming the
+measured skew**, so the condition is visible rather than silently recorded.
+
+!!! note "Why the frames are collected on a background thread"
+    Reading the SDK straight from the record loop caught one eye updated and the other not on
+    **7% of frames** (599 samples; the left eye was consistently one or two ahead). A background
+    thread now polls at 120 Hz and holds a pair back until both halves are in — measured 7% to 0%,
+    with no loss of frame rate.
+
+### Pose and visualisation
+
+`head_camera.*` is the **headset pose**, remapped into the **same gravity-aligned world frame as
+`tcp.*`** (the same Pico→world transform the tracker uses). Head and hands are therefore directly
+comparable and can be drawn in one 3D scene: with `--display_data=true`, the `/world` view gains
+an amber `HEAD` marker (see [4.4](04-calibration.md#44)).
+
+!!! note "Dimension change"
+    Enabling it adds 9 dimensions (the headset pose) to `observation.state`: 10 → 19 for a single
+    gripper, 20 → 29 for bimanual. `--robot.enable_imu=true` adds on top of that as usual.
 
 Next → [Best Practices](best-practices.md) → [Dataset & Examples](06-dataset.md)

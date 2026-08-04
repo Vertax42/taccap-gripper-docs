@@ -228,13 +228,32 @@ axis triad at its live **EEF TCP pose** (`tcp.*`), trailing a breadcrumb of wher
   so the viewer knows which way is *forward* and aims its initial camera down +X. The world axes
   are labelled `+X forward` / `+Y left` / `+Z up`, so the orientation stays readable after you
   orbit.
-- When the robot also publishes the tracker's own pose, Rerun draws **a smaller, dimmer tracker
-  frame next to the EE frame** (display only, never recorded), joined by a dashed line labelled
-  with its **length in mm**. That length is **the fastest way to tell whether the mount transform
-  is right**: it should hold constant throughout a session. A jumping value, or one well off the
-  mechanical dimension, means the transform or the assembly is wrong.
+- The breadcrumb keeps the last **90 samples (~3 s at 30 fps)** and **fades toward its oldest
+  end** — long enough to read the stroke you just made, short enough that two gripper trails do
+  not knot together.
+- With the [headset camera](05-data-collection.md#57) on, the headset is drawn in the same
+  `/world`: a smaller **amber `HEAD` marker**, with no trail (the head wanders continuously and
+  its breadcrumb would bury the gripper trails). The headset pose is in the **same
+  gravity-aligned world frame** as `tcp.*` — the same Pico→world remap is applied to both — so
+  where the operator was looking and what their hands were doing can be read against each other.
 - `--show_trajectory` is on by default; set it to `false` to drop that view. It is skipped
   automatically when `--robot.enable_tracker=false`, since there is no pose to draw.
+
+!!! note "The TRACKER frame and its dashed link are gone"
+    Earlier versions also drew a smaller, dimmer tracker frame beside the EE frame, joined by a
+    dashed line labelled with its length in mm. That was **scaffolding for verifying the mount
+    transform**; the transform was checked on hardware on 2026-08-02 and is correct, so all it
+    did afterwards was clutter the EE frame.
+
+    The tracker pose is still published as **display-only** `tracker.*` keys — absent from
+    `observation_features`, so it never reaches a dataset — and the scalar panel still has a
+    `tracker pose` tab next to `tcp pose`, which is where to read the raw numbers if the
+    transform is ever in question again.
+
+    Checking the mount now comes down to **one row**: with the gripper lying flat, the EE marker
+    should sit at the **two-finger midpoint**, axes X forward / Y left / Z up. That is the row
+    that matters — a distance check alone proves nothing, since both settings put the EE the
+    right 195 mm from the tracker, just 51° apart.
 
 !!! note "How this differs from the standalone SDK example"
     The markers and breadcrumbs look much like the SDK's `python/examples/rerun_dual_with_tracker.py`.

@@ -54,15 +54,34 @@ flowchart LR
 | NVIDIA GPU / 驱动 | GPU 可选;多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 |
 | Python | ≥ 3.10 | 3.12.13 |
 | PyTorch | 由 `setup_env.sh` 与依赖锁定文件统一安装 | 2.10.0 |
-| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@b229c19a` |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@b229c19a` + PR #9(`4d4d8228`,未合并) |
 | `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`16412dc`) |
 | 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0(镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
-| `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` | v0.1.0 release |
+| `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` | v0.2.0 release(amd64)|
+| XenseVR PC Service | amd64 ≥ **v0.2.0**;arm64 目前只有 v0.1.0 | v0.2.0(`6c5ff61d`)|
+
+!!! note "PC Service v0.2.0 只影响头显相机"
+    v0.2.0 相对 v0.1.0 的行为差异只有一条:**转发 `0x30`(带时间戳视频帧)消息**,
+    这是[头显相机](05-data-collection.md#57)画面的通路。`0x30` 在 v0.1.0 里没有使用,
+    老版本头显 APK 对 v0.2.0 也照常工作,所以**不用头显相机就没有任何行为变化**。
+
+    v0.2.0 只发布了 amd64 包:`setup_env.sh` 在 arm64 上会自动退回 v0.1.0 并打印说明
+    (代价是 arm64 没有头显相机),需要时用仓库的 `RoboticsService/qt-gcc_aarch64.sh` 自行编译。
 
 !!! note "版本以本地为准"
     命令与字段应以你 checkout 的 `src/lerobot/robots/taccap_gripper/README.md` 与
     `third_party/taccap-gripper/` 为准。
+
+!!! warning "头显相机相关内容对应尚未合并的 PR #9"
+    本手册中的[头显相机](05-data-collection.md#57)、Insight 链路移除、以及
+    [4.4](04-calibration.md#44) 里 Rerun 视图的改动,对应主仓库
+    [PR #9](https://github.com/Vertax42/xense-taccap-lerobot/pull/9)(`XenseVR-PC-Service_0.2.0_merge`),
+    **该 PR 目前尚未合入 `main`**。
+
+    如果你的 checkout 停在 `main@b229c19a`:`--robot.enable_head_camera` 在单夹爪上还不存在,
+    双夹爪上它指的是旧的 Insight 相机,Rerun 里也仍然画着 TRACKER 坐标系和虚线。
+    合并后 `git pull --recurse-submodules` + `./setup_env.sh --install` 即与本手册一致。
 
 ## 如何查版本
 
@@ -70,6 +89,11 @@ flowchart LR
 # xense-taccap / SDK
 python -c "import xense.taccap as t; print('xense.taccap', t.__version__)"
 python -c "import xensesdk, xensevr_pc_service_sdk; print('xensesdk/pc_service OK')"
+
+# XenseVR PC Service 守护进程的 deb 版本
+dpkg -s xensevr-pc-service 2>/dev/null | grep -E '^(Package|Version|Architecture):'
+# pybind 层是否带头显相机接口(v0.2.0 起)
+python -c "import xensevr_pc_service_sdk as xrt; print('pico camera API:', hasattr(xrt, 'has_pico_camera_frame'))"
 
 # 固件 SN(含固件方案信息;role/side 由 SN 解析)
 python -c "from xense.taccap import scan_grippers

@@ -309,6 +309,14 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 服务可提供多类追踪数据(Pico4 Ultra 企业版 Head / 手柄 / 手势 / 全身动捕 / **Tracker 独立追踪**);数采使用的是
 **Tracker 独立追踪**位姿,数据中带 `sn` 用于区分不同追踪器。
 
+!!! note "头显相机也走这个服务(需要 v0.2.0)"
+    [头显相机](05-data-collection.md#57)的画面不是另一条链路:头显把每只眼的 JPEG 作为
+    `0x30` 自定义消息发给 PC Service,服务原样转发到 SDK,由 `xensevr_pc_service_sdk` 缓存
+    最新帧。所以**头显相机和追踪器共用同一个服务、同一条连接**——服务没起来,两者都没有。
+
+    v0.1.0 会丢弃 `0x30`,必须升到 **v0.2.0**(仅 amd64;arm64 的说明见
+    [2.4 一键安装](02-environment.md))。反过来,只用追踪器时 v0.2.0 与 v0.1.0 行为一致。
+
 !!! tip "验证服务与设备"
     服务目录附带 `ConsoleDemo` / `RobotDemoQt` 演示程序(`/opt/apps/roboticsservice/`),
     可用于确认 Pico4 Ultra 企业版已被发现、追踪数据正常(需与服务相同的运行环境)。

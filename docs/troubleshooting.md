@@ -101,6 +101,48 @@
     **解决**:用 `--robot.tracker_serial=<SN>` 逐字钉住(不枚举、不校验);或确认序列号
     **倒数第二位**奇左偶右。
 
+## 头显相机 {#head-camera}
+
+??? failure "开了 `--robot.enable_head_camera=true`,一直卡在等待首帧"
+    **原因**:相机帧走的是 PC Service 的 `0x30` 自定义消息,这条路上任何一环没通都收不到帧:
+    服务版本低于 v0.2.0(v0.1.0 直接丢弃 `0x30`)、头显 APP 没在推流、
+    或者程序没有先 `xrt.init()`。
+    **解决**:按这个顺序查——
+
+    ```bash
+    # 1) 服务 deb 版本:amd64 需要 0.2.0
+    dpkg -s xensevr-pc-service | grep -E '^(Version|Architecture):'
+    # 2) pybind 层是否带相机接口
+    python -c "import xensevr_pc_service_sdk as xrt; print(hasattr(xrt, 'has_pico_camera_frame'))"
+    ```
+
+    再确认头显已连上 PC Service 且 APP 正在推流(相机与追踪器**共用同一条连接**)。
+    见 [5.7 头显相机 · 前置条件](05-data-collection.md#57)。
+
+??? failure "`AttributeError: module 'xensevr_pc_service_sdk' has no attribute 'has_pico_camera_frame'`"
+    **原因**:环境里加载的是**旧版 pybind**(相机接口是随 v0.2.0 一起加的)。
+    **解决**:拉最新主仓库与子模块后重跑 `./setup_env.sh --install`;仍然为 `False` 时
+    用 `python -c "import xensevr_pc_service_sdk as x; print(x.__file__)"` 确认加载的是哪一份。
+
+??? failure "arm64 主机装不上 v0.2.0 / 下载 404"
+    **原因**:v0.2.0 **只发布了 amd64 包**。`setup_env.sh` 检测到 arm64 会自动退回 v0.1.0
+    并打印说明——所以 arm64 上**没有头显相机**,这是预期行为,不是安装失败。
+    **解决**:确实需要时,在 ARM64 主机上用 `RoboticsService/qt-gcc_aarch64.sh` 自行编译 v0.2.0。
+
+??? failure "日志反复出现左右眼偏差(skew)告警"
+    **原因**:两只眼是两条独立消息,帧序号不同且时间戳差超过
+    `--robot.head_camera_pair_max_skew_ms`(默认 20 ms)。常见于主机负载过高、
+    或头显与 PC 之间的链路抖动。
+    **解决**:告警**不会中断录制**,但这几帧的左右眼可能不是同一次曝光。先降低主机负载
+    (减少相机路数、用 `--robot.head_camera_eyes=left` 只录一只眼);链路问题按
+    [3.4 网络连接](03-host-hardware.md#pico-network)排查。确认只是抖动时,再考虑适当放宽该阈值。
+
+??? failure "`head_camera_width/_height` 报错说尺寸不支持"
+    **原因**:头显相机**只接受 `1024x768` 和 `1280x960`**(都是 4:3,与传感器一致)。
+    填别的会直接报错而不是悄悄降级——重采样会无声改掉记录下来的视场角。
+    **解决**:改回两个受支持的尺寸之一。注意**改尺寸等于换了一组数据**,变更前后的 episode
+    不能混用。见 [5.7 头显相机](05-data-collection.md#57)。
+
 ## 采集与录制
 
 ??? failure "编码器跟不上、日志出现丢帧告警"

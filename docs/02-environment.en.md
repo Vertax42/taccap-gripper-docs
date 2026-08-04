@@ -58,9 +58,18 @@ Submodules and the packages they install:
 | Submodule | Package installed |
 |---|---|
 | `third_party/taccap-gripper` | `xense.taccap` (XTac-UMI G1 tactile gripper SDK) |
-| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk` (Pico4 Ultra Enterprise teleop / tracker) |
-| `third_party/XenseVR-RobotVision-PC` | ZED-M → Pico4 Ultra Enterprise stereo passthrough (built separately) |
-| `third_party/pyinsight` | `pyinsight` (Insight head-camera interface) |
+| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk` (Pico4 Ultra Enterprise teleop / tracker / headset camera) |
+
+!!! note "The Insight head-camera path is gone"
+    `third_party/pyinsight` and `third_party/XenseVR-RobotVision-PC` (the ZED-M stereo
+    passthrough) have been **removed from the main repository**. The head camera is now the
+    Pico4 Ultra Enterprise headset's own stereo camera, over the same `xensevr_pc_service_sdk`
+    connection — see [5.7 Headset camera](05-data-collection.md#57).
+
+    Upgrading from an older checkout: the leftover `third_party/pyinsight` and
+    `third_party/XenseVR-RobotVision-PC` directories can simply be deleted after `git pull`, and
+    `pyinsight` can be uninstalled (`uv pip uninstall pyinsight`). Leaving either in place is
+    harmless.
 
 !!! note "xensesdk is not a submodule"
     `xensesdk` is the visuotactile sensor SDK. `setup_env.sh --install` installs it
@@ -114,19 +123,24 @@ This step will:
 - install the **XenseVR PC Service daemon** (a ~100 MB `.deb`, into `/opt/apps/roboticsservice`)
 - build the SDKs under `third_party`: `xensevr_pc_service_sdk` (Pico4 Ultra Enterprise) and
   `xense.taccap` (gripper)
-- install `pyinsight` (Insight head-camera interface)
-
-!!! note "A pyinsight failure does not abort the install"
-    If that step fails it only prints `[WARN] pyinsight installation skipped or failed`; nothing
-    else is affected. If the submodule was never pulled, run
-    `git submodule update --init third_party/pyinsight` and re-run. Check device/HID readiness
-    separately with `pyinsight-check-env --hidraw`.
 
 !!! note "Where the XenseVR PC Service .deb comes from"
     `./setup_env.sh --install` downloads the `.deb` for your architecture straight from the
-    [v0.1.0 release](https://github.com/Vertax42/XenseVR-PC-Service/releases/tag/v0.1.0)
+    [v0.2.0 release](https://github.com/Vertax42/XenseVR-PC-Service/releases/tag/v0.2.0)
     (override the URL with `$XENSEVR_DEB_URL`) and runs `sudo dpkg -i`. It is skipped when the
     same version is already installed.
+
+!!! warning "v0.2.0 is what makes the headset camera work"
+    v0.2.0 **forwards message type `0x30`** (video frame with timestamp) to SDK clients rather
+    than dropping it — that is the path the [headset camera](05-data-collection.md#57) frames
+    take. Tracking behaviour is identical to v0.1.0 (`0x30` was unused there, and an older
+    headset APK works unchanged against the new service), so **if you do not use the head camera,
+    this upgrade changes nothing for you**.
+
+    **arm64 hosts stay on v0.1.0.** v0.2.0 ships an amd64 asset only; `setup_env.sh` detects
+    arm64, pins to the newest release that has an arm64 build and says so — at the cost of no
+    head camera there. Build it yourself on an ARM64 host with the repository's
+    `RoboticsService/qt-gcc_aarch64.sh` if you need it.
 
 ## 2.5 Verify the install {#25}
 
@@ -138,11 +152,14 @@ python -c 'import xensesdk; print("xensesdk OK ->", xensesdk.__file__)'
 python -c 'import xense.taccap; print("xense.taccap OK ->", xense.taccap.__file__)'
 ```
 
-One more if you use the Insight head camera:
+One more if you use the [headset camera](05-data-collection.md#57) — it checks that the pybind
+layer in your environment is the build that carries the camera API:
 
 ```bash
-python -c 'import importlib.metadata as M; from pyinsight import find_library; print("pyinsight v" + M.version("pyinsight"), "->", find_library())'
+python -c 'import xensevr_pc_service_sdk as xrt; print("pico camera API:", hasattr(xrt, "has_pico_camera_frame"))'
 ```
+
+`False` means an older pybind is being loaded; re-run `./setup_env.sh --install`.
 
 Optional — confirm the video codec dependencies load (`torchcodec` is pinned by the PyTorch
 compatibility matrix, PyAV is pinned to `15.1.0`; FFmpeg is not part of the conda solve):
