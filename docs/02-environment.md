@@ -50,9 +50,16 @@ git submodule update --init --recursive --progress
 | 子模块 | 安装后的包 |
 |---|---|
 | `third_party/taccap-gripper` | `xense.taccap`(XTac-UMI G1 触觉夹爪 SDK) |
-| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 Ultra 企业版遥操 / 追踪器) |
-| `third_party/XenseVR-RobotVision-PC` | ZED-M → Pico4 Ultra 企业版立体透视(单独构建) |
-| `third_party/pyinsight` | `pyinsight`(Insight 头戴相机接口) |
+| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 Ultra 企业版遥操 / 追踪器 / 头显相机) |
+
+!!! note "Insight 头戴相机链路已移除"
+    `third_party/pyinsight` 与 `third_party/XenseVR-RobotVision-PC`(ZED-M 立体透视)
+    这两个子模块**已从主仓库删除**,头戴相机改由 Pico4 Ultra 企业版头显自带的双目相机提供,
+    走 `xensevr_pc_service_sdk` 同一条连接(见 [5.7 头显相机](05-data-collection.md#57))。
+
+    从旧 checkout 升级时,`git pull` 之后残留的 `third_party/pyinsight`、
+    `third_party/XenseVR-RobotVision-PC` 目录可以直接删掉;`pyinsight` 也可以从环境里卸载
+    (`uv pip uninstall pyinsight`),留着不影响使用。
 
 !!! note "xensesdk 不是子模块"
     `xensesdk` 是视触觉传感器 SDK,由 `setup_env.sh --install` 自动安装,
@@ -106,18 +113,22 @@ mamba activate xense-taccap
 - 安装 `xensesdk` 视触觉传感器 SDK
 - 安装 **XenseVR PC Service 守护进程**(约 100 MB 的 `.deb`,装到 `/opt/apps/roboticsservice`)
 - 构建 `third_party` 下的 SDK:`xensevr_pc_service_sdk`(Pico4 Ultra 企业版)与 `xense.taccap`(夹爪)
-- 安装 `pyinsight`(Insight 头戴相机接口)
-
-!!! note "pyinsight 失败不会中断安装"
-    该步骤失败只打印 `[WARN] pyinsight installation skipped or failed`,不影响其余组件。
-    子模块没拉时先 `git submodule update --init third_party/pyinsight` 再重跑。
-    设备/HID 就绪情况另用 `pyinsight-check-env --hidraw` 检查。
 
 !!! note "XenseVR PC Service 的 .deb 从哪来"
     `./setup_env.sh --install` 会直接从
-    [v0.1.0 release](https://github.com/Vertax42/XenseVR-PC-Service/releases/tag/v0.1.0)
+    [v0.2.0 release](https://github.com/Vertax42/XenseVR-PC-Service/releases/tag/v0.2.0)
     下载当前机器架构对应的 `.deb` 包(可用 `$XENSEVR_DEB_URL` 覆盖下载地址),
     再执行 `sudo dpkg -i` 安装;已安装同版本时会跳过。
+
+!!! warning "必须是 v0.2.0 才有头显相机"
+    v0.2.0 的改动是**转发 `0x30`(带时间戳的视频帧)消息**给 SDK 客户端,而不再丢弃——
+    [头显相机](05-data-collection.md#57)的画面就走这条路。追踪器功能与 v0.1.0 完全一致
+    (`0x30` 在 v0.1.0 里没有使用,老版本 APK 对新服务也照常工作),所以**不用头显相机的话,
+    这次升级对你没有任何行为变化**。
+
+    **arm64 主机会被固定在 v0.1.0。** v0.2.0 只发布了 amd64 包,`setup_env.sh` 检测到 arm64 时
+    会自动退回到最后一个带 arm64 资源的版本并打印说明——代价是 arm64 上没有头显相机。
+    确实需要时,在 ARM64 主机上用仓库里的 `RoboticsService/qt-gcc_aarch64.sh` 自行编译。
 
 ## 2.5 验证安装 {#25}
 
@@ -129,11 +140,13 @@ python -c 'import xensesdk; print("xensesdk OK ->", xensesdk.__file__)'
 python -c 'import xense.taccap; print("xense.taccap OK ->", xense.taccap.__file__)'
 ```
 
-用 Insight 头戴相机时再补一条:
+用[头显相机](05-data-collection.md#57)时再补一条——检查 pybind 层是不是带相机接口的新版本:
 
 ```bash
-python -c 'import importlib.metadata as M; from pyinsight import find_library; print("pyinsight v" + M.version("pyinsight"), "->", find_library())'
+python -c 'import xensevr_pc_service_sdk as xrt; print("pico camera API:", hasattr(xrt, "has_pico_camera_frame"))'
 ```
+
+返回 `False` 说明环境里加载的还是旧的 pybind,重新执行 `./setup_env.sh --install` 即可。
 
 可选:确认视频编解码依赖可加载(`torchcodec` 按 PyTorch 兼容矩阵固定,PyAV 固定为 `15.1.0`;FFmpeg 不参与 conda 求解):
 

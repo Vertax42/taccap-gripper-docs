@@ -17,6 +17,13 @@
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别规则 |
 | `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
 | `--robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率/帧率 |
+| `--robot.enable_head_camera` | `false` | 头显相机(第一视角 + 头显位姿),见 [5.7](05-data-collection.md#57) |
+| `--robot.head_camera_eyes` | `both` | `both` = 左右眼各一个键;`left` / `right` 只录一只 |
+| `--robot.head_camera_width/_height` | `1024` / `768` | **每只眼**尺寸,只接受 `1024x768` / `1280x960` |
+| `--robot.head_camera_fps` | `30` | 头显相机帧率 |
+| `--robot.head_camera_pair_max_skew_ms` | `20.0` | 左右眼帧序号不同时,判为同一次曝光的最大时间差 |
+| `--robot.head_camera_startup_timeout_s` | `5.0` | connect 时等待首帧的秒数 |
+| `--robot.head_camera_stale_after_s` | `0.2` | 缓存帧超过该时长即视为过期并告警 |
 | `--robot.tactile_fps` | `30` | 触觉帧率 |
 | `--robot.tactile_output_types` | `["rectify"]` | **落盘**的触觉流,**只能填一个**;填多个直接报错 |
 | `--robot.tactile_display_output_types` | `["difference"]` | **仅供 Rerun 显示**、不落盘的额外触觉流;设为空列表则关闭 |

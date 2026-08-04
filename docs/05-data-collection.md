@@ -92,6 +92,11 @@ lerobot-record \
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别自动匹配 |
 | `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
 | `--robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率 / 帧率 |
+| `--robot.enable_head_camera` | `false` | 录制 Pico4 Ultra 企业版**头显相机**,见 [§5.7](#57) |
+| `--robot.head_camera_eyes` | `both` | `both` 录左右两只眼(两个键),`left` / `right` 只录一只 |
+| `--robot.head_camera_width/_height` | `1024` / `768` | **每只眼**的尺寸,只接受 `1024x768` 或 `1280x960` |
+| `--robot.head_camera_fps` | `30` | 头显相机录制帧率 |
+| `--robot.head_camera_pair_max_skew_ms` | `20.0` | 左右眼帧序号不同时,判定为同一次曝光的最大时间差 |
 | `--robot.tactile_fps` | `30` | 触觉录制帧率 |
 | `--robot.tactile_output_types` | `["rectify"]` | **落盘**的触觉流,**只能填一个** |
 | `--robot.tactile_display_output_types` | `["difference"]` | **仅显示**、不落盘的额外触觉流 |
@@ -138,6 +143,9 @@ lerobot-record \
 | `imu.mag.{x,y,z}`(默认关) | XTac-UMI G1 IMU | float(µT) |
 | `tactile_left` / `tactile_right` | 视触觉校正图 | uint8,约 `(400, 700, 3)` |
 | `wrist_cam` | 腕部相机 | uint8 `(H, W, 3)` |
+| `left_head` / `right_head`(默认关) | 头显相机,**一只眼一个键** | uint8,默认 `(768, 1024, 3)` |
+| `head_camera.x/y/z`(默认关) | 头显位置,与 `tcp.*` 同一世界系 | float(米) |
+| `head_camera.r1..r6`(默认关) | 头显姿态的 6-D 旋转 | float |
 
 !!! note "6-D 旋转约定"
     `r1..r3` 是旋转矩阵第一列,`r4..r6` 是旋转矩阵第二列。
@@ -148,7 +156,7 @@ lerobot-record \
 
     该变换是**机体固连**的——随夹爪一起转,任意姿态下都成立,采集时朝哪个方向起手都行。
     TCP 取两指中点,对称张合时该点不动,因此与 `gripper.pos` 无关。
-    想直观确认,看 Rerun `/world` 里 EE 与 TRACKER 两个坐标系及其连线
+    想直观确认,把夹爪平放,看 Rerun `/world` 里的 EE 标记是否落在两指中点
     → [4.4 3D 轨迹可视化](04-calibration.md#44)。
 
 !!! tip "IMU 默认不采集"
@@ -182,6 +190,8 @@ lerobot-record \
     噪声偏大且会削顶;它同时放大信号与噪声,**不改变信噪比**,只是留出余量。
 - **腕相机** → `wrist_cam`;`--robot.enable_wrist_camera=false` 跳过;
   `--robot.wrist_camera_width/_height/_fps` 调。
+- **头显相机** → `left_head` / `right_head` + `head_camera.*`;**默认关闭**,
+  `--robot.enable_head_camera=true` 开启,详见 [§5.7](#57)。
 - **角色** → `--robot.role=follower` 绑定 Slave 单元(默认 `leader`)。
 
 ## 5.5 录制选项:流式编码与编码器预热 {#55}
@@ -225,5 +235,80 @@ lerobot-record \
 !!! tip "想采到"好数据"?"
     会跑命令只是第一步。务必阅读 [采集规范与最佳实践](best-practices.md)——坐标原点纪律、
     触觉接触、演示一致性、增量验证等,直接决定落盘数据的质量。
+
+## 5.7 可选:头显相机(第一视角) {#57}
+
+**默认关闭。**打开后录制 Pico4 Ultra 企业版**头显自带的双目相机**,以及头显自身的位姿——
+也就是操作员的第一视角画面和"人在往哪看"。单夹爪(`taccap_gripper`)和双夹爪
+(`bi_taccap_gripper`)都支持,开关和参数完全一样。
+
+```bash
+lerobot-record \
+    --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=true \
+    --display_data=true \
+    --dataset.repo_id=<your_org>/<your_dataset> \
+    --dataset.single_task='Pick up the object' \
+    --dataset.fps=30 \
+    --dataset.push_to_hub=false
+```
+
+产出三组键:
+
+| Key | 含义 |
+|---|---|
+| `left_head` / `right_head` | 头显相机画面,**一只眼一个视频键**,默认各 `(768, 1024, 3)` |
+| `head_camera.x/y/z` | 头显位置(米) |
+| `head_camera.r1..r6` | 头显姿态,6-D 旋转(约定同 `tcp.*`) |
+
+!!! warning "`left_` / `right_` 在这里指的是**眼睛**,不是左右手"
+    双夹爪上 `{side}_wrist`、`{side}_tcp.*` 是按**手臂**分左右的;但头显只有一个,
+    `left_head` / `right_head` 指的是**头显的左眼 / 右眼**。同理:两个单夹爪进程同时开头显相机,
+    拿到的是**同一个头显的同一路画面**,不是两个独立视角。
+
+### 前置条件
+
+1. **XenseVR PC Service ≥ v0.2.0**(amd64)。v0.1.0 会丢弃承载相机帧的 `0x30` 消息;
+   arm64 主机目前固定在 v0.1.0,即**没有头显相机**。见 [2.4 一键安装](02-environment.md)。
+2. **头显 APP 正在推流**。相机和追踪器**共用同一条 SDK 连接**,所以头显必须已连上 PC Service
+   (见 [3.5 启动 XenseVR PC Service](03-host-hardware.md#35))。反过来,关掉相机不会断开追踪器的
+   连接,关掉追踪器也不会断开相机。
+
+### 分辨率与录制单眼
+
+`--robot.head_camera_width/_height` **只接受 `1024x768`(默认)和 `1280x960`**,填别的直接报错,
+不会悄悄降级;首帧尺寸与配置不一致时同样报错——重采样会**悄悄改掉记录下来的视场角**。
+两个尺寸都是 4:3,与传感器一致(PICO 的相机访问接口单帧上限 2328x1748,也是 4:3;
+按 16:9 要画面,得到的是裁剪或拉伸,而不是更大的视场)。
+
+只要一只眼时用 `--robot.head_camera_eyes=left`(或 `right`):JPEG 解码量和编码器压力都减半,
+数据集里也只有一个头部视频键。
+
+!!! danger "改分辨率或改录制的眼睛 = 换了一组数据"
+    这两项一变,落盘的画面就不一样了,**变更前后的 episode 不能混用**。要改就在开录之前定下来,
+    并在[数据管理](data-management.md)里记清楚。
+
+### 左右眼配对
+
+两只眼是**两条独立消息**分别到达的,而且分成两个视频键之后,一旦配错在数据里**看不出任何痕迹**。
+所以每帧都会比对两只眼的最新帧:帧序号相同就是确定的同一次曝光;序号不同则要求时间戳相差不超过
+`--robot.head_camera_pair_max_skew_ms`(默认 20 ms,对比 30 fps 下约 33 ms 的帧周期)。
+超出不会中断录制,而是打一条**限流的告警并给出实测偏差**——让问题看得见,而不是默默写进数据集。
+
+!!! note "为什么要在后台线程里收帧"
+    直接在录制循环里读 SDK,实测有 **7% 的帧**拿到的是"一只眼更新了、另一只没更新"的组合
+    (599 次采样,左眼总是快 1–2 帧)。现在改为后台线程以 120 Hz 轮询,凑齐一对才交出去,
+    实测 7% → 0%,帧率不受影响。
+
+### 位姿与可视化
+
+`head_camera.*` 是**头显位姿**,并且已经重映射到与 `tcp.*` **相同的重力对齐世界系**
+(用的是追踪器那套 Pico→world 变换)。这意味着头和手第一次可以直接比较、画在同一个 3D 场景里:
+开 `--display_data=true` 时,`/world` 视图里会多出一个琥珀色的 `HEAD` 标记
+(见 [4.4](04-calibration.md#44))。
+
+!!! note "维度变化"
+    开启后 `observation.state` 增加 9 维(头显位姿)。单夹爪 10 → 19,双夹爪 20 → 29。
+    再叠加 `--robot.enable_imu=true` 时按各自规则继续累加。
 
 下一步 → [采集规范与最佳实践](best-practices.md) → [数据集与示例](06-dataset.md)

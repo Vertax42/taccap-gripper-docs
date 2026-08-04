@@ -38,9 +38,14 @@ flowchart TB
     G -- USB / serial+UVC --> SDK
     P -- wireless --> PS
     PS -- pose --> LR
+    PS -. headset camera frames (optional) .-> LR
     SDK -- observation --> LR
     LR --> DS[(LeRobotDataset<br/>parquet + mp4)]
 ```
+
+The same PC Service connection can also carry the **headset's own stereo camera** — optional, off
+by default, and requiring service ≥ v0.2.0. See
+[5.7 Headset camera](05-data-collection.md#57).
 
 ## 1.3 Architecture & data flow
 

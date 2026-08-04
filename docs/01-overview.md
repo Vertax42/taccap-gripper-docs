@@ -44,6 +44,7 @@ flowchart TB
     T -- 无线 --> H
     H -- Type-C 有线 / WiFi 无线 --> PS
     PS -- 位姿 --> LR
+    PS -. 头显相机画面(可选) .-> LR
     SDK -- 观测 --> LR
     LR --> DS[(LeRobotDataset<br/>parquet + mp4)]
 ```
@@ -52,6 +53,8 @@ flowchart TB
 - **Pico4 Ultra 运动追踪器**装在夹爪顶部,通过无线与 **Pico4 Ultra 企业版头显**通信。
 - **Pico4 Ultra 企业版头显**通过 Type-C 有线网络或 WiFi 无线网络连接数采电脑,将位姿发送至 XenseVR PC Service。
 - **XenseVR PC Service** 是位姿数据的主机守护进程,`Pico4TrackerReader` 经 `xensevr_pc_service_sdk` 从中读取 6-DoF 位姿。
+  同一条连接还可以送来**头显自带双目相机**的画面(可选,默认关闭,需服务 ≥ v0.2.0;见
+  [5.7 头显相机](05-data-collection.md#57))。
 - **lerobot-record** 把观测(t-1 帧)与动作(t 帧位姿 + 归一化夹爪开度)配对,写出数据集。
 
 ## 1.3 系统架构与数据流
