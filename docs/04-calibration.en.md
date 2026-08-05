@@ -108,9 +108,10 @@ Topping out below 1.0 (0.68, say) means it was never calibrated — matching the
 
 ### 4.1.4 Scope
 
-- **Leaders only.** Travel calibration is a leader-only capability; a follower's encoder does
-  not support it. Data collected with followers uses the `gripper_open_rad` fallback on both
-  sides, which is unchanged from the older behaviour.
+- **Manual calibration is leader-only.** The two-step procedure is a leader capability; a
+  follower rejects the command — it relies on the firmware's **power-on auto-calibration**
+  instead (see the note below). During collection a follower's `gripper.pos` is still normalised
+  by `gripper_open_rad`, unchanged from the older behaviour.
 - **Firmware >= V2.1 (leader 1.2.0) required.** Older firmware does not support it:
   `calibrate.py` **exits without changing anything**, and during collection the software warns and
   falls back automatically — the session continues, but the calibration has no effect. Any gripper
@@ -121,10 +122,10 @@ Topping out below 1.0 (0.68, say) means it was never calibrated — matching the
   to another host. Only redo it after removing or refitting the encoder, changing the mechanical
   limit, or erasing the firmware.
 
-!!! note "The firmware's power-on auto-calibration does not replace this"
-    V1.9 added `GripperAutoCalConfig` (close-to-stall ⇒ zero, open-to-stall ⇒ max_open at
-    power-up), but that interface is on the **follower**, not the leader. Collection uses leaders,
-    so manual calibration is still required.
+!!! note "A follower's power-on auto-calibration does not replace this"
+    **Followers** have supported power-on auto-calibration since V1.9: on power-up they close to
+    stall for the zero and open to stall for the travel span. **Leaders do not have it**, and
+    collection uses leaders — so the manual calibration in this section is still required.
 
 ## 4.2 Pico4 Ultra Enterprise tracker self-check
 
