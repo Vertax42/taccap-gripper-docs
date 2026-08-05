@@ -60,7 +60,7 @@ flowchart LR
 | `rerun-sdk` | `>=0.24.0,<0.27.0`(`--display_data` 用) | 0.26.2 |
 | `opencv-python` | 固定 `==4.12.0.88`(XenseRobotics 各 SDK 统一) | 4.12.0.88 |
 | NumPy | `>=1.26.4` | 2.2.6 |
-| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@b229c19a` + PR #9(`4d4d8228`,未合并) |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@ffc94d53` |
 | `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`16412dc`) |
 | 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0(镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
@@ -90,15 +90,14 @@ flowchart LR
     命令与字段应以你 checkout 的 `src/lerobot/robots/taccap_gripper/README.md` 与
     `third_party/taccap-gripper/` 为准。
 
-!!! warning "头显相机相关内容对应尚未合并的 PR #9"
+!!! note "头显相机需要 `ffc94d53` 之后的版本"
     本手册中的[头显相机](05-data-collection.md#57)、Insight 链路移除、以及
-    [4.4](04-calibration.md#44) 里 Rerun 视图的改动,对应主仓库
-    [PR #9](https://github.com/Vertax42/xense-taccap-lerobot/pull/9)(`XenseVR-PC-Service_0.2.0_merge`),
-    **该 PR 目前尚未合入 `main`**。
+    [4.4](04-calibration.md#44) 里 Rerun 视图的改动,来自
+    [PR #9](https://github.com/Vertax42/xense-taccap-lerobot/pull/9),已合入 `main`(`ffc94d53`)。
 
-    如果你的 checkout 停在 `main@b229c19a`:`--robot.enable_head_camera` 在单夹爪上还不存在,
+    checkout 停在更早的版本时:`--robot.enable_head_camera` 在单夹爪上还不存在,
     双夹爪上它指的是旧的 Insight 相机,Rerun 里也仍然画着 TRACKER 坐标系和虚线。
-    合并后 `git pull --recurse-submodules` + `./setup_env.sh --install` 即与本手册一致。
+    执行 `git pull --recurse-submodules` + `./setup_env.sh --install` 即与本手册一致。
 
 ## 如何查版本 {#check-versions}
 
