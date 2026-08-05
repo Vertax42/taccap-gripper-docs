@@ -52,14 +52,30 @@ flowchart LR
 |---|---|---|
 | 操作系统 | Ubuntu 22.04 / 24.04 | Ubuntu 24.04.4 LTS |
 | NVIDIA GPU / 驱动 | GPU 可选;多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 |
-| Python | ≥ 3.10 | 3.12.13 |
-| PyTorch | 由 `setup_env.sh` 与依赖锁定文件统一安装 | 2.10.0 |
+| Python | **≥ 3.12**(`pyproject.toml` 的 `requires-python`;`conda_environment.yaml` 固定 `python=3.12`) | 3.12.13 |
+| PyTorch | `torch>=2.2.1,<2.11.0`;`torchvision>=0.21.0,<0.26.0` | 2.10.0 / torchvision 0.25.0 |
+| `torchcodec` | `>=0.2.1,<0.11.0`,由 `setup_env.sh` **按当前 torch 版本自动对齐**(不匹配会强制重装) | 0.10.0 |
+| PyAV | `av>=15.0.0,<16.0.0`,安装脚本固定装 **15.1.0** | 15.1.0 |
+| `rerun-sdk` | `>=0.24.0,<0.27.0`(`--display_data` 用) | 0.26.2 |
+| `opencv-python` | 固定 `==4.12.0.88`(XenseRobotics 各 SDK 统一) | 4.12.0.88 |
+| NumPy | `>=1.26.4` | 2.2.6 |
 | `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@b229c19a` + PR #9(`4d4d8228`,未合并) |
 | `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`16412dc`) |
 | 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0(镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
-| `xensevr_pc_service_sdk` | 随 XenseVR PC Service `.deb` | v0.2.0 release(amd64)|
-| XenseVR PC Service | amd64 ≥ **v0.2.0**;arm64 目前只有 v0.1.0 | v0.2.0(`6c5ff61d`)|
+| XenseVR PC Service(`.deb` 守护进程) | amd64 ≥ **v0.2.0**;arm64 目前只有 v0.1.0 | v0.2.0(子模块 `6c5ff61d`)|
+| `xensevr_pc_service_sdk`(pybind) | 随主仓库子模块一起编译安装 | 0.1.0 —— **包版本号没跟着服务走**,见下 |
+
+!!! warning "`pip show xensevr-pc-service-sdk` 会显示 0.1.0,这是正常的"
+    Python 侧的 `xensevr_pc_service_sdk` 是主仓库里的 pybind 封装,`setup.py` 里的版本号
+    一直是 `0.1.0`,**没有随 PC Service 的 v0.2.0 提升**。所以**不要用它判断有没有头显相机支持**——
+    要看的是有没有相机接口:
+
+    ```bash
+    python -c "import xensevr_pc_service_sdk as xrt; print(hasattr(xrt, 'has_pico_camera_frame'))"
+    ```
+
+    服务本体的版本用 `dpkg -s xensevr-pc-service` 查(见[如何查版本](#check-versions))。
 
 !!! note "PC Service v0.2.0 只影响头显相机"
     v0.2.0 相对 v0.1.0 的行为差异只有一条:**转发 `0x30`(带时间戳视频帧)消息**,
@@ -83,16 +99,30 @@ flowchart LR
     双夹爪上它指的是旧的 Insight 相机,Rerun 里也仍然画着 TRACKER 坐标系和虚线。
     合并后 `git pull --recurse-submodules` + `./setup_env.sh --install` 即与本手册一致。
 
-## 如何查版本
+## 如何查版本 {#check-versions}
+
+一条命令把上表里跑在 Python 环境里的都打出来:
+
+```bash
+python - <<'EOF'
+import importlib.metadata as M
+for p in ("lerobot", "taccap-gripper", "xensesdk", "torch", "torchvision",
+          "torchcodec", "av", "rerun-sdk", "opencv-python", "numpy"):
+    try:
+        print(f"{p:16} {M.version(p)}")
+    except M.PackageNotFoundError:
+        print(f"{p:16} 未安装")
+EOF
+```
 
 ```bash
 # xense-taccap / SDK
 python -c "import xense.taccap as t; print('xense.taccap', t.__version__)"
 python -c "import xensesdk, xensevr_pc_service_sdk; print('xensesdk/pc_service OK')"
 
-# XenseVR PC Service 守护进程的 deb 版本
+# XenseVR PC Service 守护进程的 deb 版本(服务本体的版本以这个为准)
 dpkg -s xensevr-pc-service 2>/dev/null | grep -E '^(Package|Version|Architecture):'
-# pybind 层是否带头显相机接口(v0.2.0 起)
+# pybind 层是否带头显相机接口(需要 PC Service v0.2.0;包版本号不会变,只能看接口)
 python -c "import xensevr_pc_service_sdk as xrt; print('pico camera API:', hasattr(xrt, 'has_pico_camera_frame'))"
 
 # 固件 SN(含固件方案信息;role/side 由 SN 解析)

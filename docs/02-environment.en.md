@@ -12,7 +12,7 @@ installed and verified.
     - Linux kernel: `7.0.0-28-generic` (that host's `uname -r` output — **not** a minimum
       kernel requirement)
     - Architecture: `x86_64`
-    - Python: `3.12.13`
+    - Python: `3.12.13` (the main repository requires **≥ 3.12**)
     - Repo commit and per-package versions: see [Versions & Support](versions.md) (single source
       of truth, so nothing drifts between copies)
 
@@ -58,18 +58,12 @@ Submodules and the packages they install:
 | Submodule | Package installed |
 |---|---|
 | `third_party/taccap-gripper` | `xense.taccap` (XTac-UMI G1 tactile gripper SDK) |
-| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk` (Pico4 Ultra Enterprise teleop / tracker / headset camera) |
+| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk` (Pico4 Ultra Enterprise tracker / headset camera) |
 
 !!! note "The Insight head-camera path is gone"
-    `third_party/pyinsight` and `third_party/XenseVR-RobotVision-PC` (the ZED-M stereo
-    passthrough) have been **removed from the main repository**. The head camera is now the
-    Pico4 Ultra Enterprise headset's own stereo camera, over the same `xensevr_pc_service_sdk`
-    connection — see [5.7 Headset camera](05-data-collection.md#57).
-
-    Upgrading from an older checkout: the leftover `third_party/pyinsight` and
-    `third_party/XenseVR-RobotVision-PC` directories can simply be deleted after `git pull`, and
-    `pyinsight` can be uninstalled (`uv pip uninstall pyinsight`). Leaving either in place is
-    harmless.
+    The head camera is now the Pico4 Ultra Enterprise headset's own stereo camera, sharing the
+    trackers' connection — see [5.7 Headset camera](05-data-collection.md#57). The `pyinsight`
+    and `XenseVR-RobotVision-PC` submodules have been removed from the main repository.
 
 !!! note "xensesdk is not a submodule"
     `xensesdk` is the visuotactile sensor SDK. `setup_env.sh --install` installs it
