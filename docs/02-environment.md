@@ -9,7 +9,7 @@
     - OS: Ubuntu 24.04.4 LTS (Noble Numbat)
     - Linux kernel: `7.0.0-28-generic`(测试机 `uname -r` 输出,非最低内核要求)
     - 机器架构: `x86_64`
-    - Python: `3.12.13`
+    - Python: `3.12.13`(主仓库要求 **≥ 3.12**)
     - 仓库 commit 与各包版本: 见 [版本与支持](versions.md)(唯一出处,避免多处抄写走样)
 
     Ubuntu 22.04 LTS 也是本章覆盖的目标环境;其它发行版或架构需按实际驱动、UVC、串口权限和 `.deb` 包支持情况单独验证。
@@ -50,16 +50,12 @@ git submodule update --init --recursive --progress
 | 子模块 | 安装后的包 |
 |---|---|
 | `third_party/taccap-gripper` | `xense.taccap`(XTac-UMI G1 触觉夹爪 SDK) |
-| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 Ultra 企业版遥操 / 追踪器 / 头显相机) |
+| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 Ultra 企业版追踪器 / 头显相机) |
 
 !!! note "Insight 头戴相机链路已移除"
-    `third_party/pyinsight` 与 `third_party/XenseVR-RobotVision-PC`(ZED-M 立体透视)
-    这两个子模块**已从主仓库删除**,头戴相机改由 Pico4 Ultra 企业版头显自带的双目相机提供,
-    走 `xensevr_pc_service_sdk` 同一条连接(见 [5.7 头显相机](05-data-collection.md#57))。
-
-    从旧 checkout 升级时,`git pull` 之后残留的 `third_party/pyinsight`、
-    `third_party/XenseVR-RobotVision-PC` 目录可以直接删掉;`pyinsight` 也可以从环境里卸载
-    (`uv pip uninstall pyinsight`),留着不影响使用。
+    头戴相机改由 Pico4 Ultra 企业版头显自带的双目相机提供,与追踪器共用同一条连接
+    (见 [5.7 头显相机](05-data-collection.md#57));`pyinsight` 与
+    `XenseVR-RobotVision-PC` 两个子模块已从主仓库删除。
 
 !!! note "xensesdk 不是子模块"
     `xensesdk` 是视触觉传感器 SDK,由 `setup_env.sh --install` 自动安装,

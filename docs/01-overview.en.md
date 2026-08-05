@@ -65,6 +65,9 @@ follows are only the constraints that decide whether, and how, this installs:
 
 - **Linux only.** The capture path is V4L2 + UVC; macOS and Windows cannot run it.
   Ubuntu 22.04 / 24.04 are tested.
+- **Python 3.12 or newer.** The main repository declares `requires-python = ">=3.12"`
+  and `conda_environment.yaml` pins `python=3.12`; 3.10 and 3.11 will not install —
+  this is a hard floor, not a recommendation.
 - **GPU optional.** NVIDIA hardware encoding is recommended for multi-stream video,
   but capture works without a GPU.
 - **Mamba / Miniforge strongly recommended** — roughly 10× faster dependency solving
