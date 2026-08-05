@@ -21,6 +21,8 @@ installed and verified.
 
     An NVIDIA GPU on the collection host is recommended: it lets `--dataset.vcodec=auto` pick the
     GPU H.264 hardware encoder, easing CPU load when several video streams are encoded live.
+    **With an NVIDIA GPU the driver must be ≥ 570.144** (check with
+    `nvidia-smi --query-gpu=driver_version --format=csv,noheader`).
 
 !!! info "Overview"
     Four steps: install Mamba → clone the repo (with submodules) → create the environment →

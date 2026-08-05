@@ -52,7 +52,7 @@ flowchart LR
 |---|---|---|
 | 操作系统 | Ubuntu 22.04 / 24.04 | Ubuntu 22.04.5 LTS / 24.04.4 LTS |
 | Linux 内核 | 不构成约束 | 6.8 / 6.14 / 7.0 系列均已验证 |
-| NVIDIA GPU / 驱动 | GPU 可选;多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 |
+| NVIDIA GPU / 驱动 | GPU 可选;**装了 NVIDIA GPU 则驱动需 ≥ 570.144**。多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 / 580.126.09 |
 | Python | **≥ 3.12**(`pyproject.toml` 的 `requires-python`;`conda_environment.yaml` 固定 `python=3.12`) | 3.12.13 |
 | PyTorch | `torch>=2.2.1,<2.11.0`;`torchvision>=0.21.0,<0.26.0` | 2.10.0 / torchvision 0.25.0 |
 | `torchcodec` | `>=0.2.1,<0.11.0`,由 `setup_env.sh` **按当前 torch 版本自动对齐**(不匹配会强制重装) | 0.10.0 |
@@ -120,6 +120,9 @@ EOF
 # xense-taccap / SDK
 python -c "import xense.taccap as t; print('xense.taccap', t.__version__)"
 python -c "import xensesdk, xensevr_pc_service_sdk; print('xensesdk/pc_service OK')"
+
+# NVIDIA 驱动(装了 NVIDIA GPU 时需 >= 570.144)
+nvidia-smi --query-gpu=driver_version,name --format=csv,noheader
 
 # XenseVR PC Service 守护进程的 deb 版本(服务本体的版本以这个为准)
 dpkg -s xensevr-pc-service 2>/dev/null | grep -E '^(Package|Version|Architecture):'
