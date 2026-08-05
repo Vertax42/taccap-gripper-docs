@@ -50,7 +50,7 @@
     **原因**:可能是设备 SN 未烧录、串口读取仍失败、固件通信异常或设备端配置问题;不能只根据空 SN 推断某个固件版本。
     **解决**:先保存完整底层报错并换线 / 换口复测;仍为空时联系设备或固件团队核对 SN 烧录与通信状态。
 
-??? failure "`ValueError` 指名某个 hub / 序列号"
+??? failure "报错指名某个 hub / 序列号"
     **原因**:发现阶段检测到硬件装配与"单左双右"规则不符——序列号不合规、每侧数量不对、
     两传感器映射到同一手指、触觉 hub 找不到对应夹爪。
     **解决**:按报错**指名的物理设备/hub**排查装配与接线。规则见 [3.3 设备发现](03-host-hardware.md#33)。
@@ -104,15 +104,14 @@
 ## 头显相机 {#head-camera}
 
 ??? failure "开了 `--robot.enable_head_camera=true`,一直卡在等待首帧"
-    **原因**:相机帧走的是 PC Service 的 `0x30` 自定义消息,这条路上任何一环没通都收不到帧:
-    服务版本低于 v0.2.0(v0.1.0 直接丢弃 `0x30`)、头显 APP 没在推流、
-    或者程序没有先 `xrt.init()`。
+    **原因**:相机画面由 PC Service 转发,这条路上任何一环没通都收不到帧:
+    服务版本低于 v0.2.0(v0.1.0 不转发头显相机画面)、头显 APP 没在推流。
     **解决**:按这个顺序查——
 
     ```bash
     # 1) 服务 deb 版本:amd64 需要 0.2.0
     dpkg -s xensevr-pc-service | grep -E '^(Version|Architecture):'
-    # 2) pybind 层是否带相机接口
+    # 2) 是否带相机接口
     python -c "import xensevr_pc_service_sdk as xrt; print(hasattr(xrt, 'has_pico_camera_frame'))"
     ```
 
@@ -120,7 +119,7 @@
     见 [5.7 头显相机 · 前置条件](05-data-collection.md#57)。
 
 ??? failure "`AttributeError: module 'xensevr_pc_service_sdk' has no attribute 'has_pico_camera_frame'`"
-    **原因**:环境里加载的是**旧版 pybind**(相机接口是随 v0.2.0 一起加的)。
+    **原因**:环境里加载的是**旧版接口**(相机接口是随 v0.2.0 一起加的)。
     **解决**:拉最新主仓库与子模块后重跑 `./setup_env.sh --install`;仍然为 `False` 时
     用 `python -c "import xensevr_pc_service_sdk as x; print(x.__file__)"` 确认加载的是哪一份。
 
@@ -159,7 +158,7 @@
     该命令同时重标零点与行程上限,两者都会写入 MCU flash。见 [4.1 夹爪标定](04-calibration.md#41)。
 
 ??? failure "标定报 `encoder-max calibration needs firmware >= V2.1`"
-    **原因**:这台夹爪的固件低于 V2.1(leader 1.2.0),没有 `Cmd::EncoderMaxCal`。
+    **原因**:这台夹爪的固件低于 V2.1(leader 1.2.0),不支持行程标定。
     `calibrate.py` 会**原样退出,不改动任何东西**——不会留下"标了零点但没标行程"的半成品。
     **解决**:刷固件。SDK 自 0.1.7 起把已发布镜像放在
     `third_party/taccap-gripper/firmware/`,不再需要固件源码:

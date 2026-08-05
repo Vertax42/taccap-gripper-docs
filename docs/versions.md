@@ -5,7 +5,7 @@
 ## 必须升级到最新版本 {#required}
 
 !!! danger "这不是可选项——采集前请先把四项都升到下表版本"
-    整条链路是**配套**的:固件 V2.1 才有 `Cmd::EncoderMaxCal`,SDK 0.1.7 才能安全刷这版固件,
+    整条链路是**配套**的:固件 V2.1 才支持行程标定,SDK 0.1.7 才能安全刷这版固件,
     而 `gripper.pos` 的 0–1 归一化要固件、SDK、标定三者齐了才成立。缺任何一环,
     **采集仍会"正常"跑完并落盘**,只是数据的开度刻度和别人对不上——事后从数据里看不出来。
 
@@ -36,7 +36,7 @@ flowchart LR
 ```
 
 1. [拉仓库与子模块](#repo-update) —— 子模块要跟着一起更新。
-2. **重新编译原生扩展**,否则源码新、`.so` 旧,`import xense.taccap` 直接失败。
+2. **重新编译 SDK**,否则新旧文件不配套,`import xense.taccap` 直接失败。
 3. [固件 OTA 升级](#ota) —— **必须在第 2 步之后**,理由见该节。
 4. [夹爪标定](04-calibration.md#41) —— 升级本身**不产生标定值**,不标就还是走回退。
 
@@ -65,12 +65,11 @@ flowchart LR
 | 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0(镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
 | XenseVR PC Service(`.deb` 守护进程) | amd64 ≥ **v0.2.0**;arm64 目前只有 v0.1.0 | v0.2.0(子模块 `6c5ff61d`)|
-| `xensevr_pc_service_sdk`(pybind) | 随主仓库子模块一起编译安装 | 0.1.0 —— **包版本号没跟着服务走**,见下 |
+| `xensevr_pc_service_sdk`(Python 接口) | 随主仓库子模块一起编译安装 | 0.1.0 —— **包版本号没跟着服务走**,见下 |
 
 !!! warning "`pip show xensevr-pc-service-sdk` 会显示 0.1.0,这是正常的"
-    Python 侧的 `xensevr_pc_service_sdk` 是主仓库里的 pybind 封装,`setup.py` 里的版本号
-    一直是 `0.1.0`,**没有随 PC Service 的 v0.2.0 提升**。所以**不要用它判断有没有头显相机支持**——
-    要看的是有没有相机接口:
+    这个包的版本号一直是 `0.1.0`,**没有随 PC Service 的 v0.2.0 提升**。所以
+    **不要用它判断有没有头显相机支持**——要看的是有没有相机接口:
 
     ```bash
     python -c "import xensevr_pc_service_sdk as xrt; print(hasattr(xrt, 'has_pico_camera_frame'))"
@@ -79,16 +78,15 @@ flowchart LR
     服务本体的版本用 `dpkg -s xensevr-pc-service` 查(见[如何查版本](#check-versions))。
 
 !!! note "PC Service v0.2.0 只影响头显相机"
-    v0.2.0 相对 v0.1.0 的行为差异只有一条:**转发 `0x30`(带时间戳视频帧)消息**,
-    这是[头显相机](05-data-collection.md#57)画面的通路。`0x30` 在 v0.1.0 里没有使用,
-    老版本头显 APK 对 v0.2.0 也照常工作,所以**不用头显相机就没有任何行为变化**。
+    v0.2.0 相对 v0.1.0 只多做一件事:**转发头显相机的视频帧**,这是
+    [头显相机](05-data-collection.md#57)画面的通路。老版本头显 APK 配 v0.2.0 也照常工作,
+    所以**不用头显相机就没有任何行为变化**。
 
     v0.2.0 只发布了 amd64 包:`setup_env.sh` 在 arm64 上会自动退回 v0.1.0 并打印说明
     (代价是 arm64 没有头显相机),需要时用仓库的 `RoboticsService/qt-gcc_aarch64.sh` 自行编译。
 
 !!! note "版本以本地为准"
-    命令与字段应以你 checkout 的 `src/lerobot/robots/taccap_gripper/README.md` 与
-    `third_party/taccap-gripper/` 为准。
+    命令与字段应以你本地这一版主仓库、以及夹爪 SDK 附带的设备说明为准。
 
 !!! note "头显相机需要 `ffc94d53` 之后的版本"
     本手册中的[头显相机](05-data-collection.md#57)、Insight 链路移除、以及
@@ -125,7 +123,7 @@ nvidia-smi --query-gpu=driver_version,name --format=csv,noheader
 
 # XenseVR PC Service 守护进程的 deb 版本(服务本体的版本以这个为准)
 dpkg -s xensevr-pc-service 2>/dev/null | grep -E '^(Package|Version|Architecture):'
-# pybind 层是否带头显相机接口(需要 PC Service v0.2.0;包版本号不会变,只能看接口)
+# 是否带头显相机接口(需要 PC Service v0.2.0;包版本号不会变,只能看接口)
 python -c "import xensevr_pc_service_sdk as xrt; print('pico camera API:', hasattr(xrt, 'has_pico_camera_frame'))"
 
 # 固件 SN(含固件方案信息;role/side 由 SN 解析)
@@ -147,13 +145,13 @@ git submodule update --init --recursive --progress
 ```
 
 !!! danger "拉完子模块必须重新编译 `xense.taccap`"
-    `git submodule update` 只换源码,不重编译原生扩展。见
+    `git submodule update` 只更新文件,不会重新编译。见
     [2.2 克隆仓库与子模块](02-environment.md)。
 
 ### 固件 OTA 升级 {#ota}
 
-**所有夹爪都要升到 V2.1**(见 [必须升级到最新版本](#required))。低于 V2.1 的固件没有
-`Cmd::EncoderMaxCal`,[夹爪标定](04-calibration.md#41)的第 2 步做不了,`gripper.pos`
+**所有夹爪都要升到 V2.1**(见 [必须升级到最新版本](#required))。低于 V2.1 的固件不支持
+行程标定,[夹爪标定](04-calibration.md#41)的第 2 步做不了,`gripper.pos`
 只能走回退、够不到 1.0。
 
 SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,直接刷即可:
@@ -167,12 +165,10 @@ SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,直接刷即可:
 版本、字节数与 CRC32,可用于核对文件是否完整。该目录只保留当前发布版。
 
 !!! warning "顺序:**先升级 SDK,再刷固件**"
-    0.1.7 之前的 `OtaSession` 只检查 `ack.is_nack`,而固件侧的错误是从**回显命令**这条路
-    返回的——传输层无法与"1 字节的成功应答"区分。结果是写入被固件拒绝却不报错,
-    **失败的升级会报成功**;它还会用新的序列号重试,而固件把这当成一次新请求并因偏移不连续
-    整段拒绝,一次仅仅是慢了的 ACK 就能毁掉一次本来正常的升级。两者都在 0.1.7 修好了。
+    0.1.7 之前的 SDK 有两个升级相关的缺陷:固件拒绝写入时它识别不出来,**失败的升级会报成功**;
+    重试的方式也可能把一次本来正常的升级弄坏。两者都在 0.1.7 修好了。
 
-    新 SDK 与旧固件通信不变(V1.9 以前的命令集没动),所以**先升 SDK 总是安全的**。
+    新 SDK 与旧固件通信不变,所以**先升 SDK 总是安全的**。
 
 **按角色选镜像,不是按左右手。**角色看固件 SN 的**最后一个字符**:
 `TCGU01A28Z0023m` → `m` → master。同一套双臂设备上两只夹爪常常**都是 master**。
@@ -191,8 +187,8 @@ python -c "from xense.taccap import scan_grippers
 for g in scan_grippers(): print(g.firmware_sn, g.role.name)"
 ```
 
-约 1 秒写完,MCU 重启并重新枚举 USB 约 1–3 秒。写入走的是**非活动 flash bank**,
-`OtaApply` 之前不覆盖任何东西,CRC 不匹配时固件拒绝切换——传输失败不会损坏正在运行的固件。
+约 1 秒写完,夹爪重启并重新识别约 1–3 秒。新固件写在**备用分区**,校验通过之前不会覆盖
+正在运行的那一份——所以传输失败不会把夹爪刷坏。
 
 !!! danger "刷错角色会导致夹爪无法启动,需返厂恢复"
     `ota_update.py` 会按 CRC32 与 `manifest.json` 比对识别镜像,**角色不匹配时直接拒绝**
@@ -228,6 +224,6 @@ for g in scan_grippers(): print(g.firmware_sn, g.role.name)"
 ## 兼容性与发布维护
 
 - 当前站点文档版本为 `v0.0.3`;内容变更可通过文档仓库 Git 提交历史追踪。
-- 主仓库版本号与本页文档版本对齐:`xense-taccap-lerobot` 的 `pyproject.toml` 记 `0.5.1+xtac.0.0.3`,其中 `0.5.1` 是上游 lerobot 基线,`xtac.0.0.3` 是与本文档同步的产品版本。
+- 主仓库版本号与本页文档版本对齐:`xense-taccap-lerobot` 的 `pyproject.toml` 记 `0.5.1+xtac.0.0.3`,其中 `0.5.1` 是 lerobot 官方基线,`xtac.0.0.3` 是与本文档同步的产品版本。
 - 精确兼容关系以主仓库依赖锁定文件、子模块 commit 和本页“已验证基线”为准,不要仅按包名猜测兼容性。
 - 升级主仓库、SDK、固件或 XenseVR PC Service 后,应重新执行环境验证、设备自检和一条短 episode 校验。

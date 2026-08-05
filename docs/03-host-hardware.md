@@ -7,7 +7,7 @@ ModemManager 抢占、设备自动发现规则,并给出硬件上电顺序。
 
 夹爪 MCU 枚举为 `/dev/ttyACM*`,属 `dialout` 组。若用户不在该组,SDK 能*列出*夹爪
 但**打不开串口读固件序列号**,于是 `scan_grippers()` 报 `role=Unknown` / `firmware_sn`
-为空,`connect()` 失败:
+为空,连接失败:
 
 ```text
 RuntimeError: No leader gripper discovered for the left side.
@@ -35,7 +35,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 夹爪 MCU 是 CH343 USB 串口(`1a86:55d2`,CDC-ACM)。每次热插拔,**ModemManager**
 (Ubuntu/GNOME 默认的蜂窝调制解调器服务)会用 AT 指令探测新端口并占用几秒,导致这段
-时间内 `connect()` 失败:
+时间内连接失败:
 
 ```text
 IoError: SerialBus: open(/dev/serial/by-id/usb-1a86_USB_Dual_Serial_..-if02): Device or resource busy
@@ -69,7 +69,6 @@ mmcli -L                                                               # 夹爪�
 ## 3.3 设备自动发现与"单左双右"规则 {#33}
 
 所有设备**按序列号 + USB 拓扑自动发现**并分配到 `left`/`right`,**不手写序列号**。
-规则源:`src/lerobot/robots/taccap_gripper/serial_discovery.py`。
 
 ### 序列号语法
 
@@ -90,20 +89,20 @@ mmcli -L                                                               # 夹爪�
 结合 USB 拓扑与侧别规则:
 
 - **属于哪个夹爪(side)**:共享同一夹爪 **USB hub** 的两枚 GSPS 传感器就是该夹爪的一对;
-  夹爪的侧别读自其**固件 SN**(`scan_grippers()` → `ep.side`,即 `Cmd::GetSn`),
-  **不是** CH343 的 `mcu_serial`。即:hub → 夹爪 → 侧别。
+  夹爪的侧别读自其**固件 SN**(即 `scan_grippers()` 输出里的 side),**不是** CH343 的
+  `mcu_serial`。即:hub → 夹爪 → 侧别。
 - **哪个手指(left/right)**:GSPS 序列号的**最后一位**(单左双右)。
 
 ### Pico4 Ultra 企业版追踪器——另一套序列号
 
 追踪器序列号(如 `PC2310MLL3200496G`)**不是** Xense 序列号。侧别看**倒数第二位**:
 奇 → 左,偶 → 右(`pico_tracker_side`),例:`…496G` → `6` → 右。
-SN 从 XRT(Python SDK)读取,见 [读取追踪器 SN](#pico-tracker-sn)。
+SN 从 PC Service 读取,见 [读取追踪器 SN](#pico-tracker-sn)。
 
 !!! note "硬件烧错/装错会显式报错"
-    每个发现函数在遇到不合规序列号、每侧数量不对、两枚传感器映射到同一手指、
-    两只夹爪抢同一触觉侧别,或触觉 hub 找不到对应夹爪时,都会抛 `ValueError` 并**指名**
-    出问题的 hub/序列号,避免物理装配与观测 schema 悄悄漂移。
+    遇到不合规序列号、每侧数量不对、两枚传感器映射到同一手指、两只夹爪抢同一触觉侧别,
+    或触觉 hub 找不到对应夹爪时,设备发现会**直接报错并指明**出问题的 hub/序列号,
+    避免实际装配和数据里的字段悄悄对不上。
 
 !!! tip "报错先说「哪一侧挤了两个」,而不是「哪一侧空了」"
     某侧空,**通常是因为它的设备序列号把自己算到了另一侧**。所以发现逻辑先报重复、
@@ -113,7 +112,7 @@ SN 从 XRT(Python SDK)读取,见 [读取追踪器 SN](#pico-tracker-sn)。
 ## 3.4 Pico4 Ultra 企业版配置 {#34}
 
 Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供 6-DoF 位姿。在 Pico4 Ultra 企业版上运行 **XenseVR-Toolkit**
-(VR 客户端 APP),位姿经 [XenseVR PC Service](#35) 由 `Pico4TrackerReader` 读取。
+(VR 客户端 APP),位姿经 [XenseVR PC Service](#35) 送到采集端。
 首次使用按「**安装 → 网络连接 → 绑定追踪器 → 追踪模式与界面设置 → 启动对齐**」五步走。
 
 ### 首次安装 XenseVR-Toolkit(Pico4 Ultra 企业版) {#pico-app}
@@ -206,8 +205,8 @@ SN 决定左右(倒数第二位奇左偶右,见 [3.3](#33)),也是 PC Service �
 
 头显里看不到这个 SN:「体感追踪器」App 只显示**短编号**(如 `Tracker 150399`),
 XenseVR-Toolkit 的 Network 面板显示的 SN(如 `PA9410MGL…`)是**头显自己的**。
-匹配左右要用的**追踪器完整 SN**(形如 `PC2310MLL3200496G`)从 **XRT**
-(Python SDK `xensevr_pc_service_sdk`,代码里惯用别名 `xrt`)读取:
+匹配左右要用的**追踪器完整 SN**(形如 `PC2310MLL3200496G`)用 PC Service 的 Python 接口
+`xensevr_pc_service_sdk` 读取:
 
 ```python
 import xensevr_pc_service_sdk as xrt
@@ -290,12 +289,12 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
     一旦重启,后续录制的原点/方向会变,导致同一数据集内位姿参考系不一致。
 
 - **Pico4 Ultra 企业版原始系**:左手系(X 右、Y 上、Z 里),原点 = 启动时 Pico4 Ultra 企业版 Head 位置。
-- **录制系**:`Pico4TrackerReader` 重映射(`pico_to_world=True`)到上述世界系(X 前、Y 左、Z 上)。
+- **录制系**:采集时会重映射到上述世界系(X 前、Y 左、Z 上)。
 
 ## 3.5 启动 XenseVR PC Service {#35}
 
 追踪器与主机的 **XenseVR PC Service**(RoboticsService)守护进程通信;它负责设备发现、
-状态监控与实时追踪数据分发,`Pico4TrackerReader` 从它读取位姿。
+状态监控与实时追踪数据分发,采集端从它读取位姿。
 
 启动:
 
@@ -304,7 +303,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 ```
 
 !!! note "同一时间只能运行一个实例"
-    服务进程 `RoboticsServiceProcess` 一次只允许一个实例;重复启动会失败或冲突。
+    该服务一次只允许运行一个实例;重复启动会失败或冲突。
 
 服务可提供多类追踪数据(Pico4 Ultra 企业版 Head / 手柄 / 手势 / 全身动捕 / **Tracker 独立追踪**);数采使用的是
 **Tracker 独立追踪**位姿,数据中带 `sn` 用于区分不同追踪器。

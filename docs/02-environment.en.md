@@ -72,9 +72,9 @@ Submodules and the packages they install:
     automatically — there is no submodule to pull.
 
 !!! danger "Rebuild `xense.taccap` after updating the submodule"
-    The `taccap-gripper` Python package ships a **compiled native extension**
-    (`_taccap_native*.so`). `git submodule update` swaps the source but does not rebuild it — with
-    new sources against a stale `.so`, `import xense.taccap` fails outright, e.g.:
+    The `taccap-gripper` Python package ships a **compiled build artefact**. `git submodule
+    update` only updates the files, it does not rebuild — with updated files against a stale
+    build, `import xense.taccap` fails outright, e.g.:
 
     ```text
     AttributeError: module 'xense.taccap._taccap_native' has no attribute 'GripperAutoCalConfig'
@@ -148,14 +148,14 @@ python -c 'import xensesdk; print("xensesdk OK ->", xensesdk.__file__)'
 python -c 'import xense.taccap; print("xense.taccap OK ->", xense.taccap.__file__)'
 ```
 
-One more if you use the [headset camera](05-data-collection.md#57) — it checks that the pybind
-layer in your environment is the build that carries the camera API:
+One more if you use the [headset camera](05-data-collection.md#57) — it checks that what your
+environment loads is the build that carries the camera API:
 
 ```bash
 python -c 'import xensevr_pc_service_sdk as xrt; print("pico camera API:", hasattr(xrt, "has_pico_camera_frame"))'
 ```
 
-`False` means an older pybind is being loaded; re-run `./setup_env.sh --install`.
+`False` means an older version is being loaded; re-run `./setup_env.sh --install`.
 
 Optional — confirm the video codec dependencies load (`torchcodec` is pinned by the PyTorch
 compatibility matrix, PyAV is pinned to `15.1.0`; FFmpeg is not part of the conda solve):
@@ -166,7 +166,7 @@ python -c 'import av; print("PyAV OK ->", av.__version__)'
 ```
 
 !!! tip "Need a system ffmpeg?"
-    If you need a system ffmpeg with `libsvtav1`, install it separately (apt, or an upstream
+    If you need a system ffmpeg with `libsvtav1`, install it separately (apt, or an official
     static build); the default encoding path on this 0.5.1 fork does not depend on it.
 
 ---

@@ -65,16 +65,15 @@ lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand --episode-in
 | `--episode-index` | 只检查指定集(可多值,如 `0 2 4`) |
 
 !!! note "脚本来源"
-    `lerobot_check_dataset.py` 位于 `src/lerobot/scripts/`(仓库自带),也有一份在
-    `~/Downloads/`。以你本地 checkout 的版本为准。
+    `lerobot_check_dataset.py` 随主仓库一起提供,以你本地这一版为准。
 
 ## 6.3 回放与可视化
 
 - **在线数据集可视化**:数据集上传到 Hugging Face Hub 后,可使用 [LeRobot Dataset Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset) 在线浏览各 episode 的视频与数据。
 - **3D 轨迹**:采集/自检时加 `--display_data=true`,Rerun 中查看夹爪位姿与轨迹
   (见 [4.4](04-calibration.md#44))。
-- **数据集浏览**:用上游 lerobot 的数据集可视化工具打开 parquet + mp4 逐帧检查
-  (以你 checkout 的 `lerobot` 版本提供的可视化脚本为准)。
+- **数据集浏览**:用 lerobot 官方的数据集可视化工具打开 parquet + mp4 逐帧检查
+  (以你本地这一版 `lerobot` 提供的可视化脚本为准)。
 
 ## 6.4 上传 Hugging Face Hub {#64}
 

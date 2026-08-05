@@ -8,7 +8,7 @@ the device auto-discovery rules, and the hardware power-on order.
 
 The gripper MCU enumerates as `/dev/ttyACM*`, owned by group `dialout`. A user outside that group
 can have the SDK *list* grippers but **cannot open the port to read the firmware serial**, so
-`scan_grippers()` reports `role=Unknown` with an empty `firmware_sn`, and `connect()` fails:
+`scan_grippers()` reports `role=Unknown` with an empty `firmware_sn`, and connecting fails:
 
 ```text
 RuntimeError: No leader gripper discovered for the left side.
@@ -40,7 +40,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 The gripper MCU is a CH343 USB-serial device (`1a86:55d2`, CDC-ACM). On every hot-plug,
 **ModemManager** (the default cellular-modem service on Ubuntu/GNOME) probes the fresh port with
-AT commands and holds it open for a few seconds, so `connect()` fails during that window:
+AT commands and holds it open for a few seconds, so connecting fails during that window:
 
 ```text
 IoError: SerialBus: open(/dev/serial/by-id/usb-1a86_USB_Dual_Serial_..-if02): Device or resource busy
@@ -76,8 +76,7 @@ can also `sudo systemctl disable --now ModemManager`.)
 ## 3.3 Device auto-discovery and the odd-left/even-right rule {#33}
 
 Every device is **auto-discovered by serial number + USB topology** and assigned to `left`/`right`
-— **no serials are hand-listed**. Source of truth:
-`src/lerobot/robots/taccap_gripper/serial_discovery.py`.
+— **no serials are hand-listed**.
 
 ### Serial grammar
 
@@ -99,22 +98,21 @@ camera side, and the tactile *finger*.
 Combines USB topology with the side rule:
 
 - **Which gripper (side)**: the two GSPS sensors sharing a gripper's **USB hub** are that
-  gripper's pair. That gripper's side is read from its **firmware SN**
-  (`scan_grippers()` → `ep.side`, i.e. `Cmd::GetSn`) — **not** the CH343 `mcu_serial`. So:
-  hub → gripper → side.
+  gripper's pair. That gripper's side is read from its **firmware SN** (the side reported by
+  `scan_grippers()`) — **not** the CH343 `mcu_serial`. So: hub → gripper → side.
 - **Which finger (left/right)**: the **last digit** of the GSPS serial (odd-left / even-right).
 
 ### Pico4 Ultra Enterprise tracker — a different serial system
 
 Tracker serials (e.g. `PC2310MLL3200496G`) are **not** Xense serials. Side comes from the
 **second-to-last** digit: odd → left, even → right (`pico_tracker_side`), e.g. `…496G` → `6` →
-right. The SN is read from XRT (the Python SDK) — see [Reading a tracker SN](#pico-tracker-sn).
+right. The SN is read from the PC Service — see [Reading a tracker SN](#pico-tracker-sn).
 
-!!! note "Mis-burned / mis-installed hardware raises explicitly"
-    Every discovery helper raises `ValueError` **naming** the offending hub/serial when it meets a
+!!! note "Mis-burned / mis-installed hardware fails explicitly"
+    Discovery **fails outright and names** the offending hub/serial when it meets a
     non-conforming serial, the wrong count on a side, two sensors mapping to the same finger, two
     grippers claiming the same tactile side, or a tactile hub with no matching gripper — so the
-    physical rig and the observation schema cannot silently drift apart.
+    physical rig and the fields in your data cannot silently drift apart.
 
 !!! tip "The error names the side with **two**, not the side that came up empty"
     A side coming up empty is **usually because its device's serial put itself on the other
@@ -126,7 +124,7 @@ right. The SN is read from XRT (the Python SDK) — see [Reading a tracker SN](#
 
 The **standalone motion tracker** that ships with the Pico4 Ultra Enterprise mounts on top of the
 gripper and provides the 6-DoF pose. **XenseVR-Toolkit** (the VR client app) runs on the headset,
-and `Pico4TrackerReader` reads the pose via the [XenseVR PC Service](#35). First time through,
+and the pose reaches collection via the [XenseVR PC Service](#35). First time through,
 follow all five steps: **install → network → bind the tracker → tracking mode and UI → startup
 alignment**.
 
@@ -235,8 +233,7 @@ also how the PC Service identifies a tracker.
 This SN is not visible on the headset: the "Motion Tracker" app only shows a **short number** (e.g.
 `Tracker 150399`), and the SN on XenseVR-Toolkit's Network panel (e.g. `PA9410MGL…`) is the
 **headset's own**. The **full tracker SN** you need for side matching (shaped like
-`PC2310MLL3200496G`) is read from **XRT** (the Python SDK `xensevr_pc_service_sdk`, conventionally
-aliased `xrt` in code):
+`PC2310MLL3200496G`) is read with the PC Service's Python interface `xensevr_pc_service_sdk`:
 
 ```python
 import xensevr_pc_service_sdk as xrt
@@ -329,14 +326,13 @@ Recorded poses land in a **gravity-aligned world frame**: **+X = straight ahead,
 
 - **Pico4 Ultra Enterprise's native frame**: left-handed (X right, Y up, Z inward), origin = the
   headset position at launch.
-- **Recording frame**: `Pico4TrackerReader` remaps it (`pico_to_world=True`) to the world frame
-  above (X forward, Y left, Z up).
+- **Recording frame**: collection remaps it to the world frame above (X forward, Y left, Z up).
 
 ## 3.5 Start the XenseVR PC Service {#35}
 
 The tracker talks to the host's **XenseVR PC Service** (RoboticsService) daemon, which handles
-device discovery, status monitoring and live tracking-data distribution. `Pico4TrackerReader`
-reads poses from it.
+device discovery, status monitoring and live tracking-data distribution. Collection reads poses
+from it.
 
 Start it:
 
@@ -345,8 +341,7 @@ Start it:
 ```
 
 !!! note "Only one instance at a time"
-    The `RoboticsServiceProcess` allows a single instance; starting a second one fails or
-    conflicts.
+    The service allows a single instance; starting a second one fails or conflicts.
 
 The service can supply several kinds of tracking data (headset Head / controllers / hand tracking /
 full-body mocap / **standalone Tracker**). Collection uses the **standalone Tracker** pose, whose

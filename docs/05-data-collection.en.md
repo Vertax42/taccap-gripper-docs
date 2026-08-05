@@ -5,16 +5,13 @@ Corresponds to the reference manual's "SDK usage". This is the core chapter: col
 
 ## 5.1 How collection works
 
-`taccap_gripper` **needs no teleoperator** (`RecordConfig.__post_init__` allows it to have
-`teleop=None`). Recording is handled by the dedicated `self_driven_record_loop` in
-`lerobot_record.py`, routed there through `SELF_DRIVEN_RECORD_ROBOTS`.
+`taccap_gripper` **needs no teleoperator** — recording is self-driven.
 
-**Shifted-frame pairing**: each record pairs the observation from step *t-1* with the pose from
-step *t* (the EEF TCP pose plus the normalised `gripper.pos`) as its action — so the action
-**leads the observation by one step** and is a genuine "move to the next step" target rather than
-a degenerate same-frame pose. One frame is dropped per episode (the first has no predecessor). The
-reset phase between episodes is a passive wait: just reposition the setup, no teleoperation
-involved.
+The data uses **shifted-frame pairing**: the action **leads the observation by one step** — the
+observation from step *t-1* is paired with the pose from step *t* (the EEF TCP pose plus the
+normalised `gripper.pos`) as its action. Each episode is therefore one frame shorter (the first
+has no predecessor). The reset phase between episodes is a passive wait: just reposition the
+setup, no teleoperation involved.
 
 !!! note "No --teleop.* on the command line"
     Because it is self-driven, recording commands carry **no `--teleop.*` arguments at all**.
@@ -217,8 +214,8 @@ lerobot-record \
 ## 5.5 Recording options: streaming encoding and encoder warm-up {#55}
 
 Video keys (tactile + wrist camera) are **encoded live during collection** rather than stored as
-PNGs and encoded at the end of an episode, so `save_episode()` is near-instant. On by default
-(`--dataset.streaming_encoding=true`):
+PNGs and encoded at the end of an episode, so **there is almost no wait when an episode
+ends**. On by default (`--dataset.streaming_encoding=true`):
 
 ```bash
 lerobot-record \
@@ -244,18 +241,16 @@ lerobot-record \
   cameras make it likelier that encoding falls behind.
 
 !!! note "Encoder warm-up"
-    Opening a PyAV container plus codec context takes ~25 ms, and doing it lazily on the first
-    frame blows that frame's `fps` budget badly. So each episode calls
-    `prepare_episode_recording()` first, warming the encoder threads and opening codec contexts at
-    the `(H, W, C)` each video key declares, blocking until all are ready — the first frame no
-    longer pays initialisation cost.
+    Encoder initialisation takes ~25 ms, and leaving it until the first frame blows that frame's
+    `fps` budget badly. So each episode **warms the encoders up first** and waits until all are
+    ready before recording starts — the first frame no longer pays initialisation cost.
 
 ## 5.6 Episodes and resets
 
 - Record several episodes in one run with `--dataset.num_episodes=N`.
 - Between episodes the reset is **passive**: reposition the setup, no teleoperation.
 - lerobot's keyboard controls work while recording (re-record the current episode, end it early,
-  and so on, per upstream `lerobot-record`).
+  and so on, following the usual `lerobot-record` conventions).
 
 !!! tip "Want to collect *good* data?"
     Running the command is only the first step. Do read

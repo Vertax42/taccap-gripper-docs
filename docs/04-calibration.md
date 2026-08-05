@@ -9,10 +9,10 @@
 数据集里的 `gripper.pos` 是**归一化开度**:`0.0` 完全闭合,`1.0` 完全张开。这两个端点不是
 算出来的,是标定写进 MCU flash 的两个数:
 
-| 端点 | 来源 | 命令 |
+| 端点 | 来源 | 由哪一步写入 |
 | --- | --- | --- |
-| `0.0` 闭合 | 编码器零点 | `Cmd::SetEncoderZero` |
-| `1.0` 张开 | 该夹爪的行程上限(encoder max) | `Cmd::EncoderMaxCal`(固件 ≥ V2.1) |
+| `0.0` 闭合 | 编码器零点 | 标定第 1 步(完全闭合) |
+| `1.0` 张开 | 该夹爪的行程上限 | 标定第 2 步(张到机械极限,固件 ≥ V2.1) |
 
 **没标行程上限会怎样。**软件回退成除以配置常量 `gripper_open_rad`(默认 `1.7`)——一个数
 代表所有出厂夹爪。但每台的真实行程不同:实测某台是 **1.1486 rad(65.8°)**,在回退算法下
@@ -33,8 +33,8 @@ python third_party/taccap-gripper/python/examples/calibrate.py left
 python third_party/taccap-gripper/python/examples/calibrate.py right
 ```
 
-左右由固件烧录的 SN 走线读回(`Cmd::GetSn`)判定,和采集程序里 `left_gripper.pos`
-用的是同一条规则,所以 `calibrate.py left` 标的一定就是 `left` 那一台。脚本会把解析出的
+左右由固件烧录的 SN 判定,和采集时 `left_gripper.pos` 用的是同一条规则,所以
+`calibrate.py left` 标的一定就是 `left` 那一台。脚本会把解析出的
 固件 SN 连同**扫到的全部夹爪**一起打印,方便在写 flash 之前确认没选错。想显式锁定某台时,
 仍可直接传固件 SN(`calibrate.py TCGU01A28Z0024m`)。
 
@@ -98,10 +98,9 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
 
 ### 4.1.4 适用范围
 
-- **仅 leader(主夹爪)。**`Cmd::EncoderMaxCal` 是 leader 专有,follower 会 NACK
-  `InvalidCmd`(它没有 MT6816 编码器)。follower 采集的数据两侧都走
-  `gripper_open_rad` 回退,新旧算法一致。
-- **需要固件 ≥ V2.1(leader 1.2.0)。**更低版本没有这条命令:`calibrate.py` 会**原样退出、
+- **仅 leader(主夹爪)。**行程标定是主夹爪专有能力,从夹爪的编码器不支持这项标定。
+  从夹爪采集的数据两侧都走 `gripper_open_rad` 回退,新旧算法一致。
+- **需要固件 ≥ V2.1(leader 1.2.0)。**更低版本不支持行程标定:`calibrate.py` 会**原样退出、
   不改动任何东西**,采集时则告警并自动退回旧算法——不中断会话,但标定不生效。
   **低于 V2.1 的夹爪必须先升级固件**,镜像随 SDK 附带 → [固件 OTA 升级](versions.md#ota)。
   **先升 SDK 再刷固件**,顺序反了会踩到一个"失败却报成功"的旧 bug。
@@ -226,7 +225,8 @@ Rerun 查看器会多出一个 `/world` 3D 视图:夹爪以带标签的椭球 + 
     只是方向差了 51°。
 
 !!! note "与 SDK 独立示例的区别"
-    轨迹标记与面包屑的可视化形式和 SDK `python/examples/rerun_dual_with_tracker.py` 相似;正式 LeRobot 流程使用重力对齐的 `FLU` 世界系,SDK 独立示例展示 Pico4 原始 `LEFT_HAND_Y_UP` 坐标系。
+    轨迹标记与面包屑的可视化形式和 SDK 自带的追踪器示例相似,区别在坐标系:正式采集
+    流程用的是重力对齐的世界系(X 前、Y 左、Z 上),SDK 示例显示的是 Pico4 的原始坐标系。
 
 标定与自检通过后,即可开始正式采集。
 

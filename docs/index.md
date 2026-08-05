@@ -69,11 +69,11 @@ flowchart LR
 
 | 仓库 / 包 | 作用 |
 |---|---|
-| [`xense-taccap-lerobot`](https://github.com/Vertax42/xense-taccap-lerobot) | 数采主仓库(lerobot 0.5.1 定制分支,含 `taccap_gripper` 机器人类) |
+| [`xense-taccap-lerobot`](https://github.com/Vertax42/xense-taccap-lerobot) | 数采主仓库(lerobot 0.5.1 定制分支,提供 `taccap_gripper` 设备类型) |
 | `xense.taccap`(`taccap-gripper` SDK) | 夹爪 MCU 设备访问层:IMU、编码器、按键、协议及仅从夹爪具备的电机控制 |
 | `xensevr_pc_service_sdk` | Pico4 Ultra 追踪器 PC 服务 SDK(v0.2.0 起也承载[头显相机](05-data-collection.md#57)画面) |
 | `xensesdk` | 视触觉传感器 SDK |
 
 !!! note "适用版本"
     本手册对应 `xense.taccap 0.1.7`、`xense-taccap-lerobot` 基于 **lerobot 0.5.1** 定制。
-    命令与字段以你本地 checkout 的 `src/lerobot/robots/taccap_gripper/README.md` 为准。
+    命令与字段以你本地这一版主仓库附带的设备说明为准。

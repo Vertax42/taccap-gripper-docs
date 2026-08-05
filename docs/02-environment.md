@@ -63,9 +63,8 @@ git submodule update --init --recursive --progress
     无需单独拉取子模块。
 
 !!! danger "更新子模块后必须重新编译 `xense.taccap`"
-    `taccap-gripper` 的 Python 包里带一个**编译好的原生扩展**(`_taccap_native*.so`)。
-    `git submodule update` 只换源码,不重编译——源码更新而 `.so` 还是旧的时候,
-    `import xense.taccap` 会直接失败,例如:
+    `taccap-gripper` 的 Python 包里带一份**编译产物**。`git submodule update` 只更新文件,
+    不会重新编译——文件更新了而编译产物还是旧的时候,`import xense.taccap` 会直接失败,例如:
 
     ```text
     AttributeError: module 'xense.taccap._taccap_native' has no attribute 'GripperAutoCalConfig'
@@ -137,13 +136,13 @@ python -c 'import xensesdk; print("xensesdk OK ->", xensesdk.__file__)'
 python -c 'import xense.taccap; print("xense.taccap OK ->", xense.taccap.__file__)'
 ```
 
-用[头显相机](05-data-collection.md#57)时再补一条——检查 pybind 层是不是带相机接口的新版本:
+用[头显相机](05-data-collection.md#57)时再补一条——检查是不是带相机接口的新版本:
 
 ```bash
 python -c 'import xensevr_pc_service_sdk as xrt; print("pico camera API:", hasattr(xrt, "has_pico_camera_frame"))'
 ```
 
-返回 `False` 说明环境里加载的还是旧的 pybind,重新执行 `./setup_env.sh --install` 即可。
+返回 `False` 说明环境里加载的还是旧版本,重新执行 `./setup_env.sh --install` 即可。
 
 可选:确认视频编解码依赖可加载(`torchcodec` 按 PyTorch 兼容矩阵固定,PyAV 固定为 `15.1.0`;FFmpeg 不参与 conda 求解):
 
@@ -153,7 +152,7 @@ python -c 'import av; print("PyAV OK ->", av.__version__)'
 ```
 
 !!! tip "需要系统 ffmpeg?"
-    若你需要带 `libsvtav1` 的系统 ffmpeg,请单独安装(apt 或上游静态构建);
+    若你需要带 `libsvtav1` 的系统 ffmpeg,请单独安装(apt 或官方静态构建);
     当前 0.5.1 定制分支的默认编码路径不依赖它。
 
 ---

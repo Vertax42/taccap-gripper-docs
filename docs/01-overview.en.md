@@ -15,10 +15,9 @@ integrates:
 | Motor jaw | **Follower units only**; for robot-side execution or replay | — |
 
 !!! warning "The device is passive / self-driven"
-    During collection `send_action()` is a **no-op** and the motor is never enabled. The
-    operator **mechanically drives the jaw by hand** — so there is **no separate
-    teleoperator**, `lerobot-record` allows `teleop=None`, and **no `--teleop.*` flags**
-    are needed on the CLI.
+    During collection the motor is **never driven or enabled**. The operator **mechanically
+    drives the jaw by hand** — so there is **no separate teleoperator**, and **no
+    `--teleop.*` flags** are needed on the CLI.
 
 ## 1.2 System components
 
@@ -33,7 +32,7 @@ flowchart TB
     subgraph Host
       PS[XenseVR PC Service<br/>daemon]
       SDK[xense.taccap SDK<br/>xensesdk visuotactile SDK]
-      LR[lerobot-record<br/>taccap_gripper robot class]
+      LR[lerobot-record<br/>taccap_gripper robot type]
     end
     G -- USB / serial+UVC --> SDK
     P -- wireless --> PS

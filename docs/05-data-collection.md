@@ -4,14 +4,11 @@
 
 ## 5.1 采集原理
 
-`taccap_gripper` **不需要遥操作端**(`RecordConfig.__post_init__` 允许它
-`teleop=None`)。录制由 `lerobot_record.py` 里专门的 `self_driven_record_loop`
-处理(通过 `SELF_DRIVEN_RECORD_ROBOTS` 路由)。
+`taccap_gripper` **不需要遥操作端**,录制是自驱动的。
 
-**移位帧(shifted-frame)配对**:每条记录用 *t-1* 步的观测,配 *t* 步的位姿
-(EEF TCP 位姿 + 归一化 `gripper.pos`)作为动作——动作**领先观测一步**,是真正的
-"移动到下一步"目标,而非退化的同帧位姿。每集丢弃 1 帧(首帧没有前驱)。集与集之间的
-复位阶段是被动等待:重新摆放设备即可,无需遥操。
+数据采用**移位帧(shifted-frame)配对**:动作比观测**领先一步**——*t-1* 步的观测,配
+*t* 步的位姿(EEF TCP 位姿 + 归一化 `gripper.pos`)作为动作。因此每集会少 1 帧
+(它没有前一帧可配对)。集与集之间的复位阶段是被动等待:重新摆放设备即可,无需遥操。
 
 !!! note "命令行上没有 --teleop.*"
     正因为自驱动,录制命令里**不出现任何 `--teleop.*` 参数**。
@@ -197,7 +194,7 @@ lerobot-record \
 ## 5.5 录制选项:流式编码与编码器预热 {#55}
 
 视频键(触觉 + 腕相机)**在采集时实时编码**,而非先存 PNG 再在集尾编码,因此
-`save_episode()` 近乎瞬时。默认开启(`--dataset.streaming_encoding=true`):
+**每集结束时几乎不用等**。默认开启(`--dataset.streaming_encoding=true`):
 
 ```bash
 lerobot-record \
@@ -222,15 +219,14 @@ lerobot-record \
   但高分辨率或多相机场景更容易出现编码跟不上。
 
 !!! note "编码器预热"
-    打开 PyAV 容器 + 编解码上下文约 25 ms,惰性到首帧才做会让首帧严重超出 `fps` 预算。
-    因此每集录制前会先 `prepare_episode_recording()` 预热编码器线程并按各视频键声明的
-    `(H, W, C)` 打开编解码上下文,阻塞到全部就绪——首帧不再付初始化开销。
+    编码器初始化约 25 ms,拖到第一帧才做会让首帧严重超出 `fps` 预算。因此每集录制前会
+    **先把编码器预热好**,等全部就绪再开录——首帧不再付初始化开销。
 
 ## 5.6 分集与复位
 
 - 一次运行采多集:`--dataset.num_episodes=N`。
 - 集与集之间是**被动复位**:重新摆放设备,无需遥操。
-- 录制过程中可用 lerobot 的键盘控制(重录当前集、提前结束等,按上游 `lerobot-record` 约定)。
+- 录制过程中可用 lerobot 的键盘控制(重录当前集、提前结束等,按 `lerobot-record` 的通用约定)。
 
 !!! tip "想采到"好数据"?"
     会跑命令只是第一步。务必阅读 [采集规范与最佳实践](best-practices.md)——坐标原点纪律、

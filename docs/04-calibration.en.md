@@ -10,10 +10,10 @@ work through the checks that confirm the whole chain is alive.
 `gripper.pos` in the dataset is a **normalised opening**: `0.0` fully closed, `1.0` fully open.
 Those endpoints are not computed — they are two numbers written into MCU flash by calibration:
 
-| Endpoint | Source | Command |
+| Endpoint | Source | Written by |
 | --- | --- | --- |
-| `0.0` closed | encoder zero | `Cmd::SetEncoderZero` |
-| `1.0` open | that gripper's travel span (encoder max) | `Cmd::EncoderMaxCal` (firmware >= V2.1) |
+| `0.0` closed | encoder zero | calibration step 1 (fully closed) |
+| `1.0` open | that gripper's travel span | calibration step 2 (open to the mechanical limit, firmware >= V2.1) |
 
 **What happens without the travel span.** The software falls back to dividing by the config
 constant `gripper_open_rad` (default `1.7`) — one number standing in for every gripper ever
@@ -36,9 +36,9 @@ python third_party/taccap-gripper/python/examples/calibrate.py left
 python third_party/taccap-gripper/python/examples/calibrate.py right
 ```
 
-Side is read from the firmware-burned SN over the wire (`Cmd::GetSn`), the same rule the
-collection program applies to `left_gripper.pos` — so `calibrate.py left` is guaranteed to be the
-gripper `left` means everywhere else. The script prints the firmware SN it resolved along with
+Side is read from the firmware-burned SN, the same rule collection applies to
+`left_gripper.pos` — so `calibrate.py left` is guaranteed to be the gripper `left` means
+everywhere else. The script prints the firmware SN it resolved along with
 **every gripper the scan saw**, so a wrong pick is visible before anything reaches flash. To pin a
 unit explicitly, pass its firmware SN instead (`calibrate.py TCGU01A28Z0024m`).
 
@@ -108,10 +108,10 @@ Topping out below 1.0 (0.68, say) means it was never calibrated — matching the
 
 ### 4.1.4 Scope
 
-- **Leaders only.** `Cmd::EncoderMaxCal` is leader-only; a follower NACKs `InvalidCmd` (it has no
-  MT6816 encoder). Data collected with followers uses the `gripper_open_rad` fallback on both
+- **Leaders only.** Travel calibration is a leader-only capability; a follower's encoder does
+  not support it. Data collected with followers uses the `gripper_open_rad` fallback on both
   sides, which is unchanged from the older behaviour.
-- **Firmware >= V2.1 (leader 1.2.0) required.** Older firmware does not have the command:
+- **Firmware >= V2.1 (leader 1.2.0) required.** Older firmware does not support it:
   `calibrate.py` **exits without changing anything**, and during collection the software warns and
   falls back automatically — the session continues, but the calibration has no effect. Any gripper
   below V2.1 **must be upgraded**; the images ship with the SDK →
@@ -256,9 +256,9 @@ axis triad at its live **EEF TCP pose** (`tcp.*`), trailing a breadcrumb of wher
     right 195 mm from the tracker, just 51° apart.
 
 !!! note "How this differs from the standalone SDK example"
-    The markers and breadcrumbs look much like the SDK's `python/examples/rerun_dual_with_tracker.py`.
-    The LeRobot flow uses the gravity-aligned `FLU` world frame; the standalone SDK example shows
-    the raw Pico4 `LEFT_HAND_Y_UP` frame.
+    The markers and breadcrumbs look much like the SDK's own tracker example. The difference is
+    the frame: the collection flow uses the gravity-aligned world frame (X forward, Y left, Z up),
+    while the SDK example shows the raw Pico4 frame.
 
 Once calibration and the self-checks pass, you are ready to collect.
 

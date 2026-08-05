@@ -33,16 +33,16 @@
 | `--robot.gripper_open_rad` | `1.7` | **仅回退用**的全局常量。夹爪按 [4.1](04-calibration.md#41) 标定后,`gripper.pos` 用的是该台**固件里实测的行程上限**,本项不参与;只有未标定、固件低于 V2.1 或 follower 才会退回除以这个数 |
 | `--robot.tracker_to_ee_pos` | `None` | 覆盖 tracker→EE 平移;`None` = 用该侧**内置实测值** |
 | `--robot.tracker_to_ee_quat` | `None` | 覆盖 tracker→EE 旋转(同上,两者可独立覆盖) |
-| `--robot.tracker_wait_timeout` | `10.0` | connect 时等待追踪器数据的秒数 |
+| `--robot.tracker_wait_timeout` | `10.0` | 连接设备时等待追踪器数据的秒数 |
 
-!!! note "配置源"
-    完整字段见 `src/lerobot/robots/taccap_gripper/config_taccap_gripper.py`。
+!!! note "完整字段"
+    上表是常用项;完整字段以主仓库附带的设备说明为准。
 
 ## 7.3 术语表
 
 | 术语 | 含义 |
 |---|---|
-| **TacCap**(代码名) | 代码/包名 `xense.taccap`、`taccap_gripper` 的由来(Tactile Capture);产品显示名为 XTac-UMI G1 |
+| **TacCap** | 包名 `xense.taccap` 与设备类型 `taccap_gripper` 里的名字(Tactile Capture);产品名为 XTac-UMI G1 |
 | **UMI** | Universal Manipulation Interface,手持式主夹爪数采范式 |
 | **Leader / Follower** | 主/从;序列号 patch `m`=Master(主),`s`=Slave(从) |
 | **单左双右** | 4 位序列号最后一位:奇→左,偶→右 |
@@ -64,6 +64,5 @@
 
 ## 参考资料
 
-- 数采主仓库设备说明:`src/lerobot/robots/taccap_gripper/README.md`
-- 夹爪 SDK:`third_party/taccap-gripper/`(`README.md` / `docs/ARCHITECTURE.md`)
-- 序列号/发现规则:`src/lerobot/robots/taccap_gripper/serial_discovery.py`
+- 数采主仓库 [`xense-taccap-lerobot`](https://github.com/Vertax42/xense-taccap-lerobot) 附带的设备说明
+- 夹爪 SDK:`third_party/taccap-gripper/` 目录下的说明文档
