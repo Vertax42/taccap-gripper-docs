@@ -50,7 +50,8 @@ flowchart LR
 
 | 组件 | 支持范围 / 约束 | 已验证基线 |
 |---|---|---|
-| 操作系统 | Ubuntu 22.04 / 24.04 | Ubuntu 24.04.4 LTS |
+| 操作系统 | Ubuntu 22.04 / 24.04 | Ubuntu 22.04.5 LTS / 24.04.4 LTS |
+| Linux 内核 | 不构成约束 | 6.8 / 6.14 / 7.0 系列均已验证 |
 | NVIDIA GPU / 驱动 | GPU 可选;多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 |
 | Python | **≥ 3.12**(`pyproject.toml` 的 `requires-python`;`conda_environment.yaml` 固定 `python=3.12`) | 3.12.13 |
 | PyTorch | `torch>=2.2.1,<2.11.0`;`torchvision>=0.21.0,<0.26.0` | 2.10.0 / torchvision 0.25.0 |

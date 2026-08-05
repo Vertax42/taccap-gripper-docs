@@ -8,9 +8,9 @@ installed and verified.
     XTac-UMI G1 hardware bring-up and collection were verified inside the `mamba` environment
     `xense-taccap`. The test host currently reads as:
 
-    - OS: Ubuntu 24.04.4 LTS (Noble Numbat)
-    - Linux kernel: `7.0.0-28-generic` (that host's `uname -r` output — **not** a minimum
-      kernel requirement)
+    - OS: Ubuntu 22.04.5 LTS / Ubuntu 24.04.4 LTS
+    - Linux kernel: **6.8, 6.14 and 7.0 series all verified** — the kernel version is not a
+      constraint
     - Architecture: `x86_64`
     - Python: `3.12.13` (the main repository requires **≥ 3.12**)
     - Repo commit and per-package versions: see [Versions & Support](versions.md) (single source

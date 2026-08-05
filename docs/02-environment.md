@@ -6,8 +6,8 @@
 !!! info "XTac-UMI G1 已验证环境"
     XTac-UMI G1 硬件联调与采集流程在 `mamba` 环境 `xense-taccap` 下验证。当前可读取的测试主机环境:
 
-    - OS: Ubuntu 24.04.4 LTS (Noble Numbat)
-    - Linux kernel: `7.0.0-28-generic`(测试机 `uname -r` 输出,非最低内核要求)
+    - OS: Ubuntu 22.04.5 LTS / Ubuntu 24.04.4 LTS
+    - Linux kernel: **6.8 / 6.14 / 7.0 系列均已验证**,内核版本不构成约束
     - 机器架构: `x86_64`
     - Python: `3.12.13`(主仓库要求 **≥ 3.12**)
     - 仓库 commit 与各包版本: 见 [版本与支持](versions.md)(唯一出处,避免多处抄写走样)
