@@ -198,7 +198,23 @@ lerobot-record \
 | `imu.mag.{x,y,z}` | Gripper IMU magnetometer | as above | float (µT) |
 
 !!! note "6-D rotation convention"
-    `r1..r3` is the rotation matrix's first column, `r4..r6` its second column.
+    What is stored is the **first two columns** of the rotation matrix **R** — **columns, not
+    rows**:
+
+    ```text
+    R = ⎡ r1  r4  · ⎤     column 1 (r1,r2,r3) = the body X axis, in world coordinates
+        ⎢ r2  r5  · ⎥     column 2 (r4,r5,r6) = the body Y axis, in world coordinates
+        ⎣ r3  r6  · ⎦     column 3 = the cross product of the first two
+    ```
+
+    **R maps body → world**: it takes gripper-body coordinates into the world frame, so the two
+    columns read directly as the gripper's **X** and **Y** axes as unit vectors in world
+    coordinates. The third column (the Z axis) is the cross product of the first two, which is why
+    six numbers reconstruct the full rotation and the third column is not stored.
+
+    The world frame is gravity-aligned, **X forward / Y left / Z up** (see
+    [startup and frame alignment](03-host-hardware.md#pico-frame)). `tcp.*` and `head_camera.*`
+    follow the same convention.
 
 !!! info "`tcp.*` records the gripper tip, not the tracker"
     The tracker is bolted to the gripper's handle, about 195 mm from the **two-finger midpoint**.
