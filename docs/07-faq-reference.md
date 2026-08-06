@@ -45,6 +45,7 @@
 | **TacCap** | 包名 `xense.taccap` 与设备类型 `taccap_gripper` 里的名字(Tactile Capture);产品名为 XTac-UMI G1 |
 | **UMI** | Universal Manipulation Interface,手持式主夹爪数采范式 |
 | **Leader / Follower** | 主夹爪 / 从夹爪;序列号 patch `m` = leader,`s` = follower |
+| **V2.1**(固件) | 固件的**命令集版本**,不是构建号。带命令集 V2.1 的构建是 leader `1.2.0` / follower `1.1.0`;行程标定命令由 V2.1 引入 → [说明](versions.md#v21) |
 | **单左双右** | 4 位序列号最后一位:奇→左,偶→右 |
 | **GSPS** | 视触觉传感器(左右指各一),序列号 `GSPS01...` |
 | **XC** | 腕部 UVC 相机,序列号 `XC...` |
