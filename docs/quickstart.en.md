@@ -126,20 +126,66 @@ whichever stage matches the recording you are about to make.
 
 ## 4. Record one episode
 
-```bash
-lerobot-record \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_tracker=true \
-    --robot.enable_head_camera=false \
-    --display_data=true \
-    --dataset.repo_id=<your_org>/<dataset_name> \
-    --dataset.num_episodes=1 \
-    --dataset.fps=30 \
-    --dataset.push_to_hub=false \
-    --dataset.episode_time_s=120 \
-    --dataset.reset_time_s=60 \
-    --dataset.single_task='Pick up the object'
-```
+**Match the stage you just previewed** — the three produce different datasets:
+
+=== "1. Gripper only"
+
+    Writes `gripper.pos`, both tactile streams and the wrist camera. **No pose** — the dataset
+    has no `tcp.*` at all.
+
+    ```bash
+    lerobot-record \\
+        --robot.type=bi_taccap_gripper \\
+        --robot.enable_tracker=false \\
+        --robot.enable_head_camera=false \\
+        --display_data=true \\
+        --dataset.repo_id=<your_org>/<dataset_name> \\
+        --dataset.num_episodes=1 \\
+        --dataset.fps=30 \\
+        --dataset.push_to_hub=false \\
+        --dataset.episode_time_s=120 \\
+        --dataset.reset_time_s=60 \\
+        --dataset.single_task='Pick up the object'
+    ```
+
+=== "2. Add the tracker pose"
+
+    Adds the EEF pose `tcp.*`. **This is the standard collection setup** — what you want almost every time.
+
+    ```bash
+    lerobot-record \\
+        --robot.type=bi_taccap_gripper \\
+        --robot.enable_tracker=true \\
+        --robot.enable_head_camera=false \\
+        --display_data=true \\
+        --dataset.repo_id=<your_org>/<dataset_name> \\
+        --dataset.num_episodes=1 \\
+        --dataset.fps=30 \\
+        --dataset.push_to_hub=false \\
+        --dataset.episode_time_s=120 \\
+        --dataset.reset_time_s=60 \\
+        --dataset.single_task='Pick up the object'
+    ```
+
+=== "3. Everything, headset camera included"
+
+    Adds the headset's stereo view as `left_head` / `right_head` and the head pose
+    `head_camera.*` (see [§5.7](05-data-collection.md#57)). Expect noticeably more video.
+
+    ```bash
+    lerobot-record \\
+        --robot.type=bi_taccap_gripper \\
+        --robot.enable_tracker=true \\
+        --robot.enable_head_camera=true \\
+        --display_data=true \\
+        --dataset.repo_id=<your_org>/<dataset_name> \\
+        --dataset.num_episodes=1 \\
+        --dataset.fps=30 \\
+        --dataset.push_to_hub=false \\
+        --dataset.episode_time_s=120 \\
+        --dataset.reset_time_s=60 \\
+        --dataset.single_task='Pick up the object'
+    ```
 
 **Single gripper**: `--robot.type=taccap_gripper` plus `--robot.side=left|right`;
 everything else is the same.

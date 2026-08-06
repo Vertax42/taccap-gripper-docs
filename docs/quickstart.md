@@ -53,7 +53,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 录制前先用 `lerobot-teleoperate` 打开 Rerun 确认数据流。**分三档**,每一档比上一档多接一层设备
 ——**你要录到哪一档,就预览到哪一档**。
 
-=== "① 只看夹爪"
+=== "① 只有夹爪"
 
     触觉两路、腕相机、`gripper.pos`。追踪器和头显都关着,**不需要启动 PC Service**。
 
@@ -108,20 +108,65 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 ## 4. 录制一条数据
 
-```bash
-lerobot-record \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_tracker=true \
-    --robot.enable_head_camera=false \
-    --display_data=true \
-    --dataset.repo_id=<你的org>/<数据集名> \
-    --dataset.num_episodes=1 \
-    --dataset.fps=30 \
-    --dataset.push_to_hub=false \
-    --dataset.episode_time_s=120 \
-    --dataset.reset_time_s=60 \
-    --dataset.single_task='Pick up the object'
-```
+**和上面预览的那一档对应**——三档录出来的数据集内容不同:
+
+=== "① 只有夹爪"
+
+    落盘 `gripper.pos` + 左右触觉 + 腕相机,**没有位姿**(数据里不会有 `tcp.*`)。
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=false \
+        --robot.enable_head_camera=false \
+        --display_data=true \
+        --dataset.repo_id=<你的org>/<数据集名> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
+
+=== "② 加上追踪器位姿"
+
+    再加 EEF 位姿 `tcp.*`。**这是标准采集配置**,绝大多数情况用这一档。
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=false \
+        --display_data=true \
+        --dataset.repo_id=<你的org>/<数据集名> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
+
+=== "③ 全开(含头显相机)"
+
+    再加头显双目画面 `left_head` / `right_head` 与头部位姿 `head_camera.*`
+    (见 [§5.7](05-data-collection.md#57))。视频量会明显增加。
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=true \
+        --display_data=true \
+        --dataset.repo_id=<你的org>/<数据集名> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
 
 **单夹爪**:`--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
 
