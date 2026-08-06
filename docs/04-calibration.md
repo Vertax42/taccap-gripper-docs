@@ -205,6 +205,7 @@ lerobot-teleoperate \
     --robot.type=taccap_gripper \
     --robot.side=right \
     --robot.enable_tracker=false \
+    --robot.enable_head_camera=false \
     --fps=30 \
     --teleop_time_s=10 \
     --debug_timing=true
@@ -216,12 +217,19 @@ lerobot-teleoperate \
 lerobot-teleoperate \
     --robot.type=bi_taccap_gripper \
     --robot.enable_tracker=false \
+    --robot.enable_head_camera=false \
     --fps=30 \
     --teleop_time_s=10 \
     --debug_timing=true
 ```
 
 命令能持续输出采样耗时与相机数量,且无设备发现、连接或读取异常,即表示基础数据流正常。
+
+!!! note "`--robot.enable_head_camera` 为什么写在这里"
+    它默认就是 `false`,显式写出来是为了让这个开关**在命令里可见**——改成 `true` 就会
+    连同头显双目画面与头显位姿一起录(见 [5.7 头显相机](05-data-collection.md#57))。
+    需要 **PC Service ≥ v0.2.0 且主机为 amd64**;arm64 上没有这个功能,保持 `false`。
+
 
 ## 4.4 3D 轨迹可视化(Rerun) {#44}
 
@@ -233,6 +241,7 @@ lerobot-teleoperate \
 lerobot-teleoperate \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_head_camera=false \
     --fps=30 \
     --display_data=true \
     --show_trajectory=true
@@ -243,6 +252,7 @@ lerobot-teleoperate \
 ```bash
 lerobot-teleoperate \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
     --fps=30 \
     --display_data=true \
     --show_trajectory=true

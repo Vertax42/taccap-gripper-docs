@@ -64,6 +64,7 @@ pose all look right.
 lerobot-teleoperate \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_head_camera=false \
     --fps=30 \
     --display_data=true
 ```
@@ -73,11 +74,17 @@ lerobot-teleoperate \
 ```bash
 lerobot-teleoperate \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
     --fps=30 \
     --display_data=true
 ```
 
 Move the gripper and work the jaw to check every stream. `Ctrl+C` to leave the preview.
+
+!!! tip "Want the headset stereo view recorded too?"
+    Flip `--robot.enable_head_camera=false` to `true` in the command above, and in the record
+    command the same way. Needs PC Service >= v0.2.0 on an amd64 host →
+    [5.7 Headset camera](05-data-collection.md#57).
 
 !!! tip "Check `gripper.pos` here, not after recording"
     In the scalar panel, a fully open jaw should read **1.0** and fully closed **0.0**. Topping
@@ -92,6 +99,7 @@ Move the gripper and work the jaw to check every stream. `Ctrl+C` to leave the p
 lerobot-record \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<dataset_name> \
     --dataset.num_episodes=1 \
@@ -107,6 +115,7 @@ lerobot-record \
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<dataset_name> \
     --dataset.num_episodes=1 \

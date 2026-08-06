@@ -56,6 +56,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 lerobot-teleoperate \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_head_camera=false \
     --fps=30 \
     --display_data=true
 ```
@@ -65,11 +66,16 @@ lerobot-teleoperate \
 ```bash
 lerobot-teleoperate \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
     --fps=30 \
     --display_data=true
 ```
 
 移动并开合夹爪检查各路数据;确认无误后按 `Ctrl+C` 退出预览。
+
+!!! tip "想连头显双目一起录?"
+    上面命令里的 `--robot.enable_head_camera=false` 改成 `true` 即可,录制命令同理。
+    需要 PC Service ≥ v0.2.0 且主机为 amd64 → [5.7 头显相机](05-data-collection.md#57)。
 
 ## 4. 录制一条数据
 
@@ -79,6 +85,7 @@ lerobot-teleoperate \
 lerobot-record \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<你的org>/<数据集名> \
     --dataset.num_episodes=1 \
@@ -94,6 +101,7 @@ lerobot-record \
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<你的org>/<数据集名> \
     --dataset.num_episodes=1 \

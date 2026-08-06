@@ -23,6 +23,7 @@
 lerobot-record \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
     --dataset.num_episodes=1 \
@@ -62,6 +63,9 @@ lerobot-record \
 
 !!! note "显式写出关键参数"
     推荐命令始终显式指定 `fps=30`、`episode_time_s=120`、`reset_time_s=60` 和 `push_to_hub=false`,避免不同 checkout 的默认值变化影响采集。
+    上面的示例把 `--robot.enable_head_camera=false` 也写了出来,同样是这个道理——它默认就是
+    `false`,写出来是让这个开关在命令里可见。改成 `true` 即连同头显双目画面与头显位姿一起录
+    (见 [§5.7](#57));需要 **PC Service ≥ v0.2.0 且主机为 amd64**,arm64 上保持 `false`。
 
 !!! note "`fps` 与传感器帧率"
     `fps` 是**录制采样率**,不是传感器上限。视触觉传感器本身 120 Hz([硬件参数](hardware.md#specs)),
@@ -120,6 +124,7 @@ Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
     --dataset.num_episodes=1 \

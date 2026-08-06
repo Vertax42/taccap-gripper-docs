@@ -27,6 +27,7 @@ serials. A lone gripper is selected automatically; with both plugged in, pick on
 lerobot-record \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
     --dataset.num_episodes=1 \
@@ -68,7 +69,10 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
 !!! note "Spell out the parameters that matter"
     Always set `fps=30`, `episode_time_s=120`, `reset_time_s=60` and `push_to_hub=false`
     explicitly in your commands, so a different checkout's defaults cannot change what you
-    collect.
+    collect. The examples above spell out `--robot.enable_head_camera=false` for the same reason:
+    `false` is the default, and writing it keeps the switch visible. Set it to `true` to record
+    the headset's stereo view and pose as well (see [§5.7](#57)); that needs **PC Service >=
+    v0.2.0 on an amd64 host**, so leave it `false` on arm64.
 
 !!! note "`fps` vs. sensor frame rate"
     `fps` is the **recording sample rate**, not a sensor ceiling. The visuotactile sensors
@@ -130,6 +134,7 @@ above. Tactile sensors, wrist cameras and trackers each match left/right by the 
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
     --dataset.num_episodes=1 \
