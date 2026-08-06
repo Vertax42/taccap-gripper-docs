@@ -133,7 +133,27 @@ and the pose reaches collection via the [XenseVR PC Service](#35). First time th
 follow all five steps: **install → network → bind the tracker → tracking mode and UI → startup
 alignment**.
 
+### A pre-configured headset: three things to do {#pico-preconfigured}
+
+A headset configured at the factory already has developer mode, the power policy, the app, the
+tracker binding and the tracking mode set — all of it stored on the headset and kept across power
+cycles. Before **each** collection session you still need to:
+
+1. **Power the tracker on** — hold the button until the LED is **solid blue** (not alternating
+   blue/red; that is pairing mode).
+2. **[Connect the network](#pico-network)** — plug the USB in and enter the collection host's IP
+   in the app. **Every time you re-plug**, and turn the host's WiFi off while collecting.
+3. **Work through the [UI checklist](#pico-toolkit-ui)**, then **[align the frame](#pico-frame)** —
+   `Send` goes last, and the world origin freezes the moment the app starts, so **do not restart
+   the app partway through a dataset**.
+
+Sections below marked "skip on a pre-configured headset" do not apply to you; everything else does.
+
 ### First-time XenseVR-Toolkit install (Pico4 Ultra Enterprise) {#pico-app}
+
+!!! info "Skip this section on a pre-configured headset"
+    What this section sets is stored on the headset and survives power cycles. A unit configured at
+    the factory needs none of it again — unless it is factory-reset or swapped.
 
 **1. Enable developer mode**: on the headset, Settings → About → tap "Software version" several
 times → "Developer options" appears on the left → turn on **USB debugging**.
@@ -193,6 +213,10 @@ Steps:
 ![USB connection set to file transfer](assets/pico4/usb-shared-network.jpg){ width="520" }
 
 ### Binding the motion tracker to the headset {#pico-tracker-bind}
+
+!!! info "Skip this section on a pre-configured headset"
+    What this section sets is stored on the headset and survives power cycles. A unit configured at
+    the factory needs none of it again — unless it is factory-reset or swapped.
 
 **On first use, or after swapping a tracker**, the PICO Motion Tracker must be bound to **this
 headset**. Until it is, it cannot be selected in tracking mode, and neither XenseVR-Toolkit nor the
@@ -258,6 +282,10 @@ With the SN in hand you can pin it via `--robot.tracker_serial=<SN>` and skip au
 config.
 
 ### Tracking mode and Toolkit settings {#pico-tracker}
+
+!!! info "Skip this section on a pre-configured headset"
+    What this section sets is stored on the headset and survives power cycles. A unit configured at
+    the factory needs none of it again — unless it is factory-reset or swapped.
 
 Once bound:
 
