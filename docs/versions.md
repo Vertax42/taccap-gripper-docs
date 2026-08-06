@@ -60,7 +60,7 @@ flowchart LR
 | `rerun-sdk` | `>=0.24.0,<0.27.0`(`--display_data` 用) | 0.26.2 |
 | `opencv-python` | 固定 `==4.12.0.88`(XenseRobotics 各 SDK 统一) | 4.12.0.88 |
 | NumPy | `>=1.26.4` | 2.2.6 |
-| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@ffc94d53` |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@670f0eb9` |
 | `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`16412dc`) |
 | 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0(镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
@@ -96,6 +96,23 @@ flowchart LR
     checkout 停在更早的版本时:`--robot.enable_head_camera` 在单夹爪上还不存在,
     双夹爪上它指的是旧的 Insight 相机,Rerun 里也仍然画着 TRACKER 坐标系和虚线。
     执行 `git pull --recurse-submodules` + `./setup_env.sh --install` 即与本手册一致。
+
+!!! warning "子模块已改用 HTTPS——`ffc94d53` 及更早的版本需要 GitHub SSH key"
+    早期版本的 `.gitmodules` 用的是 `git@github.com:` 形式,机器上没配 GitHub SSH key 时
+    [克隆仓库与子模块](02-environment.md) 那一步会失败(顶层仓库能克隆,拉子模块时报错)。
+    现在已全部改为 `https://`,任何机器都能直接拉,Docker 构建也依赖这一点——构建上下文里
+    没有 SSH 私钥。
+
+    卡在这一步时,升级到当前基线,或临时改写 URL:
+
+    ```bash
+    git config --global url."https://github.com/".insteadOf "git@github.com:"
+    git submodule update --init --recursive --progress
+    ```
+
+!!! note "Docker 交付镜像需要 `9387ef05` 之后的版本"
+    [2. 环境部署](02-environment.md#docker) 里那条 Docker 路径——交付目录、
+    `install_customer.sh`、`compose.yaml`——来自这次提交,更早的版本里没有。
 
 ## 如何查版本 {#check-versions}
 

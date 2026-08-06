@@ -5,7 +5,11 @@ work through the checks that confirm the whole chain is alive.
 
 ## 4.1 Gripper calibration (zero + travel span) {#41}
 
-### 4.1.1 Why it is required
+### 4.1.1 When you need it
+
+**There is one test: open the jaw to its mechanical limit and see whether `gripper.pos` reaches
+`1.0`.** If it does not, that unit's travel span was never calibrated. The values are written to
+flash, so once per unit is enough — this is not something to redo before each session.
 
 `gripper.pos` in the dataset is a **normalised opening**: `0.0` fully closed, `1.0` fully open.
 Those endpoints are not computed — they are two numbers written into MCU flash by calibration:

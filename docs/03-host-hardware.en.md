@@ -397,18 +397,18 @@ flowchart LR
     D --> E[Run calibration / recording]
 ```
 
-!!! warning "Before recording: calibrate zero and full travel on every leader gripper"
+!!! warning "Before recording, check that `gripper.pos` reaches 1.0 wide open"
     `gripper.pos` in the dataset is a normalised opening (`0.0` closed / `1.0` open), and those two
-    endpoints come from the **encoder zero** and **travel span** written into MCU flash. Without
-    the travel span the software falls back to dividing by the config constant `gripper_open_rad`
-    (default `1.7`) — one measured unit's real travel is only `1.1486 rad`, so wide open reads
-    `0.676` and **never reaches 1.0**.
+    endpoints come from the **encoder zero** and **travel span** written into MCU flash. Open the
+    jaw to its mechanical limit and read the value: **topping out below 1.0** (0.68, say) means
+    that unit's travel span was never calibrated, so calibrate it once.
+
+    The values live in flash and survive power cycles and host changes — so this is something you
+    do **when the scale looks wrong**, not a routine step before every session.
 
     Bimanual rigs especially: **calibrating only one side leaves the two channels on different
     scales**, so the same physical grip reads differently on each side, with nothing in the data
-    to show it.
-
-    Once per unit is enough (the values live in flash and survive power cycles):
+    to show it. If you calibrate one, calibrate both:
 
     ```bash
     python third_party/taccap-gripper/python/examples/calibrate.py left
