@@ -104,11 +104,18 @@ flowchart LR
     现在已全部改为 `https://`,任何机器都能直接拉。Docker 路径同样要过这一关——镜像构建
     只校验子模块是否已就位,拉取仍由宿主机在构建前完成。
 
-    卡在这一步时,升级到当前基线,或临时改写 URL:
+    **已经升级到新版本、但拉子模块仍然要 SSH key**:`.gitmodules` 只是模板,老机器
+    `.git/config` 里记的还是旧 URL,`git pull` 不会改写它。同步一次即可:
+
+    ```bash
+    git submodule sync --recursive
+    git submodule update --init --recursive --progress
+    ```
+
+    **必须停在旧版本时**,全局改写 URL 绕过:
 
     ```bash
     git config --global url."https://github.com/".insteadOf "git@github.com:"
-    git submodule update --init --recursive --progress
     ```
 
 !!! note "主夹爪拒绝连接的行为需要 `4fb5b79b` 之后的版本"
