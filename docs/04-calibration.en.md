@@ -41,13 +41,6 @@ Calibrate it once, then re-run:
     python third_party/taccap-gripper/python/examples/calibrate.py <left|right>
 ```
 
-**Why refuse rather than approximate.** Scaling by a generic constant makes a fully open jaw read
-low — a measured unit's real travel is **1.1486 rad (65.8°)**, which against `1.7` reads `0.676`
-wide open. The problem is that **nothing afterwards can tell that apart** from a jaw the operator
-simply never opened all the way: the data looks fine, the policy trained on it does not match the
-physical motion, and the scale cannot be recovered. One calibration run costs less than a whole
-dataset.
-
 !!! danger "Calibrating one side of a bimanual rig is worse than calibrating neither"
     With neither calibrated the two scales at least agree. Calibrating one leaves
     `left_gripper.pos` and `right_gripper.pos` on **different scales** — the same physical grip
