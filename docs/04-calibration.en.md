@@ -104,7 +104,7 @@ the header.
     reporting raw radians — normalisation adds a `position` field rather than changing what was
     already there.
 
-### 4.1.3 Confirm it took effect
+### 4.1.3 Confirm it took effect {#413}
 
 **One: the connect log.** When the calibration is in effect, each side prints:
 
@@ -123,7 +123,16 @@ panel:
 | Fully open | reaches **1.0** |
 | Fully closed | drops to **0.0** |
 
-Connecting at all means the travel span is in effect, so this step is really about the mechanics — a limit stop that was moved, say.
+Connecting at all means the travel span is in effect, so this step checks whether the stored
+value is still *accurate*.
+
+!!! warning "Clearly short of 1.0 wide open → recalibrate that unit"
+    If it connects but a fully open jaw only reaches around `0.8`, the span stored in flash no
+    longer matches this gripper's real travel — usually after the encoder was refitted or a limit
+    stop moved. The program does **not** raise for this: it knows a value was stored, not whether
+    that value is still right, so this one is only visible to you in the preview.
+
+    Just run the calibration again; the command is identical to the first time.
 
 ### 4.1.4 Scope
 
