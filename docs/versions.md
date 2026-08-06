@@ -14,7 +14,7 @@
 |---|---|---|
 | `xense-taccap-lerobot` | `0.5.1+xtac.0.0.3` | `pip show lerobot` 或看 `pyproject.toml` |
 | `xense.taccap` SDK | **0.1.7** | `python -c "import xense.taccap as t; print(t.__version__)"` |
-| 夹爪固件 | **V2.1**(leader 1.2.0 / follower 1.1.0) | 见下方自检 |
+| 夹爪固件 | **V2.1**(leader 1.2.0 / follower 1.1.0) | 跑 [`calibrate.py`](04-calibration.md#41),版本不够会打印当前版本并退出 |
 | 每台 leader 的编码器标定 | 零点 + 行程上限已写入 flash | [4.1 夹爪标定](04-calibration.md#41) |
 
 一条命令查完前三项:
@@ -180,8 +180,30 @@ git submodule update --init --recursive --progress
 
 ### 固件 OTA 升级 {#ota}
 
-**所有夹爪都要升到 V2.1**(见 [必须升级到最新版本](#required))。低于 V2.1 的固件不支持
-行程标定,[夹爪标定](04-calibration.md#41)的第 2 步做不了,主夹爪也就无法连接。
+### 我需要刷吗? {#ota-when}
+
+**不用自己查版本号——跑一次 [`calibrate.py`](04-calibration.md#41) 就知道。**它在写任何东西
+之前先验固件,不够会原样退出并打印这台当前的版本:
+
+```text
+✗ encoder-max calibration needs firmware >= V2.1 (leader 1.2.0); this gripper reports 1.1.0.0.
+  Nothing was changed. Flash it first: ...
+```
+
+看到以下**任意一条**就需要刷:
+
+| 现象 | 出处 |
+|---|---|
+| `calibrate.py` 报 `needs firmware >= V2.1` 并原样退出 | [4.1 夹爪标定](04-calibration.md#41) |
+| 主夹爪连不上,报错里提示先做 OTA 升级 | [4.1.1](04-calibration.md#41) |
+| 夹爪固件低于 **V2.1**(leader 1.2.0 / follower 1.1.0) | 上面的[基线表](#版本兼容基线) |
+
+都没遇到就**不用刷**。固件不会自己退化,刷过一次之后除非换主板或擦除固件,不需要再刷。
+
+### 怎么刷
+
+**所有夹爪都要升到 V2.1**。低于 V2.1 的固件不支持行程标定,
+[夹爪标定](04-calibration.md#41)的第 2 步做不了,主夹爪也就无法连接。
 
 SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,直接刷即可:
 
