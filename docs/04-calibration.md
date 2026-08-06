@@ -62,12 +62,12 @@ python third_party/taccap-gripper/python/examples/calibrate.py right
 固件 SN 连同**扫到的全部夹爪**一起打印,方便在写 flash 之前确认没选错。想显式锁定某台时,
 仍可直接传固件 SN(`calibrate.py TCGU01A28Z0024m`)。
 
-!!! danger "报 `needs firmware >= V2.1` → 先刷固件,再回来标定"
+!!! danger "报 `needs command set >= V2.1` → 先刷固件,再回来标定"
     脚本在动任何东西**之前**先验固件版本。不够就**原样退出、什么都不改**,并打印这台当前的
     版本和该跑的刷写命令:
 
     ```text
-    ✗ encoder-max calibration needs firmware >= V2.1 (leader 1.2.0); this gripper reports 1.1.0.0.
+    ✗ encoder-max calibration needs command set >= V2.1 (leader >= 1.2.0); this gripper reports 1.1.0.
       Nothing was changed. Flash it first: ...
     ```
 

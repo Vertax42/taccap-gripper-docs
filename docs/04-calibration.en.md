@@ -68,12 +68,12 @@ everywhere else. The script prints the firmware SN it resolved along with
 **every gripper the scan saw**, so a wrong pick is visible before anything reaches flash. To pin a
 unit explicitly, pass its firmware SN instead (`calibrate.py TCGU01A28Z0024m`).
 
-!!! danger "`needs firmware >= V2.1` → flash first, then come back and calibrate"
+!!! danger "`needs command set >= V2.1` → flash first, then come back and calibrate"
     The script checks the firmware version **before** touching anything. If it is too old it
     **exits without changing a thing**, printing what this unit reports and the command to run:
 
     ```text
-    ✗ encoder-max calibration needs firmware >= V2.1 (leader 1.2.0); this gripper reports 1.1.0.0.
+    ✗ encoder-max calibration needs command set >= V2.1 (leader >= 1.2.0); this gripper reports 1.1.0.
       Nothing was changed. Flash it first: ...
     ```
 

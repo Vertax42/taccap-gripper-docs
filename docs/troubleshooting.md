@@ -170,7 +170,7 @@
     ```
     该命令同时重标零点与行程上限,两者都会写入 MCU flash。见 [4.1 夹爪标定](04-calibration.md#41)。
 
-??? failure "标定报 `encoder-max calibration needs firmware >= V2.1`"
+??? failure "标定报 `encoder-max calibration needs command set >= V2.1`"
     **原因**:这台夹爪的固件命令集低于 V2.1(即 leader < 1.2.0),不支持行程标定。
     `calibrate.py` 会**原样退出,不改动任何东西**——不会留下"标了零点但没标行程"的半成品。
     **解决**:刷固件。SDK 自 0.1.7 起把已发布镜像放在

@@ -14,7 +14,7 @@
 |---|---|---|
 | `xense-taccap-lerobot` | `0.5.1+xtac.0.0.3` | `pip show lerobot` 或看 `pyproject.toml` |
 | `xense.taccap` SDK | **0.1.7** | `python -c "import xense.taccap as t; print(t.__version__)"` |
-| 夹爪固件 | **命令集 V2.1**,即构建 leader **≥ 1.2.0** / follower **≥ 1.1.0**([区别](#v21)) | 跑 [`calibrate.py`](04-calibration.md#41),版本不够会打印当前版本并退出 |
+| 夹爪固件 | **命令集 V2.1**,即构建 leader **≥ 1.2.0** / follower **≥ 1.1.0**([区别](#v21)) | 跑 [`calibrate.py`](04-calibration.md#41),版本不够会打印当前版本并退出;想直接读版本见[下面这条命令](#v21) |
 | 每台 leader 的编码器标定 | 零点 + 行程上限已写入 flash | [4.1 夹爪标定](04-calibration.md#41) |
 
 ### 三套编号:V2.1 是命令集,不是固件版本 {#v21}
@@ -36,17 +36,34 @@
 1.2.0——**"我们跑的版本"和"我们要求的版本"是两件事**。主从两个号不同,只是因为它们本来就是
 两份不同的固件,不是谁更新。
 
-一条命令查完前三项:
+一条命令查完 SDK 版本和每只夹爪的固件构建号。**固件版本不在 SN 里**,SN 只给出侧别与角色,
+版本要用 `GetVersion` 向固件问:
 
 ```bash
 python - <<'EOF'
 import xense.taccap as t
-from xense.taccap import scan_grippers
+from xense.taccap import scan_grippers, LeaderGripper, FollowerGripper, Cmd
 print("xense.taccap", t.__version__, "(需要 >= 0.1.7)")
-for g in scan_grippers():
-    print(f"  {g.firmware_sn}  role={g.role.name}")
+for ep in scan_grippers():
+    cls = LeaderGripper if ep.firmware_sn.endswith("m") else FollowerGripper
+    g = cls(mcu_device=ep.mcu_device)          # 只开 MCU;相机默认不开
+    ack = g.transport.send_cmd(Cmd.GetVersion, b"", 500)
+    print(f"  {ep.firmware_sn}  {ep.side.name:5}  fw={ack.data[0]}.{ack.data[1]}.{ack.data[2]}")
 EOF
 ```
+
+```text
+  TCGU01A28Z0023m  Left   fw=1.2.1
+  TCGU01A28Z0024m  Right  fw=1.2.1
+```
+
+!!! note "为什么这样构造夹爪对象"
+    只传 `mcu_device`:不开腕相机,`normalize_position` 也保持默认的 `False`——**没做过行程标定的
+    夹爪照样能读到版本**,不会在构造时因为读不到 encoder-max 而抛错。这条也不依赖 SDK 的
+    `examples/`,升级前后都能跑。
+
+    ACK 里其实有**第 4 个字节 `build`**,固件把它恒定写 0,SDK 各处一律按
+    `MAJOR.MINOR.PATCH` 显示。别把它写进版本比较——`1.2.1.0` 这种四段写法是过时格式。
 
 **升级顺序不能乱**,每一步都依赖上一步:
 
@@ -184,9 +201,19 @@ dpkg -s xensevr-pc-service 2>/dev/null | grep -E '^(Package|Version|Architecture
 # 是否带头显相机接口(需要 PC Service v0.2.0;包版本号不会变,只能看接口)
 python -c "import xensevr_pc_service_sdk as xrt; print('pico camera API:', hasattr(xrt, 'has_pico_camera_frame'))"
 
-# 固件 SN(含固件方案信息;role/side 由 SN 解析)
+# 固件 SN(含固件方案信息;role/side 由 SN 解析,但 SN 里没有版本)
 python -c "from xense.taccap import scan_grippers
 for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
+
+# 夹爪固件构建号(向固件问 GetVersion;不依赖 SDK 的 examples/)
+python -c "
+from xense.taccap import scan_grippers, LeaderGripper, FollowerGripper, Cmd
+for ep in scan_grippers():
+    cls = LeaderGripper if ep.firmware_sn.endswith('m') else FollowerGripper
+    g = cls(mcu_device=ep.mcu_device)
+    ack = g.transport.send_cmd(Cmd.GetVersion, b'', 500)
+    print(f'{ep.firmware_sn}  {ep.side.name:5}  fw={ack.data[0]}.{ack.data[1]}.{ack.data[2]}')
+"
 
 # 视频编解码
 python -c "import torchcodec; print('torchcodec', torchcodec.__version__)"
@@ -214,7 +241,7 @@ git submodule update --init --recursive --progress
 之前先验固件,不够会原样退出并打印这台当前的版本:
 
 ```text
-✗ encoder-max calibration needs firmware >= V2.1 (leader 1.2.0); this gripper reports 1.1.0.0.
+✗ encoder-max calibration needs command set >= V2.1 (leader >= 1.2.0); this gripper reports 1.1.0.
   Nothing was changed. Flash it first: ...
 ```
 
@@ -222,7 +249,7 @@ git submodule update --init --recursive --progress
 
 | 现象 | 出处 |
 |---|---|
-| `calibrate.py` 报 `needs firmware >= V2.1` 并原样退出 | [4.1 夹爪标定](04-calibration.md#41) |
+| `calibrate.py` 报 `needs command set >= V2.1` 并原样退出 | [4.1 夹爪标定](04-calibration.md#41) |
 | 主夹爪连不上,报错里提示先做 OTA 升级 | [4.1.1](04-calibration.md#41) |
 | 夹爪固件低于命令集 **V2.1**(即 leader < 1.2.0 / follower < 1.1.0) | 上面的[基线表](#版本兼容基线) |
 
@@ -271,9 +298,19 @@ python third_party/taccap-gripper/python/examples/ota_update.py \
     tc-gu-01-master.bin --side left
 
 # 3. 确认:GetVersion 返回固件编译进去的常量,读回的版本就是实际刷上去的版本
-python -c "from xense.taccap import scan_grippers
-for g in scan_grippers(): print(g.firmware_sn, g.role.name)"
+python -c "
+from xense.taccap import scan_grippers, LeaderGripper, Cmd
+for ep in scan_grippers():
+    g = LeaderGripper(mcu_device=ep.mcu_device)
+    ack = g.transport.send_cmd(Cmd.GetVersion, b'', 500)
+    print(f'{ep.firmware_sn}  {ep.side.name:5}  fw={ack.data[0]}.{ack.data[1]}.{ack.data[2]}')
+"
 ```
+
+第 3 步读回的号必须**不低于** leader 1.2.0 / follower 1.1.0;刷的是随 SDK 附带的镜像时,
+读回的通常比这高(实测两台 `TCGU01A28Z0023m` / `TCGU01A28Z0024m` 均为 `1.2.1`),这是正常的,
+见[三套编号](#v21)。上面用 `LeaderGripper` 是因为这一步刷的是 master 镜像;从夹爪换
+`FollowerGripper`,其余不变。
 
 !!! tip "`--target-version` 是可选的"
     它只是给固件的安装后校验日志和分区元数据打个标记,**不影响刷什么内容**——刷进去的是哪一版
