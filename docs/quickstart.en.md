@@ -65,6 +65,10 @@ each adding a layer of hardware — **preview at whichever stage you intend to r
     Both tactile streams, the wrist camera and `gripper.pos`. Tracker and headset off, so this
     **does not need the PC Service running**.
 
+    This is the stage to **get a feel for the tactile sensors**: press a finger against either
+    visuotactile pad and its texture in Rerun deforms visibly with the pressure, springing back
+    when you let go. Work the jaw and watch `gripper.pos` reach **1.0** open and **0.0** closed.
+
     ```bash
     lerobot-teleoperate \
         --robot.type=bi_taccap_gripper \

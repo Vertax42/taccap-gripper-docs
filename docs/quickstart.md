@@ -57,6 +57,9 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
     触觉两路、腕相机、`gripper.pos`。追踪器和头显都关着,**不需要启动 PC Service**。
 
+    这一档就能**上手感受触觉**:用手指按压左右指的视触觉传感器,Rerun 里对应画面的纹理会
+    随压力明显起伏,松手即恢复;开合夹爪则看 `gripper.pos` 能否张到 **1.0**、闭到 **0.0**。
+
     ```bash
     lerobot-teleoperate \
         --robot.type=bi_taccap_gripper \
