@@ -109,9 +109,10 @@ Combines USB topology with the side rule:
 
 ### Pico4 Ultra Enterprise tracker — a different serial system
 
-Tracker serials (e.g. `PC2310MLL3200496G`) are **not** Xense serials. Side comes from the
-**second-to-last** digit: odd → left, even → right (`pico_tracker_side`), e.g. `…496G` → `6` →
-right. The SN is read from the PC Service — see [Reading a tracker SN](#pico-tracker-sn).
+Tracker serials look like `PC2310MLL3200496G` and **end in a letter**. The side comes from **the
+digit just before that letter** — the second-to-last character: **odd → left, even → right**.
+For `…496G`, the digit before `G` is `6`, which is even → **right**. The SN is read from the PC
+Service — see [Reading a tracker SN](#pico-tracker-sn).
 
 !!! note "Mis-burned / mis-installed hardware fails explicitly"
     Discovery **fails outright and names** the offending hub/serial when it meets a
@@ -122,7 +123,7 @@ right. The SN is read from the PC Service — see [Reading a tracker SN](#pico-t
 !!! tip "The error names the side with **two**, not the side that came up empty"
     A side coming up empty is **usually because its device's serial put itself on the other
     side**. So discovery reports duplicates first, then gaps, and the gap message tells you how
-    many the other side has — go check the second-to-last digit on the **side that has two**,
+    many the other side has — go check the digit before the trailing letter on the **side that has two**,
     rather than hunting for the device that "went missing".
 
 ## 3.4 Pico4 Ultra Enterprise setup {#34}
@@ -232,7 +233,7 @@ PC Service will discover its SN.
 
 #### Reading a tracker SN {#pico-tracker-sn}
 
-The SN determines the side (second-to-last digit, odd-left / even-right — see [3.3](#33)) and is
+The SN determines the side (the digit before the trailing letter, odd-left / even-right — see [3.3](#33)) and is
 also how the PC Service identifies a tracker.
 
 This SN is not visible on the headset: the "Motion Tracker" app only shows a **short number** (e.g.
@@ -274,7 +275,7 @@ Once bound:
     ![XenseVR-Toolkit PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
 
 The XenseVR PC Service identifies trackers by **serial number (SN)**; the side is matched
-automatically from the second-to-last digit, odd-left / even-right (see [3.3](#33)), or pinned
+automatically from the digit before the trailing letter, odd-left / even-right (see [3.3](#33)), or pinned
 with `--robot.tracker_serial=<SN>`.
 
 ### UI checklist after opening the app {#pico-toolkit-ui}

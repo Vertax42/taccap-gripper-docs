@@ -99,8 +99,9 @@ mmcli -L                                                               # 夹爪�
 
 ### Pico4 Ultra 企业版追踪器——另一套序列号
 
-追踪器序列号(如 `PC2310MLL3200496G`)**不是** Xense 序列号。侧别看**倒数第二位**:
-奇 → 左,偶 → 右(`pico_tracker_side`),例:`…496G` → `6` → 右。
+追踪器序列号形如 `PC2310MLL3200496G`,**末尾是一个字母**。侧别看**这个字母前面的那一位
+数字**(即倒数第二位):**单数为左,双数为右**。
+例:`…496G` → `G` 前面是 `6` → 双数 → **右**。
 SN 从 PC Service 读取,见 [读取追踪器 SN](#pico-tracker-sn)。
 
 !!! note "硬件烧错/装错会显式报错"
@@ -111,7 +112,7 @@ SN 从 PC Service 读取,见 [读取追踪器 SN](#pico-tracker-sn)。
 !!! tip "报错先说「哪一侧挤了两个」,而不是「哪一侧空了」"
     某侧空,**通常是因为它的设备序列号把自己算到了另一侧**。所以发现逻辑先报重复、
     再报缺失,并在缺失的报错里附上「另一侧有几个」的提示——照着**挤了两个的那一侧**
-    去查序列号倒数第二位,而不是去找那只"不见了"的设备。
+    去查序列号末尾字母前的那位数字,而不是去找那只"不见了"的设备。
 
 ## 3.4 Pico4 Ultra 企业版配置 {#34}
 
@@ -205,7 +206,7 @@ Pico4 Ultra 企业版通过 **USB 有线共享网络**接入数采电脑,追踪�
 
 #### 读取追踪器 SN {#pico-tracker-sn}
 
-SN 决定左右(倒数第二位奇左偶右,见 [3.3](#33)),也是 PC Service 识别追踪器的依据。
+SN 决定左右(末尾字母前一位:单左双右,见 [3.3](#33)),也是 PC Service 识别追踪器的依据。
 
 头显里看不到这个 SN:「体感追踪器」App 只显示**短编号**(如 `Tracker 150399`),
 XenseVR-Toolkit 的 Network 面板显示的 SN(如 `PA9410MGL…`)是**头显自己的**。
@@ -243,7 +244,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
     ![XenseVR-Toolkit PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
 
-追踪器由 XenseVR PC Service 按**序列号(SN)**识别;侧别按 SN 倒数第二位奇左偶右自动匹配
+追踪器由 XenseVR PC Service 按**序列号(SN)**识别;侧别按 SN 末尾字母前一位单左双右自动匹配
 (见 [3.3](#33)),或用 `--robot.tracker_serial=<SN>` 直接钉住。
 
 ### 打开 App 后的界面清单 {#pico-toolkit-ui}

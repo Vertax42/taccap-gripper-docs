@@ -106,7 +106,7 @@ lerobot-record \
 | `--robot.tactile_diff_gain` | `1.0` | `difference` 图的增益(只影响显示) |
 | `--robot.expected_tactiles_per_side` | — | 校验每侧触觉数量 |
 
-Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪器按序列号倒数第二位(奇左偶右)
+Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪器按序列号末尾字母前一位(单左双右)
 自动匹配本单元侧别。
 
 !!! tip "只录触觉 + 夹爪"
