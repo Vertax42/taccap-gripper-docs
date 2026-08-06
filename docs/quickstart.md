@@ -50,34 +50,57 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 ## 3. 预览实时数据
 
-录制前先用 `lerobot-teleoperate` 打开 Rerun,确认触觉、夹爪开度和位姿数据正常。
+录制前先用 `lerobot-teleoperate` 打开 Rerun 确认数据流。**分三档逐步打开**——每多开一层就多一层
+依赖,哪一档开始出问题,就知道是哪个部件。
 
-**单夹爪(以右侧为例):**
+=== "① 只看夹爪"
 
-```bash
-lerobot-teleoperate \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true
-```
+    触觉两路、腕相机、`gripper.pos`。追踪器和头显都关,**PC Service 没启动也能跑**,
+    所以这一档失败就是夹爪本身或串口权限的问题。
 
-**双夹爪:**
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=taccap_gripper \
+        --robot.side=right \
+        --robot.enable_tracker=false \
+        --robot.enable_head_camera=false \
+        --fps=30 \
+        --display_data=true
+    ```
 
-```bash
-lerobot-teleoperate \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true
-```
+=== "② 加上追踪器位姿"
 
-移动并开合夹爪检查各路数据;确认无误后按 `Ctrl+C` 退出预览。
+    多出 `/world` 里的 EE 标记与轨迹。需要追踪器已开机、Pico4 已连上、
+    [XenseVR PC Service](03-host-hardware.md#35) 已启动——这一档才失败,问题在这条链路上。
 
-!!! tip "想连头显双目一起录?"
-    上面命令里的 `--robot.enable_head_camera=false` 改成 `true` 即可,录制命令同理。
-    需要 PC Service ≥ v0.2.0 且主机为 amd64 → [5.7 头显相机](05-data-collection.md#57)。
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=taccap_gripper \
+        --robot.side=right \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=false \
+        --fps=30 \
+        --display_data=true
+    ```
+
+=== "③ 全开(含头显相机)"
+
+    再多出头显双目画面与头部位姿。需要 **PC Service ≥ v0.2.0 且主机为 amd64**
+    → [5.7 头显相机](05-data-collection.md#57)。
+
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=taccap_gripper \
+        --robot.side=right \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=true \
+        --fps=30 \
+        --display_data=true
+    ```
+
+**双夹爪**:把 `--robot.type` 换成 `bi_taccap_gripper` 并去掉 `--robot.side`,其余相同。
+
+移动并开合夹爪检查各路数据;确认无误后按 `Ctrl+C` 退出预览。录制命令用哪一档,预览就用哪一档。
 
 ## 4. 录制一条数据
 

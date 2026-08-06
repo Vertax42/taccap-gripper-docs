@@ -57,36 +57,61 @@ Anything wrong → [Troubleshooting](troubleshooting.md).
 
 ## 3. Preview the live streams
 
-Before recording, open Rerun with `lerobot-teleoperate` and confirm tactile, jaw opening and
-pose all look right.
+Before recording, open Rerun with `lerobot-teleoperate` and confirm the streams. **Bring it up in
+three stages** — each one adds a dependency, so whichever stage first fails tells you which part
+to look at.
 
-**Single gripper (right side shown):**
+=== "1. Gripper only"
 
-```bash
-lerobot-teleoperate \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true
-```
+    Both tactile streams, the wrist camera and `gripper.pos`. Tracker and headset off, so this
+    **runs without the PC Service** — a failure here is the gripper itself or serial permissions.
 
-**Bimanual:**
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=taccap_gripper \
+        --robot.side=right \
+        --robot.enable_tracker=false \
+        --robot.enable_head_camera=false \
+        --fps=30 \
+        --display_data=true
+    ```
 
-```bash
-lerobot-teleoperate \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true
-```
+=== "2. Add the tracker pose"
 
-Move the gripper and work the jaw to check every stream. `Ctrl+C` to leave the preview.
+    Adds the EE marker and its trail in `/world`. Needs the tracker powered on, the Pico4
+    connected and the [XenseVR PC Service](03-host-hardware.md#35) running — if only this stage
+    fails, the problem is on that path.
 
-!!! tip "Want the headset stereo view recorded too?"
-    Flip `--robot.enable_head_camera=false` to `true` in the command above, and in the record
-    command the same way. Needs PC Service >= v0.2.0 on an amd64 host →
-    [5.7 Headset camera](05-data-collection.md#57).
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=taccap_gripper \
+        --robot.side=right \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=false \
+        --fps=30 \
+        --display_data=true
+    ```
+
+=== "3. Everything, headset camera included"
+
+    Adds the headset's stereo view and the head pose. Needs **PC Service >= v0.2.0 on an amd64
+    host** → [5.7 Headset camera](05-data-collection.md#57).
+
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=taccap_gripper \
+        --robot.side=right \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=true \
+        --fps=30 \
+        --display_data=true
+    ```
+
+**Bimanual**: swap `--robot.type` for `bi_taccap_gripper` and drop `--robot.side`; everything else
+is the same.
+
+Move the gripper and work the jaw to check every stream. `Ctrl+C` to leave the preview. Preview at
+whichever stage matches the recording you are about to make.
 
 !!! tip "Check `gripper.pos` here, not after recording"
     In the scalar panel, a fully open jaw should read **1.0** and fully closed **0.0**. Topping
