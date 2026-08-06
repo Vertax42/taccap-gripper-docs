@@ -139,8 +139,7 @@ A headset configured at the factory already has developer mode, the power policy
 tracker binding and the tracking mode set — all of it stored on the headset and kept across power
 cycles. Before **each** collection session you still need to:
 
-1. **Power the tracker on** — hold the button until the LED is **solid blue** (not alternating
-   blue/red; that is pairing mode).
+1. **Power the tracker on** — a **short press**; the LED goes solid blue.
 2. **[Connect the network](#pico-network)** — plug the USB in and enter the collection host's IP
    in the app. **Every time you re-plug**, and turn the host's WiFi off while collecting.
 3. **Work through the [UI checklist](#pico-toolkit-ui)**, then **[align the frame](#pico-frame)** —
@@ -230,10 +229,10 @@ PC Service will discover its SN.
    with its battery level and number (e.g. `Tracker 150399`), marked "**Connected**".
 4. **One tracker per gripper — bind both.** The top of the list should read "**2 paired**".
 
-!!! tip "6-second hold vs. hold-until-blue"
-    **First-time binding** needs the hold until it **alternates blue and red** (~6 s).
-    **Everyday power-on** only needs the hold until **blue lights up** — do not hold it into
-    pairing mode.
+!!! tip "Power-on is a short press; only pairing needs the hold"
+    **Everyday power-on** is a **short press** — the LED goes solid blue.
+    **Only first-time binding** needs the ~6 s hold until it **alternates blue and red**; the rest
+    of the time, do not hold it into pairing mode.
 
 === "Open the Motion Tracker app"
 
@@ -408,7 +407,7 @@ data carries an `sn` distinguishing the trackers.
 1. Plug the XTac-UMI G1 into the host (USB).
 2. Connect the headset's **wired shared network** and **turn the collection PC's WiFi off**
    (see [3.4 Network connection](#pico-network)).
-3. Power on the headset, and hold the tracker's power button until the **blue light comes on**
+3. Power on the headset, and **short-press** the tracker's power button until the **blue light comes on**
    (first use needs [binding](#pico-tracker-bind) first).
 4. **Facing straight towards the robot**, launch the XenseVR-Toolkit app (this **freezes the world
    origin and orientation** — see [frames](#pico-frame)), and complete the
