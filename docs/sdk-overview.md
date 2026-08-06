@@ -5,10 +5,12 @@
 `third_party/taccap-gripper` 子模块消费它,不重复实现底层通信。
 
 !!! info "版本基线"
-    本附录按 `taccap-gripper 0.1.4` 源码核对。SDK 升级后应同步复核接口、构建选项与示例命令。
+    本附录按 `taccap-gripper 0.1.7` 源码核对(与[版本与支持](versions.md)里的已验证基线一致)。
+    SDK 升级后应同步复核接口、构建选项与示例命令。
 
 !!! note "能力边界"
-    - SDK 通过串口协议访问夹爪 MCU,提供 IMU、编码器、按键、传感器错误、OTA,以及仅从夹爪具备的电机控制。
+    - SDK 通过串口协议访问夹爪 MCU,提供 IMU、编码器、按键、LED、传感器错误、标定、OTA,
+      以及仅从夹爪具备的电机控制。
     - SDK 也提供独立、可选的腕部 UVC `Camera` 类;`LeaderGripper.open()` / `FollowerGripper.open()` 默认不打开相机,只有显式设置 `open_cameras=true` 并提供设备路径时聚合对象才会持有它。
     - `xense-taccap-lerobot` 的正式数采路径不使用该 SDK `Camera`,而是直接使用 LeRobot `OpenCVCamera`;视触觉图像由 `XenseTactileCamera` + `xensesdk` 采集。
 
@@ -17,7 +19,7 @@
 ```mermaid
 flowchart TB
     U["用户代码 / 上层适配器"] --> AGG["LeaderGripper / FollowerGripper<br/>MCU 聚合对象"]
-    AGG --> COMP["MCU 组件<br/>IMU · Encoder · Key · SensorErrors · OTA · Motor(仅从夹爪)"]
+    AGG --> COMP["MCU 组件<br/>IMU · Encoder · Key · Led · SensorErrors<br/>Calibration · OTA · Motor(仅从夹爪)"]
     COMP --> TX["异步 Transport<br/>后台读线程 · ACK 匹配 · DATA 订阅"]
     TX --> PROTO["协议与串口总线<br/>pack/parse · CRC16 · 字节填充 · 3 Mbps"]
     PROTO --> SERIAL["/dev/ttyACM* / CH343"]
@@ -31,7 +33,9 @@ flowchart TB
 | 层 / 组件 | 职责 |
 |---|---|
 | **聚合对象** | `LeaderGripper` / `FollowerGripper` 管理 MCU Transport 与组件生命周期;`open()` 只适用于当前恰好连接一只夹爪的场景,多设备时应先扫描端点再显式构造 |
-| **MCU 组件** | `IMU` / `Encoder` 使用 `read_once()` 同步读取、`on_data(cb)` 订阅流数据;从夹爪额外提供 `Motor` 与归一化位置控制 |
+| **MCU 组件** | `IMU` / `Encoder` 使用 `read_once()` 同步读取、`on_data(cb)` 订阅流数据;`Led`(V1.9)、`SensorErrors`(V1.6)、`OtaSession`(V1.3)两侧都有;`Motor` **仅从夹爪** |
+| **`Calibration`** | V2.0/V2.1,两侧都有。鱼眼相机标定 `read_fisheye()` / `write_fisheye()` 双侧可用;**行程上限** `read_encoder_max_rad()` / `write_encoder_max_rad()` **仅主夹爪**,从夹爪 NACK。从未写入过的记录返回空 `optional` / Python `None`,以区别于"标定值恰好为 0" |
+| **归一化位置** | 两侧都有。从夹爪来自 `GripperConfig`;主夹爪自 0.1.7 起由行程上限标定得到——`EncoderSample.position` 给出 `[0,1]` 开度,需 `LeaderGripper::Config::normalize_position`(或用 `encoder_max_rad` 由主机侧指定,用于 V2.1 以前的固件) |
 | **Camera** | 独立 OpenCV/V4L2 采集路径,使用 `read()` 或 `start(callback)` / `stop()`,不经过串口 Transport |
 | **Transport** | 后台串口读线程、ACK 匹配(seq→promise)、按命令分发 DATA |
 | **协议 / 总线** | 帧打包解析、CRC16、字节填充、`SerialBus`(termios @ 3 Mbps) |

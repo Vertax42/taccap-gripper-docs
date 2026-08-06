@@ -83,7 +83,9 @@ SDK 示例脚本位于 `python/examples/`(C++ 示例需 `-DTACCAP_BUILD_EXAMPLES
 | `ota_update.py` | 固件 OTA 刷写 CLI,带进度与刷后状态探测。镜像随 SDK 附带于 `firmware/`;按 CRC32 识别镜像并**拒绝角色不匹配的刷写**(`--force` 可强制)。步骤见 [固件 OTA 升级](versions.md#ota) |
 | `fisheye_cal.py` | 鱼眼内参与编码器行程上限的读写 CLI(`show` / `set-fisheye` / `set-encoder-max` / 引导式 `measure-encoder-max`) |
 | `v4l2_probe.py` / `v4l2_sweep.py` | 直接用 SDK `Camera` 调试 V4L2/UVC 节点;仅用于底层排障,不代表正式 LeRobot / `xensesdk` 图像采集路径 |
+| `leader_normalized_position.py` | 以 `[0,1]` 归一化开度流式读取主夹爪(0.1.7 新增)。开 `normalize_position=True` 后,`open()` 时读取行程上限标定并装上换算器,一次性读取和流式采样都带 `.position`;`.position_rad` 仍是原始弧度 |
 | `motor_mit_control.py` | 从夹爪原始弧度坐标下的 MIT 阻抗控制演示;会驱动真实电机 |
+| `gripper_force_grasp_test.py` | 从夹爪的**柔和力控抓取**测试:固件的 `max_torque` 不是严格力限,直接依赖它会压坏软物;该示例改为小步闭合 + 低 kp 阻抗,并从**位置是否还在推进**判断接触。会驱动真实电机 |
 | `gripper_control_test.py` | 从夹爪归一化开度 `[0,1]` 与 `ControlLoop` 交互测试;要求从夹爪配置已标定 |
 | `leader_demo`(C++) | 单主夹爪 IMU + 编码器 5 秒 MCU 流速率报告 |
 
