@@ -185,16 +185,16 @@ lerobot-record \
 
 | Key | Source | Shape / type |
 |---|---|---|
-| `tcp.x`, `tcp.y`, `tcp.z` | Tracker pose → **EEF TCP** after the mount transform | float (metres) |
+| `tcp.x`, `tcp.y`, `tcp.z` | Tracker pose → **EEF TCP** after the mount transform | float (m) |
 | `tcp.r1`..`tcp.r6` | The EE's 6-D rotation | float |
 | `gripper.pos` | XTac-UMI G1 encoder, normalised | float ∈ [0, 1] |
-| `imu.accel.{x,y,z}` (off by default) | XTac-UMI G1 IMU | float (m/s²) |
-| `imu.gyro.{x,y,z}` (off by default) | XTac-UMI G1 IMU | float (rad/s) |
-| `imu.mag.{x,y,z}` (off by default) | XTac-UMI G1 IMU | float (µT) |
+| `imu.accel.{x,y,z}` (**reserved, not recorded**) | XTac-UMI G1 IMU | float (m/s²) |
+| `imu.gyro.{x,y,z}` (**reserved, not recorded**) | XTac-UMI G1 IMU | float (rad/s) |
+| `imu.mag.{x,y,z}` (**reserved, not recorded**) | XTac-UMI G1 IMU | float (µT) |
 | `tactile_left` / `tactile_right` | Rectified visuotactile image | uint8, about `(400, 700, 3)` |
 | `wrist_cam` | Wrist camera | uint8 `(H, W, 3)` |
 | `left_head` / `right_head` (off by default) | Headset camera, **one key per eye** | uint8, `(768, 1024, 3)` by default |
-| `head_camera.x/y/z` (off by default) | Headset position, same world frame as `tcp.*`; **also an action** | float (metres) |
+| `head_camera.x/y/z` (off by default) | Headset position, same world frame as `tcp.*`; **also an action** | float (m) |
 | `head_camera.r1..r6` (off by default) | Headset orientation, 6-D rotation; **also an action** | float |
 
 !!! note "6-D rotation convention"
@@ -211,10 +211,13 @@ lerobot-record \
     see it for yourself, lay the gripper flat and check that the EE marker in Rerun's `/world`
     sits at the two-finger midpoint → [4.4 3D trajectory visualisation](04-calibration.md#44).
 
-!!! tip "IMU is off by default"
-    The 9 `imu.*` channels above are **off by default**; add `--robot.enable_imu=true` to record
-    them (the same switch on bimanual rigs applies to both sides at once, with keys prefixed
-    `left_` / `right_`).
+!!! tip "The IMU is a reserved capability — the standard flow does not record it"
+    The gripper has an IMU and the collection program supports recording it, but the **standard
+    flow leaves it off**. The `imu.*` rows above document the format; a dataset collected by
+    following this manual **will not contain those 9 columns**.
+
+    If you do need inertial data, add `--robot.enable_imu=true` (the same switch on bimanual rigs
+    applies to both sides at once, with keys prefixed `left_` / `right_`).
 
     Turning them on raises the `observation.state` dimension accordingly: 10 → 19 for a single
     gripper, 20 → 38 for bimanual. Leave it off if you do not need inertial data and save 9
@@ -324,7 +327,7 @@ It produces three groups of keys:
 | Key | Meaning |
 |---|---|
 | `left_head` / `right_head` | Headset camera, **one video key per eye**, `(768, 1024, 3)` each by default |
-| `head_camera.x/y/z` | Headset position (metres); **also in the action** |
+| `head_camera.x/y/z` | Headset position (m); **also in the action** |
 | `head_camera.r1..r6` | Headset orientation, 6-D rotation (same convention as `tcp.*`); **also in the action** |
 
 !!! warning "`left_` / `right_` here means the **eyes**, not the arms"

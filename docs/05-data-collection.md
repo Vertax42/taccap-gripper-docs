@@ -174,16 +174,16 @@ lerobot-record \
 
 | Key | 来源 | 形状 / 类型 |
 |---|---|---|
-| `tcp.x`, `tcp.y`, `tcp.z` | 追踪器位姿 → 经安装变换得到的 **EEF TCP** | float(米) |
+| `tcp.x`, `tcp.y`, `tcp.z` | 追踪器位姿 → 经安装变换得到的 **EEF TCP** | float(m) |
 | `tcp.r1`..`tcp.r6` | EE 的 6-D 旋转 | float |
 | `gripper.pos` | XTac-UMI G1 编码器,归一化 | float ∈ [0, 1] |
-| `imu.accel.{x,y,z}`(默认关) | XTac-UMI G1 IMU | float(m/s²) |
-| `imu.gyro.{x,y,z}`(默认关) | XTac-UMI G1 IMU | float(rad/s) |
-| `imu.mag.{x,y,z}`(默认关) | XTac-UMI G1 IMU | float(µT) |
+| `imu.accel.{x,y,z}`(**预留,不录**) | XTac-UMI G1 IMU | float(m/s²) |
+| `imu.gyro.{x,y,z}`(**预留,不录**) | XTac-UMI G1 IMU | float(rad/s) |
+| `imu.mag.{x,y,z}`(**预留,不录**) | XTac-UMI G1 IMU | float(µT) |
 | `tactile_left` / `tactile_right` | 视触觉校正图 | uint8,约 `(400, 700, 3)` |
 | `wrist_cam` | 腕部相机 | uint8 `(H, W, 3)` |
 | `left_head` / `right_head`(默认关) | 头显相机,**一只眼一个键** | uint8,默认 `(768, 1024, 3)` |
-| `head_camera.x/y/z`(默认关) | 头显位置,与 `tcp.*` 同一世界系;**同时也是动作** | float(米) |
+| `head_camera.x/y/z`(默认关) | 头显位置,与 `tcp.*` 同一世界系;**同时也是动作** | float(m) |
 | `head_camera.r1..r6`(默认关) | 头显姿态的 6-D 旋转;**同时也是动作** | float |
 
 !!! note "6-D 旋转约定"
@@ -198,8 +198,11 @@ lerobot-record \
     想直观确认,把夹爪平放,看 Rerun `/world` 里的 EE 标记是否落在两指中点
     → [4.4 3D 轨迹可视化](04-calibration.md#44)。
 
-!!! tip "IMU 默认不采集"
-    上表的 `imu.*` 共 9 个通道**默认关闭**,加 `--robot.enable_imu=true` 才会记录
+!!! tip "IMU 是预留能力,当前采集流程不录"
+    夹爪自带 IMU,采集程序也支持记录,但**标准采集流程默认不开**——上表列出 `imu.*`
+    是为了说明数据格式,按本手册采出来的数据集里**不会有这 9 列**。
+
+    确实需要惯性数据时加 `--robot.enable_imu=true` 开启
     (双臂同样是这个开关,两侧一起生效,键名带 `left_` / `right_` 前缀)。
 
     开启后 `observation.state` 维度相应增加:单夹爪 10 → 19,双夹爪 20 → 38。
@@ -297,7 +300,7 @@ lerobot-record \
 | Key | 含义 |
 |---|---|
 | `left_head` / `right_head` | 头显相机画面,**一只眼一个视频键**,默认各 `(768, 1024, 3)` |
-| `head_camera.x/y/z` | 头显位置(米);**同时进 action** |
+| `head_camera.x/y/z` | 头显位置(m);**同时进 action** |
 | `head_camera.r1..r6` | 头显姿态,6-D 旋转(约定同 `tcp.*`);**同时进 action** |
 
 !!! warning "`left_` / `right_` 在这里指的是**眼睛**,不是左右手"
