@@ -172,19 +172,19 @@ lerobot-record \
 
 ## 5.4 每帧记录内容 {#54}
 
-| Key | 来源 | 形状 / 类型 |
-|---|---|---|
-| `tcp.x`, `tcp.y`, `tcp.z` | 追踪器位姿 → 经安装变换得到的 **EEF TCP** | float(m) |
-| `tcp.r1`..`tcp.r6` | EE 的 6-D 旋转 | float |
-| `gripper.pos` | XTac-UMI G1 编码器,归一化 | float ∈ [0, 1] |
-| `imu.accel.{x,y,z}`(**预留,不录**) | XTac-UMI G1 IMU | float(m/s²) |
-| `imu.gyro.{x,y,z}`(**预留,不录**) | XTac-UMI G1 IMU | float(rad/s) |
-| `imu.mag.{x,y,z}`(**预留,不录**) | XTac-UMI G1 IMU | float(µT) |
-| `tactile_left` / `tactile_right` | 视触觉校正图 | uint8,约 `(400, 700, 3)` |
-| `wrist_cam` | 腕部相机 | uint8 `(H, W, 3)` |
-| `left_head` / `right_head`(默认关) | 头显相机,**一只眼一个键** | uint8,默认 `(768, 1024, 3)` |
-| `head_camera.x/y/z`(默认关) | 头显位置,与 `tcp.*` 同一世界系;**同时也是动作** | float(m) |
-| `head_camera.r1..r6`(默认关) | 头显姿态的 6-D 旋转;**同时也是动作** | float |
+| Key | 来源 | 由什么开启 | 形状 / 类型 |
+|---|---|---|---|
+| `tcp.x`, `tcp.y`, `tcp.z` | 追踪器 → EEF TCP 位置 | `--robot.enable_tracker`(默认 `true`) | float(m) |
+| `tcp.r1`..`tcp.r6` | 同上,姿态的 6-D 旋转 | 同上 | float |
+| `gripper.pos` | 夹爪编码器 | `--robot.enable_gripper`(默认 `true`) | float ∈ [0, 1] |
+| `tactile_left` / `tactile_right` | 左右视触觉传感器 | **始终采集**,无开关 | uint8,约 `(400, 700, 3)` |
+| `wrist_cam` | 腕部相机 | `--robot.enable_wrist_camera`(默认 `true`) | uint8 `(H, W, 3)` |
+| `left_head` / `right_head` | 头显双目,**一只眼一个键** | `--robot.enable_head_camera`(默认 `false`) | uint8,默认 `(768, 1024, 3)` |
+| `head_camera.x/y/z` | 头显位置(同 `tcp.*` 世界系),**也是动作** | 同上 | float(m) |
+| `head_camera.r1..r6` | 头显姿态的 6-D 旋转,**也是动作** | 同上 | float |
+| `imu.accel.{x,y,z}` | 夹爪 IMU 加速度 | `--robot.enable_imu`(默认 `false`,**预留不录**) | float(m/s²) |
+| `imu.gyro.{x,y,z}` | 夹爪 IMU 角速度 | 同上 | float(rad/s) |
+| `imu.mag.{x,y,z}` | 夹爪 IMU 磁力 | 同上 | float(µT) |
 
 !!! note "6-D 旋转约定"
     `r1..r3` 是旋转矩阵第一列,`r4..r6` 是旋转矩阵第二列。

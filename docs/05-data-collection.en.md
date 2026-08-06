@@ -183,19 +183,19 @@ lerobot-record \
 
 ## 5.4 What each frame records {#54}
 
-| Key | Source | Shape / type |
-|---|---|---|
-| `tcp.x`, `tcp.y`, `tcp.z` | Tracker pose → **EEF TCP** after the mount transform | float (m) |
-| `tcp.r1`..`tcp.r6` | The EE's 6-D rotation | float |
-| `gripper.pos` | XTac-UMI G1 encoder, normalised | float ∈ [0, 1] |
-| `imu.accel.{x,y,z}` (**reserved, not recorded**) | XTac-UMI G1 IMU | float (m/s²) |
-| `imu.gyro.{x,y,z}` (**reserved, not recorded**) | XTac-UMI G1 IMU | float (rad/s) |
-| `imu.mag.{x,y,z}` (**reserved, not recorded**) | XTac-UMI G1 IMU | float (µT) |
-| `tactile_left` / `tactile_right` | Rectified visuotactile image | uint8, about `(400, 700, 3)` |
-| `wrist_cam` | Wrist camera | uint8 `(H, W, 3)` |
-| `left_head` / `right_head` (off by default) | Headset camera, **one key per eye** | uint8, `(768, 1024, 3)` by default |
-| `head_camera.x/y/z` (off by default) | Headset position, same world frame as `tcp.*`; **also an action** | float (m) |
-| `head_camera.r1..r6` (off by default) | Headset orientation, 6-D rotation; **also an action** | float |
+| Key | Source | Enabled by | Shape / type |
+|---|---|---|---|
+| `tcp.x`, `tcp.y`, `tcp.z` | Tracker → EEF TCP position | `--robot.enable_tracker` (default `true`) | float (m) |
+| `tcp.r1`..`tcp.r6` | Same, as a 6-D rotation | as above | float |
+| `gripper.pos` | Jaw encoder | `--robot.enable_gripper` (default `true`) | float ∈ [0, 1] |
+| `tactile_left` / `tactile_right` | The two visuotactile sensors | **always recorded**, no switch | uint8, about `(400, 700, 3)` |
+| `wrist_cam` | Wrist camera | `--robot.enable_wrist_camera` (default `true`) | uint8 `(H, W, 3)` |
+| `left_head` / `right_head` | Headset stereo, **one key per eye** | `--robot.enable_head_camera` (default `false`) | uint8, `(768, 1024, 3)` by default |
+| `head_camera.x/y/z` | Headset position (same frame as `tcp.*`), **also an action** | as above | float (m) |
+| `head_camera.r1..r6` | Headset orientation as a 6-D rotation, **also an action** | as above | float |
+| `imu.accel.{x,y,z}` | Gripper IMU acceleration | `--robot.enable_imu` (default `false`, **reserved, not recorded**) | float (m/s²) |
+| `imu.gyro.{x,y,z}` | Gripper IMU angular rate | as above | float (rad/s) |
+| `imu.mag.{x,y,z}` | Gripper IMU magnetometer | as above | float (µT) |
 
 !!! note "6-D rotation convention"
     `r1..r3` is the rotation matrix's first column, `r4..r6` its second column.
