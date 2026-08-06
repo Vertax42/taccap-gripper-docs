@@ -97,10 +97,10 @@ flowchart LR
 | `rerun-sdk` | `>=0.24.0,<0.27.0`(`--display_data` 用) | 0.26.2 |
 | `opencv-python` | 固定 `==4.12.0.88`(XenseRobotics 各 SDK 统一) | 4.12.0.88 |
 | NumPy | `>=1.26.4` | 2.2.6 |
-| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@f491cae5` |
-| `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`16412dc`) |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@fc9e9b93` |
+| `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(子模块 `83314c8`) |
 | 夹爪固件命令集 | **V2.1**(帧格式另计,为 V1.8;区别见[三套编号](#v21)) | 命令集 V2.1 |
-| 夹爪固件构建 | leader **≥ 1.2.0** / follower **≥ 1.1.0** 即支持命令集 V2.1 | 随 SDK 附带的镜像版本(固件源码分支 `hw_v1.1.0`);具体版本以 SDK 的 `firmware/manifest.json` 为准,见 [固件 OTA 升级](#ota) |
+| 夹爪固件构建 | leader **≥ 1.2.0** / follower **≥ 1.1.0** 即支持命令集 V2.1 | 当前基线附带 leader **1.2.1** / follower **1.1.1**(固件源码分支 `hw_v1.1.0`);镜像版本随 SDK 走,以 `firmware/manifest.json` 为准,见 [固件 OTA 升级](#ota) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
 | XenseVR PC Service(`.deb` 守护进程) | amd64 ≥ **v0.2.0**;arm64 目前只有 v0.1.0 | v0.2.0(子模块 `6c5ff61d`)|
 | `xensevr_pc_service_sdk`(Python 接口) | 随主仓库子模块一起编译安装 | 0.1.0 —— **包版本号没跟着服务走**,见下 |
@@ -167,6 +167,11 @@ flowchart LR
 
     停在更早的版本时:头显位姿只作为观测落盘,策略不会被要求复现它;Rerun 显示默认走 JPEG
     压缩,开 `--display_data=true` 更容易出现 `[slow_frame]`。
+
+!!! note "固件镜像 1.2.1 / 1.1.1 需要 `fc9e9b93` 之后的版本"
+    子模块升到 SDK `83314c8` 后,`firmware/` 里附带的镜像是 leader **1.2.1** / follower
+    **1.1.1**;更早的基线附带 1.2.0 / 1.1.0。**两者都支持命令集 V2.1,不需要为此重刷**
+    ——1.2.1 只改了 LED 的颜色与闪烁周期。要求门槛仍是 leader ≥ 1.2.0 / follower ≥ 1.1.0。
 
 !!! note "Docker 交付镜像需要 `9387ef05` 之后的版本"
     [2. 环境部署](02-environment.md#docker) 里那条 Docker 路径——交付目录、
