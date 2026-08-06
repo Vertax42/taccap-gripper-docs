@@ -115,7 +115,7 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
 | `--robot.expected_tactiles_per_side` | — | Assert the tactile count per side |
 
 Once the Pico4 Ultra Enterprise tracker is powered on, the 6-DoF pose is **recorded
-automatically** — the tracker matches this unit's side from the digit before its serial's trailing letter
+automatically** — the tracker matches this unit's side from the digit before its serial's trailing `G`
 (odd-left / even-right).
 
 !!! tip "Tactile + gripper only"
