@@ -14,7 +14,7 @@
 |---|---|---|
 | `xense-taccap-lerobot` | `0.5.1+xtac.0.0.3` | `pip show lerobot` 或看 `pyproject.toml` |
 | `xense.taccap` SDK | **0.1.7** | `python -c "import xense.taccap as t; print(t.__version__)"` |
-| 夹爪固件 | **命令集 V2.1**,即构建 leader 1.2.0 / follower 1.1.0([区别](#v21)) | 跑 [`calibrate.py`](04-calibration.md#41),版本不够会打印当前版本并退出 |
+| 夹爪固件 | **命令集 V2.1**,即构建 leader **≥ 1.2.0** / follower **≥ 1.1.0**([区别](#v21)) | 跑 [`calibrate.py`](04-calibration.md#41),版本不够会打印当前版本并退出 |
 | 每台 leader 的编码器标定 | 零点 + 行程上限已写入 flash | [4.1 夹爪标定](04-calibration.md#41) |
 
 ### 三套编号:V2.1 是命令集,不是固件版本 {#v21}
@@ -25,15 +25,16 @@
 |---|---|---|
 | 帧格式(wire framing) | `V1.8` | 字节怎么打包成帧(字节填充、CRC)。极少变动,本手册基本不提 |
 | **命令集(command set)** | **`V2.1`** | 固件**实现了哪些命令**。每条命令按引入时的版本标注 |
-| 固件构建号 | leader `1.2.0`<br>follower `1.1.0` | 具体那一版镜像,刷写时 `--target-version` 填的就是它 |
+| 固件构建号 | leader `≥ 1.2.0`<br>follower `≥ 1.1.0` | 具体那一版镜像。**这是最小值,不是必须精确匹配的值**——1.2.1 之类的更高版本同样支持 V2.1,不需要为此回刷 |
 
 **本手册里说的「V2.1」一律指命令集**,因为行程标定用的 `EncoderMaxCal` 命令正是 V2.1 引入的
 (`V2.0` 引入鱼眼标定,`V1.9` 引入 LED 与私有电机参数)。所以"标定要求固件 ≥ V2.1"说的是
 **命令集**要够新。
 
-命令集和构建号的对应关系是固定的:**带命令集 V2.1 的构建就是 leader `1.2.0` /
-follower `1.1.0`**。所以「升到 V2.1」和刷写命令里的 `--target-version 1.2.0.0` 是同一件事。
-主从两个号不同,只是因为它们本来就是两份不同的固件,不是谁更新。
+对应关系是**门槛**而非等号:**命令集 V2.1 从 leader `1.2.0` / follower `1.1.0` 起开始支持**,
+更高的构建号(如 leader `1.2.1`)同样支持。所以看到自己是 1.2.1 不必疑惑,也不需要回刷到
+1.2.0——**"我们跑的版本"和"我们要求的版本"是两件事**。主从两个号不同,只是因为它们本来就是
+两份不同的固件,不是谁更新。
 
 一条命令查完前三项:
 
@@ -82,7 +83,7 @@ flowchart LR
 | `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@f491cae5` |
 | `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`16412dc`) |
 | 夹爪固件命令集 | **V2.1**(帧格式另计,为 V1.8;区别见[三套编号](#v21)) | 命令集 V2.1 |
-| 夹爪固件构建 | 与命令集 V2.1 配套 | leader 1.2.0 / follower 1.1.0(固件源码 tag `hw_v1.1.0`;镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
+| 夹爪固件构建 | leader **≥ 1.2.0** / follower **≥ 1.1.0** 即支持命令集 V2.1 | 随 SDK 附带的镜像版本(固件源码分支 `hw_v1.1.0`);具体版本以 SDK 的 `firmware/manifest.json` 为准,见 [固件 OTA 升级](#ota) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
 | XenseVR PC Service(`.deb` 守护进程) | amd64 ≥ **v0.2.0**;arm64 目前只有 v0.1.0 | v0.2.0(子模块 `6c5ff61d`)|
 | `xensevr_pc_service_sdk`(Python 接口) | 随主仓库子模块一起编译安装 | 0.1.0 —— **包版本号没跟着服务走**,见下 |
@@ -223,7 +224,7 @@ git submodule update --init --recursive --progress
 |---|---|
 | `calibrate.py` 报 `needs firmware >= V2.1` 并原样退出 | [4.1 夹爪标定](04-calibration.md#41) |
 | 主夹爪连不上,报错里提示先做 OTA 升级 | [4.1.1](04-calibration.md#41) |
-| 夹爪固件低于 **V2.1**(leader 1.2.0 / follower 1.1.0) | 上面的[基线表](#版本兼容基线) |
+| 夹爪固件低于命令集 **V2.1**(即 leader < 1.2.0 / follower < 1.1.0) | 上面的[基线表](#版本兼容基线) |
 
 都没遇到就**不用刷**。固件不会自己退化,刷过一次之后除非换主板或擦除固件,不需要再刷。
 
@@ -234,13 +235,22 @@ git submodule update --init --recursive --progress
 
 SDK 自 0.1.7 起**随仓库附带已发布的固件镜像**,直接刷即可:
 
-| 镜像 | 适用角色 | 版本 |
-|---|---|---|
-| `tc-gu-01-master.bin` | 主夹爪(SN 末位 **`m`**) | 1.2.0.0 |
-| `tc-gu-01-slave.bin` | 从夹爪(SN 末位 **`s`**) | 1.1.0.0 |
+| 镜像 | 适用角色 |
+|---|---|
+| `tc-gu-01-master.bin` | 主夹爪(SN 末位 **`m`**) |
+| `tc-gu-01-slave.bin` | 从夹爪(SN 末位 **`s`**) |
 
-路径 `third_party/taccap-gripper/firmware/`,同目录 `manifest.json` 记录了每个镜像的
-版本、字节数与 CRC32,可用于核对文件是否完整。该目录只保留当前发布版。
+路径 `third_party/taccap-gripper/firmware/`,该目录只保留当前发布版。
+
+!!! note "镜像版本随 SDK 版本走,以 `manifest.json` 为准"
+    **这里不写死版本号**——附带的镜像版本取决于你这一版 SDK。同目录的 `manifest.json`
+    记录了每个镜像的版本、字节数与 CRC32,是唯一出处:
+
+    ```bash
+    cat third_party/taccap-gripper/firmware/manifest.json
+    ```
+
+    只要不低于 leader `1.2.0` / follower `1.1.0`,就已经支持命令集 V2.1。
 
 !!! warning "顺序:**先升级 SDK,再刷固件**"
     0.1.7 之前的 SDK 有两个升级相关的缺陷:固件拒绝写入时它识别不出来,**失败的升级会报成功**;
@@ -258,12 +268,21 @@ for g in scan_grippers(): print(g.firmware_sn, '->', 'master' if g.firmware_sn.e
 
 # 2. 刷写(镜像只写文件名即可,脚本会去 SDK 的 firmware/ 里找)
 python third_party/taccap-gripper/python/examples/ota_update.py \
-    tc-gu-01-master.bin --side left --target-version 1.2.0.0
+    tc-gu-01-master.bin --side left
 
 # 3. 确认:GetVersion 返回固件编译进去的常量,读回的版本就是实际刷上去的版本
 python -c "from xense.taccap import scan_grippers
 for g in scan_grippers(): print(g.firmware_sn, g.role.name)"
 ```
+
+!!! tip "`--target-version` 是可选的"
+    它只是给固件的安装后校验日志和分区元数据打个标记,**不影响刷什么内容**——刷进去的是哪一版
+    由镜像文件本身决定。需要在日志里标注时才加,填 `manifest.json` 里那个版本号即可:
+
+    ```bash
+    python third_party/taccap-gripper/python/examples/ota_update.py \
+        tc-gu-01-master.bin --side left --target-version 1.2.1
+    ```
 
 约 1 秒写完,夹爪重启并重新识别约 1–3 秒。新固件写在**备用分区**,校验通过之前不会覆盖
 正在运行的那一份——所以传输失败不会把夹爪刷坏。

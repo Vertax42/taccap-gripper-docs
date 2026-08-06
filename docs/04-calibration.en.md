@@ -162,7 +162,7 @@ value is still *accurate*.
   follower rejects the command — it relies on the firmware's **power-on auto-calibration**
   instead (see the note below). During collection a follower's `gripper.pos` is still normalised
   by `gripper_open_rad`, unchanged from the older behaviour.
-- **Firmware command set >= V2.1 required** — that is build leader 1.2.0 / follower 1.1.0; see
+- **Firmware command set >= V2.1 required** — that is build leader **>= 1.2.0** / follower **>= 1.1.0**; see
   [the three version numbers](versions.md#v21). Older firmware does not support it:
   `calibrate.py` **exits without changing anything**, and at collection time a leader fails at
   connect with a pointer to the OTA update. Any gripper

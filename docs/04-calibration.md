@@ -145,7 +145,7 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
 - **手动标定仅 leader(主夹爪)。**这套两步标定是主夹爪专有的,从夹爪不接受该命令——
   它走的是固件的**上电自动标定**(见下方说明)。采集时从夹爪的 `gripper.pos` 仍按
   `gripper_open_rad` 归一化,与旧算法一致。
-- **需要固件命令集 ≥ V2.1**(即构建 leader 1.2.0 / follower 1.1.0,[区别](versions.md#v21))**。**
+- **需要固件命令集 ≥ V2.1**(即构建 leader **≥ 1.2.0** / follower **≥ 1.1.0**,[区别](versions.md#v21))**。**
   更低版本不支持行程标定:`calibrate.py` 会**原样退出、
   不改动任何东西**,采集时主夹爪则直接报错退出,并提示先做 OTA 升级。
   **低于 V2.1 的夹爪必须先升级固件**,镜像随 SDK 附带 → [固件 OTA 升级](versions.md#ota)。
