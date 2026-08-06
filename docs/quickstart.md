@@ -50,18 +50,16 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 ## 3. 预览实时数据
 
-录制前先用 `lerobot-teleoperate` 打开 Rerun 确认数据流。**分三档逐步打开**——每多开一层就多一层
-依赖,哪一档开始出问题,就知道是哪个部件。
+录制前先用 `lerobot-teleoperate` 打开 Rerun 确认数据流。**分三档**,每一档比上一档多接一层设备
+——**你要录到哪一档,就预览到哪一档**。
 
 === "① 只看夹爪"
 
-    触觉两路、腕相机、`gripper.pos`。追踪器和头显都关,**PC Service 没启动也能跑**,
-    所以这一档失败就是夹爪本身或串口权限的问题。
+    触觉两路、腕相机、`gripper.pos`。追踪器和头显都关着,**不需要启动 PC Service**。
 
     ```bash
     lerobot-teleoperate \
-        --robot.type=taccap_gripper \
-        --robot.side=right \
+        --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=false \
         --robot.enable_head_camera=false \
         --fps=30 \
@@ -70,13 +68,17 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 === "② 加上追踪器位姿"
 
-    多出 `/world` 里的 EE 标记与轨迹。需要追踪器已开机、Pico4 已连上、
-    [XenseVR PC Service](03-host-hardware.md#35) 已启动——这一档才失败,问题在这条链路上。
+    Rerun 里多出 `/world` 3D 视图:夹爪的 EE 标记,以及它走过的**轨迹**。
+
+    **启动脚本前先把追踪器摆进头显视野内。**独立追踪靠头显看着追踪器,被身体、桌沿或另一只手
+    遮挡就会丢跟踪,表现为位姿跳变或卡住(见
+    [绑定运动追踪器](03-host-hardware.md#pico-tracker-bind))。
+
+    还需要追踪器已开机、Pico4 已连上、[XenseVR PC Service](03-host-hardware.md#35) 已启动。
 
     ```bash
     lerobot-teleoperate \
-        --robot.type=taccap_gripper \
-        --robot.side=right \
+        --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=false \
         --fps=30 \
@@ -90,38 +92,18 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
     ```bash
     lerobot-teleoperate \
-        --robot.type=taccap_gripper \
-        --robot.side=right \
+        --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=true \
         --fps=30 \
         --display_data=true
     ```
 
-**双夹爪**:把 `--robot.type` 换成 `bi_taccap_gripper` 并去掉 `--robot.side`,其余相同。
+**只有一只夹爪时**:把 `--robot.type` 换成 `taccap_gripper` 并加上 `--robot.side=left|right`,其余相同。
 
 移动并开合夹爪检查各路数据;确认无误后按 `Ctrl+C` 退出预览。录制命令用哪一档,预览就用哪一档。
 
 ## 4. 录制一条数据
-
-**单夹爪(以右侧为例):**
-
-```bash
-lerobot-record \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_head_camera=false \
-    --display_data=true \
-    --dataset.repo_id=<你的org>/<数据集名> \
-    --dataset.num_episodes=1 \
-    --dataset.fps=30 \
-    --dataset.push_to_hub=false \
-    --dataset.episode_time_s=120 \
-    --dataset.reset_time_s=60 \
-    --dataset.single_task='Pick up the object'
-```
-
-**双夹爪:**
 
 ```bash
 lerobot-record \
@@ -137,9 +119,11 @@ lerobot-record \
     --dataset.single_task='Pick up the object'
 ```
 
+**只有一只夹爪时**:`--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
+
 三个容易搞错的:
 
-- `--robot.side` 只在**两只夹爪都接着**时才需要;单只会自动选中。
+- `--robot.side` 只在单夹爪模式、且**两只夹爪都接着**时才需要;单只会自动选中。
 - `--fps` 是主循环帧率,`--dataset.fps` 是落盘采样率——**两个参数**,通常设成一样。
 - 位姿默认就录;不需要时才加 `--robot.enable_tracker=false`。
 

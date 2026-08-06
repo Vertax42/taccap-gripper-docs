@@ -23,20 +23,6 @@
 和 [4.3 端到端冒烟测试](04-calibration.md#43) 不同,这里**所有设备都开着**,要确认的正是
 整条链路是否凑齐。
 
-**单夹爪(以右侧为例):**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true \
-    --show_trajectory=true
-```
-
-**双夹爪:**
-
 ```bash
 lerobot-teleoperate \
     --robot.type=bi_taccap_gripper \
@@ -46,6 +32,8 @@ lerobot-teleoperate \
     --show_trajectory=true
 ```
 
+**只有一只夹爪时**,换成 `--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
+
 在 Rerun 里逐项确认:
 
 | 看什么 | 期望 |
@@ -53,21 +41,20 @@ lerobot-teleoperate \
 | 左右两路触觉 | 都有画面;按压时纹理明显变化 |
 | 腕相机 | 有画面,视野里没有线缆或杂物遮挡 |
 | `gripper.pos` | 张到底到 **1.0**、闭合到 **0.0**——顶不到 1.0 见 [4.1.3](04-calibration.md#413) |
-| `/world` 里的 EE 标记 | 随夹爪平滑移动,不跳变、不卡住 |
+| `/world` 里的 EE 标记与轨迹 | 随夹爪平滑移动,不跳变、不卡住——**追踪器要始终在头显视野内**,被遮挡就会丢跟踪 |
 | 双臂:左右两条轨迹 | 各自独立且对应正确的手,没有接反 |
 
 都正常再 `Ctrl+C` 退出,继续下面的录制。用头显相机时把
 `--robot.enable_head_camera` 改成 `true` 一并预览(见 [§5.7](#57))。
 
-## 5.2 单夹爪录制
+## 5.2 双夹爪录制
 
-设备**按序列号规则自动发现**——不列举夹爪/触觉/相机序列号。单只夹爪自动选中;两只都
-接入时用 `--robot.side=left|right` 指定。
+设备**按序列号规则自动发现**——不列举夹爪/触觉/相机序列号。触觉、腕相机、追踪器都按同一套
+规则各自匹配左右。
 
 ```bash
 lerobot-record \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
+    --robot.type=bi_taccap_gripper \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
@@ -161,14 +148,15 @@ Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪
     用 `--robot.tracker_serial=<SN>` 直接钉住序列号——**逐字使用**,不枚举、不校验
     (打错会在 connect 时报设备找不到)。留空(默认)则走自动发现。
 
-## 5.3 双夹爪录制
+## 5.3 单夹爪录制
 
-用 `--robot.type=bi_taccap_gripper`(左右两只夹爪同时录),其余参数同上。触觉、腕相机、
-追踪器均按同一套规则各自匹配左右。
+只录一只时用 `--robot.type=taccap_gripper`,其余参数同上。单只夹爪自动选中;两只都接入时
+用 `--robot.side=left|right` 指定录哪一只。
 
 ```bash
 lerobot-record \
-    --robot.type=bi_taccap_gripper \
+    --robot.type=taccap_gripper \
+    --robot.side=right \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \

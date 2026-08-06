@@ -57,19 +57,17 @@ Anything wrong → [Troubleshooting](troubleshooting.md).
 
 ## 3. Preview the live streams
 
-Before recording, open Rerun with `lerobot-teleoperate` and confirm the streams. **Bring it up in
-three stages** — each one adds a dependency, so whichever stage first fails tells you which part
-to look at.
+Before recording, open Rerun with `lerobot-teleoperate` and confirm the streams. **Three stages**,
+each adding a layer of hardware — **preview at whichever stage you intend to record at**.
 
 === "1. Gripper only"
 
     Both tactile streams, the wrist camera and `gripper.pos`. Tracker and headset off, so this
-    **runs without the PC Service** — a failure here is the gripper itself or serial permissions.
+    **does not need the PC Service running**.
 
     ```bash
     lerobot-teleoperate \
-        --robot.type=taccap_gripper \
-        --robot.side=right \
+        --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=false \
         --robot.enable_head_camera=false \
         --fps=30 \
@@ -78,14 +76,19 @@ to look at.
 
 === "2. Add the tracker pose"
 
-    Adds the EE marker and its trail in `/world`. Needs the tracker powered on, the Pico4
-    connected and the [XenseVR PC Service](03-host-hardware.md#35) running — if only this stage
-    fails, the problem is on that path.
+    Rerun gains the `/world` 3D view: the gripper's EE marker and the **trail** it has travelled.
+
+    **Put the tracker in the headset's field of view before starting.** Standalone tracking works
+    by the headset seeing the tracker, so anything blocking it — your body, the desk edge, your
+    other hand — loses tracking, which shows up as pose jumps or a frozen pose (see
+    [binding the tracker](03-host-hardware.md#pico-tracker-bind)).
+
+    It also needs the tracker powered on, the Pico4 connected and the
+    [XenseVR PC Service](03-host-hardware.md#35) running.
 
     ```bash
     lerobot-teleoperate \
-        --robot.type=taccap_gripper \
-        --robot.side=right \
+        --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=false \
         --fps=30 \
@@ -99,16 +102,15 @@ to look at.
 
     ```bash
     lerobot-teleoperate \
-        --robot.type=taccap_gripper \
-        --robot.side=right \
+        --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=true \
         --fps=30 \
         --display_data=true
     ```
 
-**Bimanual**: swap `--robot.type` for `bi_taccap_gripper` and drop `--robot.side`; everything else
-is the same.
+**With only one gripper**: swap `--robot.type` for `taccap_gripper` and add
+`--robot.side=left|right`; everything else is the same.
 
 Move the gripper and work the jaw to check every stream. `Ctrl+C` to leave the preview. Preview at
 whichever stage matches the recording you are about to make.
@@ -119,25 +121,6 @@ whichever stage matches the recording you are about to make.
     [4.1 Gripper calibration](04-calibration.md#41). Nothing downstream will flag this for you.
 
 ## 4. Record one episode
-
-**Single gripper (right side shown):**
-
-```bash
-lerobot-record \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_head_camera=false \
-    --display_data=true \
-    --dataset.repo_id=<your_org>/<dataset_name> \
-    --dataset.num_episodes=1 \
-    --dataset.fps=30 \
-    --dataset.push_to_hub=false \
-    --dataset.episode_time_s=120 \
-    --dataset.reset_time_s=60 \
-    --dataset.single_task='Pick up the object'
-```
-
-**Bimanual:**
 
 ```bash
 lerobot-record \
@@ -153,9 +136,12 @@ lerobot-record \
     --dataset.single_task='Pick up the object'
 ```
 
+**With only one gripper**: `--robot.type=taccap_gripper` plus `--robot.side=left|right`;
+everything else is the same.
+
 Three that are easy to get wrong:
 
-- `--robot.side` is only needed when **both grippers are plugged in**; a lone unit auto-resolves.
+- `--robot.side` is only needed in single-gripper mode with **both grippers plugged in**; a lone unit auto-resolves.
 - `--fps` is the main loop rate, `--dataset.fps` is the recording sample rate — **two parameters**,
   usually set to the same value.
 - Pose is recorded by default; add `--robot.enable_tracker=false` only when you do not want it.

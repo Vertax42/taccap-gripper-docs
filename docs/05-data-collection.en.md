@@ -27,20 +27,6 @@ reaching 1.0, the two arms swapped) is obvious at a glance in the preview.
 Unlike [4.3 End-to-end smoke test](04-calibration.md#43), **everything stays enabled here** —
 the point is to confirm the whole chain is present.
 
-**Single gripper (right side shown):**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true \
-    --show_trajectory=true
-```
-
-**Bimanual:**
-
 ```bash
 lerobot-teleoperate \
     --robot.type=bi_taccap_gripper \
@@ -50,6 +36,9 @@ lerobot-teleoperate \
     --show_trajectory=true
 ```
 
+**With only one gripper**, use `--robot.type=taccap_gripper` plus `--robot.side=left|right`;
+everything else is the same.
+
 Check each of these in Rerun:
 
 | What | Expected |
@@ -57,22 +46,20 @@ Check each of these in Rerun:
 | Both tactile streams | Both showing; the texture changes clearly when pressed |
 | Wrist camera | Showing, with no cable or clutter in the view |
 | `gripper.pos` | **1.0** wide open, **0.0** closed — short of 1.0, see [4.1.3](04-calibration.md#413) |
-| The EE marker in `/world` | Moves smoothly with the gripper; no jumps, no freezing |
+| The EE marker and trail in `/world` | Moves smoothly with the gripper; no jumps, no freezing — **keep the tracker in the headset's view**, since anything blocking it loses tracking |
 | Bimanual: the two trails | Independent, and each on the correct hand — not swapped |
 
 `Ctrl+C` once it all looks right, then record below. If you use the headset camera, set
 `--robot.enable_head_camera` to `true` here as well so you preview that too (see [§5.7](#57)).
 
-## 5.2 Recording with a single gripper
+## 5.2 Recording with both grippers
 
 Devices are **auto-discovered by the serial rules** — you never list gripper, tactile or camera
-serials. A lone gripper is selected automatically; with both plugged in, pick one with
-`--robot.side=left|right`.
+serials. Tactile sensors, wrist cameras and trackers each match left/right by the same rules.
 
 ```bash
 lerobot-record \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
+    --robot.type=bi_taccap_gripper \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
@@ -172,14 +159,15 @@ automatically** — the tracker matches this unit's side from the digit before i
     enumeration and no validation (a typo surfaces as a device-not-found error at connect time).
     Leave it unset (the default) for auto-discovery.
 
-## 5.3 Recording with both grippers
+## 5.3 Recording with a single gripper
 
-Use `--robot.type=bi_taccap_gripper` to record both grippers at once; every other parameter is as
-above. Tactile sensors, wrist cameras and trackers each match left/right by the same rules.
+To record just one, use `--robot.type=taccap_gripper`; every other parameter is as above. A lone
+gripper is selected automatically; with both plugged in, pick one with `--robot.side=left|right`.
 
 ```bash
 lerobot-record \
-    --robot.type=bi_taccap_gripper \
+    --robot.type=taccap_gripper \
+    --robot.side=right \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
