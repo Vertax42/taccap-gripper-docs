@@ -115,7 +115,7 @@ SN 从 PC Service 读取,见 [读取追踪器 SN](#pico-tracker-sn)。
 
 ## 3.4 Pico4 Ultra 企业版配置 {#34}
 
-Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供 6-DoF 位姿。在 Pico4 Ultra 企业版上运行 **XenseVR-Toolkit**
+Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供 6-DoF 位姿。在 Pico4 Ultra 企业版上运行 **XTac-UMI XR**
 (VR 客户端 APP),位姿经 [XenseVR PC Service](#35) 送到采集端。
 首次使用按「**安装 → 网络连接 → 绑定追踪器 → 追踪模式与界面设置 → 启动对齐**」五步走。
 
@@ -132,7 +132,7 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
 
 下面标着「预配置设备可跳过」的小节不用看;没标的都要做。
 
-### 首次安装 XenseVR-Toolkit(Pico4 Ultra 企业版) {#pico-app}
+### 首次安装 XTac-UMI XR(Pico4 Ultra 企业版) {#pico-app}
 
 !!! info "预配置设备可跳过本节"
     本节的设置写在头显里,断电不丢。出厂已配置的设备无需重做——除非恢复出厂设置或更换头显。
@@ -153,21 +153,21 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
     钳制回一个有限值(表面看已设置,实际未生效)。**先休眠、后灭屏**,改完退出设置再回来
     确认两项都显示「永不」。
 
-不做这一步的后果:头显在采集间隙自动灭屏/休眠后,**XenseVR-Toolkit 会被系统挂起或杀掉**,
-追踪数据中断;重启 Toolkit 又会重新冻结世界系原点与方向,导致同一数据集内位姿参考系不一致
+不做这一步的后果:头显在采集间隙自动灭屏/休眠后,**XTac-UMI XR 会被系统挂起或杀掉**,
+追踪数据中断;重启 XTac-UMI XR 又会重新冻结世界系原点与方向,导致同一数据集内位姿参考系不一致
 (见 [坐标系对齐](#pico-frame))。摘下头显放置时同样会触发,所以必须关掉,不能只靠「别摘头显」。
 
 !!! note "本项在企业设置里,不在普通设置里"
     「电源策略」只在 **Pico 企业版**的「企业设置」中提供;消费版设置菜单里没有这一项,
     也无法把灭屏调到「永不」。
 
-**3. 拷贝 apk**:用 USB 线连接 Pico4 Ultra 企业版与电脑,把 `XenseVR-Toolkit.apk` 拷到 Pico4 Ultra 企业版的 `Download/` 目录。
+**3. 拷贝 apk**:用 USB 线连接 Pico4 Ultra 企业版与电脑,把 `XTac-UMI-XR.apk` 拷到 Pico4 Ultra 企业版的 `Download/` 目录。
 
 ![拷贝 apk 到 Download](assets/pico4/copy-apk.png){ width="520" }
 
-**4. 安装**:在 Pico4 Ultra 企业版内打开 文件管理 → Download → `XenseVR-Toolkit.apk` → 安装 → 完成。
+**4. 安装**:在 Pico4 Ultra 企业版内打开 文件管理 → Download → `XTac-UMI-XR.apk` → 安装 → 完成。
 
-![安装 XenseVR-Toolkit](assets/pico4/install-apk.png){ width="520" }
+![安装 XTac-UMI XR](assets/pico4/install-apk.png){ width="520" }
 
 ### 网络连接(重要) {#pico-network}
 
@@ -180,7 +180,7 @@ Pico4 Ultra 企业版通过 **USB 有线共享网络**接入数采电脑,追踪�
 连接步骤:
 
 1. 在 Pico4 Ultra 企业版内打开 设置 → 开发者选项 → 打开「USB 调试」→「USB 连接」选择「**传输文件**」。
-2. 打开 **XenseVR-Toolkit** → 勾选 **"shared network (connect USB first)"** → 等待 Pico4 Ultra 企业版为
+2. 打开 **XTac-UMI XR** → 勾选 **"shared network (connect USB first)"** → 等待 Pico4 Ultra 企业版为
    PC 端分配 IP → 输入 **PC Service 的 IP** 连接。
 3. 电脑端启动服务(见 [§3.5](#35)):`runService.sh`。
 
@@ -192,7 +192,7 @@ Pico4 Ultra 企业版通过 **USB 有线共享网络**接入数采电脑,追踪�
     本节的设置写在头显里,断电不丢。出厂已配置的设备无需重做——除非恢复出厂设置或更换头显。
 
 **首次使用、或更换追踪器后**,必须先把 PICO Motion Tracker **绑定到这台头显**。
-未绑定时,追踪模式里选不到它,XenseVR-Toolkit 与 PC Service 也发现不了对应 SN。
+未绑定时,追踪模式里选不到它,XTac-UMI XR 与 PC Service 也发现不了对应 SN。
 
 1. 从 **资源库** 打开「**体感追踪器**」App,进入**配对界面**。
 2. **长按追踪器电源键约 6 秒**,直到指示灯**蓝红交替闪烁**——这是蓝牙配对状态
@@ -227,7 +227,7 @@ Pico4 Ultra 企业版通过 **USB 有线共享网络**接入数采电脑,追踪�
 SN 决定左右(末尾字母 `G` 前一个数字:单左双右,见 [3.3](#33)),也是 PC Service 识别追踪器的依据。
 
 头显里看不到这个 SN:「体感追踪器」App 只显示**短编号**(如 `Tracker 150399`),
-XenseVR-Toolkit 的 Network 面板显示的 SN(如 `PA9410MGL…`)是**头显自己的**。
+XTac-UMI XR 的 Network 面板显示的 SN(如 `PA9410MGL…`)是**头显自己的**。
 匹配左右要用的**追踪器完整 SN**(形如 `PC2310MLL3200496G`)用 PC Service 的 Python 接口
 `xensevr_pc_service_sdk` 读取:
 
@@ -240,13 +240,13 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
 !!! warning "读 SN 需要整条链路先跑起来"
     `get_motion_tracker_serial_numbers()` 报的是**服务当前收到数据的**追踪器。
-    所以要先:追踪器已绑定并开机 → XenseVR-Toolkit 按[界面清单](#pico-toolkit-ui)勾上 `Send`
+    所以要先:追踪器已绑定并开机 → XTac-UMI XR 按[界面清单](#pico-toolkit-ui)勾上 `Send`
     → 主机已启动 [XenseVR PC Service](#35)。少任一步,返回的会是空列表。
 
 拿到 SN 后可用 `--robot.tracker_serial=<SN>` 直接钉住,跳过自动匹配。
 **逐个摇晃夹爪**确认哪个 SN 对应哪只手,再写进配置。
 
-### 追踪模式与 Toolkit 设置 {#pico-tracker}
+### 追踪模式与 XTac-UMI XR 设置 {#pico-tracker}
 
 !!! info "预配置设备可跳过本节"
     本节的设置写在头显里,断电不丢。出厂已配置的设备无需重做——除非恢复出厂设置或更换头显。
@@ -255,32 +255,32 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
 1. 在 Pico4 Ultra 企业版里打开「**体感追踪**」。
 2. 进入设置,追踪模式选「**独立追踪**」。
-3. 在 XenseVR-Toolkit 里,把 **PICO Motion Tracker** 的 `Mode` 选为 **`Object`**。
+3. 在 XTac-UMI XR 里,把 **PICO Motion Tracker** 的 `Mode` 选为 **`Object`**。
 
 === "独立追踪模式"
 
     ![追踪模式:独立追踪](assets/pico4/tracker-standalone.png){ width="440" }
 
-=== "Toolkit:Mode = Object"
+=== "XTac-UMI XR:Mode = Object"
 
-    ![XenseVR-Toolkit PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
+    ![XTac-UMI XR PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
 
 追踪器由 XenseVR PC Service 按**序列号(SN)**识别;侧别按 SN 末尾字母 `G` 前一个数字单左双右自动匹配
 (见 [3.3](#33)),或用 `--robot.tracker_serial=<SN>` 直接钉住。
 
 ### 打开 App 后的界面清单 {#pico-toolkit-ui}
 
-戴上头显、打开 **XenseVR-Toolkit** 后,在 APP 界面里**按顺序**完成下面四项;
+戴上头显、打开 **XTac-UMI XR** 后,在 APP 界面里**按顺序**完成下面四项;
 四项都做完,PC 端才会收到追踪数据。
 
 | # | 操作 | 界面位置 | 说明 |
 |---|------|----------|------|
 | 1 | **网络连接** | **Network** 面板 → 勾 `Shared network (connect USB first)` → `PC Service:` 填 PC 端 IP → `Enter` | 连上后 `Status:` 显示绿色 **`WORKING`**。详见 [网络连接](#pico-network) |
-| 2 | **Mode 选 `Object`** | **Tracking** 面板 → `PICO Motion Tracker` → `Mode` 下拉 | 选 **`Object`**(物体追踪),不是 Head / Controller / Hand。详见 [追踪模式与 Toolkit 设置](#pico-tracker) |
+| 2 | **Mode 选 `Object`** | **Tracking** 面板 → `PICO Motion Tracker` → `Mode` 下拉 | 选 **`Object`**(物体追踪),不是 Head / Controller / Hand。详见 [追踪模式与 XTac-UMI XR 设置](#pico-tracker) |
 | 3 | **勾选 `High-Acc`** | 同一行,`Mode` 右侧 | 高精度追踪模式,位姿更稳、抖动更小 |
 | 4 | **勾选 `Send`** | **Data & Control** 分区 | **开始向 PC 端推送**追踪数据。这是最后一步,勾上之前 PC 侧读不到任何位姿 |
 
-![XenseVR-Toolkit 主界面:Status WORKING、Mode=Object、High-Acc 与 Send 均已勾选](assets/pico4/toolkit-main.jpg){ width="560" }
+![XTac-UMI XR 主界面:Status WORKING、Mode=Object、High-Acc 与 Send 均已勾选](assets/pico4/toolkit-main.jpg){ width="560" }
 
 !!! tip "`Num:` 就是在线追踪器数量"
     `High-Acc` 右边的 `Num:` 显示当前连上的追踪器个数,**双爪应为 `Num: 2`**。
@@ -299,7 +299,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
 ### 启动与坐标系对齐 {#pico-frame}
 
-**佩戴 Pico4 Ultra 企业版启动 XenseVR-Toolkit 时,面朝机器人正前方**,再按
+**佩戴 Pico4 Ultra 企业版启动 XTac-UMI XR 时,面朝机器人正前方**,再按
 [界面清单](#pico-toolkit-ui)输入 PC 端 IP、选 `Object`、勾 `High-Acc` 与 `Send`。启动瞬间
 **冻结世界系的原点与方向**。
 
@@ -311,7 +311,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
     面朝正前方,世界系 X 轴正方向才对齐机器人正前方(Y 左、Z 上)。**只需对齐方向**;
     站的位置(原点)不影响后续使用。
 
-!!! warning "分集之间不要重启 XenseVR-Toolkit"
+!!! warning "分集之间不要重启 XTac-UMI XR"
     一旦重启,后续录制的原点/方向会变,导致同一数据集内位姿参考系不一致。
 
 - **Pico4 Ultra 企业版原始系**:左手系(X 右、Y 上、Z 里),原点 = 启动时 Pico4 Ultra 企业版 Head 位置。
@@ -358,7 +358,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 1. 将 XTac-UMI G1 插入主机(USB)。
 2. 接好 Pico4 Ultra 企业版的**有线共享网络**,并**关闭数采电脑的 WiFi**(见 [3.4 网络连接](#pico-network))。
 3. 开启 Pico4 Ultra 企业版,**短按**追踪器电源键至**蓝灯亮起**(首次使用需先[绑定](#pico-tracker-bind))。
-4. **面朝机器人正前方**,启动 XenseVR-Toolkit APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame)),
+4. **面朝机器人正前方**,启动 XTac-UMI XR APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame)),
    并按 [界面清单](#pico-toolkit-ui) 完成:连网络 → tracker 选 `Object` → 勾 `High-Acc` → 勾 `Send`。
 5. 启动主机的 XenseVR PC Service(`runService.sh`)。
 6. 运行标定 / 自检 / 录制脚本。
@@ -367,7 +367,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 flowchart LR
     A[插入夹爪 USB] --> N[接 Pico4 Ultra 企业版<br/>有线网络并关闭 WiFi]
     N --> B[开启 Pico4 Ultra 企业版<br/>配对追踪器]
-    B --> C[启动 XenseVR-Toolkit<br/>冻结原点]
+    B --> C[启动 XTac-UMI XR<br/>冻结原点]
     C --> D[启动 XenseVR PC Service]
     D --> E[跑标定/录制]
 ```

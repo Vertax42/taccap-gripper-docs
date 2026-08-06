@@ -59,19 +59,19 @@
 
 ??? failure "没有位姿 / 追踪器连不上 / 位姿不稳"
     **原因**:**电脑 WiFi 与 Pico4 Ultra 企业版有线共享网络冲突**(最常见);或 XenseVR PC Service 未启动、
-    XenseVR-Toolkit 未启动、追踪器未配对/没电。
+    XTac-UMI XR 未启动、追踪器未配对/没电。
     **解决**:**先关闭数采电脑 WiFi**(只保留 Pico4 Ultra 企业版有线共享网络,见
     [3.4 网络连接](03-host-hardware.md#pico-network));再按 [上电顺序](03-host-hardware.md#36)
     逐项确认;启动服务 `/opt/apps/roboticsservice/runService.sh`;必要时用
     `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 自检。
 
 ??? failure "位姿参考系在集之间漂移"
-    **原因**:分集途中**重启了 XenseVR-Toolkit**,世界原点被重设。
-    **解决**:采集**全程不要重启** XenseVR-Toolkit。见 [3.4 Pico4 Ultra 企业版配置](03-host-hardware.md#34)。
+    **原因**:分集途中**重启了 XTac-UMI XR**,世界原点被重设。
+    **解决**:采集**全程不要重启** XTac-UMI XR。见 [3.4 Pico4 Ultra 企业版配置](03-host-hardware.md#34)。
 
 ??? failure "采集间隙位姿突然中断 / 头显自己灭屏"
-    **原因**:头显未关闭灭屏与系统休眠,挂起后 XenseVR-Toolkit 被系统暂停或杀掉;
-    重启 Toolkit 又会重新冻结世界系,叠加出上一条的参考系漂移。
+    **原因**:头显未关闭灭屏与系统休眠,挂起后 XTac-UMI XR 被系统暂停或杀掉;
+    重启 XTac-UMI XR 又会重新冻结世界系,叠加出上一条的参考系漂移。
     **解决**:企业设置 → 系统设置 → **电源策略**,**先**把「系统休眠」设为「永不」,
     **再**把「灭屏」设为「永不」(顺序反了灭屏会被休眠时间钳制回有限值)。
     见 [首次安装 · 步骤 2](03-host-hardware.md#pico-app)。

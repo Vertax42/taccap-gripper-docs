@@ -29,7 +29,7 @@ then come back.
 
 ```mermaid
 flowchart LR
-    A[Plug in gripper USB] --> N[Connect Pico4 Ultra Enterprise<br/>wired network, turn WiFi off] --> B[Power on Pico4 Ultra Enterprise<br/>pair the tracker] --> C[Face the robot, launch<br/>XenseVR-Toolkit] --> D[Start XenseVR PC Service]
+    A[Plug in gripper USB] --> N[Connect Pico4 Ultra Enterprise<br/>wired network, turn WiFi off] --> B[Power on Pico4 Ultra Enterprise<br/>pair the tracker] --> C[Face the robot, launch<br/>XTac-UMI XR] --> D[Start XenseVR PC Service]
 ```
 
 ```bash
@@ -41,7 +41,7 @@ flowchart LR
     makes tracking unstable or unreachable. Turn WiFi off on the collection host for the whole
     session. See [3.4 Network](03-host-hardware.md#pico-network).
 
-!!! warning "Never restart XenseVR-Toolkit mid-session"
+!!! warning "Never restart XTac-UMI XR mid-session"
     Restarting resets the world origin, which leaves poses inside one dataset referenced to
     different frames.
 

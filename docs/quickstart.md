@@ -24,7 +24,7 @@
 
 ```mermaid
 flowchart LR
-    A[插夹爪 USB] --> N[接 Pico4 Ultra 企业版<br/>有线网络并关闭 WiFi] --> B[开启 Pico4 Ultra 企业版<br/>配对追踪器] --> C[面朝机器人启动<br/>XenseVR-Toolkit] --> D[启动 XenseVR PC Service]
+    A[插夹爪 USB] --> N[接 Pico4 Ultra 企业版<br/>有线网络并关闭 WiFi] --> B[开启 Pico4 Ultra 企业版<br/>配对追踪器] --> C[面朝机器人启动<br/>XTac-UMI XR] --> D[启动 XenseVR PC Service]
 ```
 
 ```bash
@@ -35,7 +35,7 @@ flowchart LR
     Pico4 Ultra 企业版走**有线共享网络**,电脑 WiFi 会与之冲突导致追踪不稳/连不上。数采期间关闭数采电脑 WiFi。
     见 [3.4 网络连接](03-host-hardware.md#pico-network)。
 
-!!! warning "采集全程不要重启 XenseVR-Toolkit"
+!!! warning "采集全程不要重启 XTac-UMI XR"
     重启会重设世界原点,导致同一数据集内位姿参考系不一致。
 
 ## 2. 自检(确认设备就绪)

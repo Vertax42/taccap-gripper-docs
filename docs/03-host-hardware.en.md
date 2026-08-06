@@ -128,7 +128,7 @@ Service — see [Reading a tracker SN](#pico-tracker-sn).
 ## 3.4 Pico4 Ultra Enterprise setup {#34}
 
 The **standalone motion tracker** that ships with the Pico4 Ultra Enterprise mounts on top of the
-gripper and provides the 6-DoF pose. **XenseVR-Toolkit** (the VR client app) runs on the headset,
+gripper and provides the 6-DoF pose. **XTac-UMI XR** (the VR client app) runs on the headset,
 and the pose reaches collection via the [XenseVR PC Service](#35). First time through,
 follow all five steps: **install → network → bind the tracker → tracking mode and UI → startup
 alignment**.
@@ -148,7 +148,7 @@ cycles. Before **each** collection session you still need to:
 
 Sections below marked "skip on a pre-configured headset" do not apply to you; everything else does.
 
-### First-time XenseVR-Toolkit install (Pico4 Ultra Enterprise) {#pico-app}
+### First-time XTac-UMI XR install (Pico4 Ultra Enterprise) {#pico-app}
 
 !!! info "Skip this section on a pre-configured headset"
     What this section sets is stored on the headset and survives power cycles. A unit configured at
@@ -171,8 +171,8 @@ Settings → **Power policy** and set both to "**Never**", **in this order**:
     looks set but is not in effect. **Sleep first, screen-off second**, then leave Settings and
     come back to confirm both read "Never".
 
-Skipping this: once the headset screen-blanks or sleeps between episodes, **XenseVR-Toolkit gets
-suspended or killed by the system** and tracking drops out. Restarting the Toolkit re-freezes the
+Skipping this: once the headset screen-blanks or sleeps between episodes, **XTac-UMI XR gets
+suspended or killed by the system** and tracking drops out. Restarting the XTac-UMI XR re-freezes the
 world origin and orientation, leaving poses inside one dataset referenced to different frames
 (see [Frame alignment](#pico-frame)). Simply setting the headset down triggers it too, so it must
 be turned off — "don't take the headset off" is not a workaround.
@@ -181,14 +181,14 @@ be turned off — "don't take the headset off" is not a workaround.
     "Power policy" is only offered in the **Pico Enterprise** edition's Enterprise Settings; the
     consumer settings menu has no such item and cannot set screen-off to "Never".
 
-**3. Copy the apk**: connect the headset to the PC over USB and copy `XenseVR-Toolkit.apk` into
+**3. Copy the apk**: connect the headset to the PC over USB and copy `XTac-UMI-XR.apk` into
 the headset's `Download/` directory.
 
 ![Copying the apk to Download](assets/pico4/copy-apk.png){ width="520" }
 
-**4. Install**: on the headset, File Manager → Download → `XenseVR-Toolkit.apk` → Install → Done.
+**4. Install**: on the headset, File Manager → Download → `XTac-UMI-XR.apk` → Install → Done.
 
-![Installing XenseVR-Toolkit](assets/pico4/install-apk.png){ width="520" }
+![Installing XTac-UMI XR](assets/pico4/install-apk.png){ width="520" }
 
 ### Network connection (important) {#pico-network}
 
@@ -205,7 +205,7 @@ Steps:
 
 1. On the headset: Settings → Developer options → enable "USB debugging" → set "USB connection"
    to "**File transfer**".
-2. Open **XenseVR-Toolkit** → tick **"shared network (connect USB first)"** → wait for the headset
+2. Open **XTac-UMI XR** → tick **"shared network (connect USB first)"** → wait for the headset
    to assign the PC an IP → enter the **PC Service IP** to connect.
 3. Start the service on the PC (see [§3.5](#35)): `runService.sh`.
 
@@ -218,7 +218,7 @@ Steps:
     the factory needs none of it again — unless it is factory-reset or swapped.
 
 **On first use, or after swapping a tracker**, the PICO Motion Tracker must be bound to **this
-headset**. Until it is, it cannot be selected in tracking mode, and neither XenseVR-Toolkit nor the
+headset**. Until it is, it cannot be selected in tracking mode, and neither XTac-UMI XR nor the
 PC Service will discover its SN.
 
 1. Open the **Motion Tracker** app from the **Library** and go to the **pairing screen**.
@@ -259,7 +259,7 @@ The SN determines the side (the digit before the trailing `G`, odd-left / even-r
 also how the PC Service identifies a tracker.
 
 This SN is not visible on the headset: the "Motion Tracker" app only shows a **short number** (e.g.
-`Tracker 150399`), and the SN on XenseVR-Toolkit's Network panel (e.g. `PA9410MGL…`) is the
+`Tracker 150399`), and the SN on XTac-UMI XR's Network panel (e.g. `PA9410MGL…`) is the
 **headset's own**. The **full tracker SN** you need for side matching (shaped like
 `PC2310MLL3200496G`) is read with the PC Service's Python interface `xensevr_pc_service_sdk`:
 
@@ -272,7 +272,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # e.g. ['PC2310MLL3200496G', ..
 
 !!! warning "Reading SNs needs the whole chain up first"
     `get_motion_tracker_serial_numbers()` reports the trackers the service is **currently
-    receiving data from**. So first: tracker bound and powered on → XenseVR-Toolkit with `Send`
+    receiving data from**. So first: tracker bound and powered on → XTac-UMI XR with `Send`
     ticked per the [UI checklist](#pico-toolkit-ui) → [XenseVR PC Service](#35) running on the
     host. Miss any one and you get an empty list.
 
@@ -280,7 +280,7 @@ With the SN in hand you can pin it via `--robot.tracker_serial=<SN>` and skip au
 **Shake one gripper at a time** to confirm which SN is which hand before writing it into your
 config.
 
-### Tracking mode and Toolkit settings {#pico-tracker}
+### Tracking mode and XTac-UMI XR settings {#pico-tracker}
 
 !!! info "Skip this section on a pre-configured headset"
     What this section sets is stored on the headset and survives power cycles. A unit configured at
@@ -290,15 +290,15 @@ Once bound:
 
 1. Open "**Motion Tracking**" on the headset.
 2. In its settings, set the tracking mode to "**Standalone tracking**".
-3. In XenseVR-Toolkit, set the **PICO Motion Tracker** `Mode` to **`Object`**.
+3. In XTac-UMI XR, set the **PICO Motion Tracker** `Mode` to **`Object`**.
 
 === "Standalone tracking mode"
 
     ![Tracking mode: standalone](assets/pico4/tracker-standalone.png){ width="440" }
 
-=== "Toolkit: Mode = Object"
+=== "XTac-UMI XR: Mode = Object"
 
-    ![XenseVR-Toolkit PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
+    ![XTac-UMI XR PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
 
 The XenseVR PC Service identifies trackers by **serial number (SN)**; the side is matched
 automatically from the digit before the trailing `G`, odd-left / even-right (see [3.3](#33)), or pinned
@@ -306,17 +306,17 @@ with `--robot.tracker_serial=<SN>`.
 
 ### UI checklist after opening the app {#pico-toolkit-ui}
 
-With the headset on and **XenseVR-Toolkit** open, work through these four items **in order**. The
+With the headset on and **XTac-UMI XR** open, work through these four items **in order**. The
 PC only receives tracking data once all four are done.
 
 | # | Action | Where | Notes |
 |---|------|----------|------|
 | 1 | **Network connection** | **Network** panel → tick `Shared network (connect USB first)` → put the PC's IP in `PC Service:` → `Enter` | Once connected, `Status:` turns green **`WORKING`**. Details in [Network connection](#pico-network) |
-| 2 | **Set Mode to `Object`** | **Tracking** panel → `PICO Motion Tracker` → `Mode` dropdown | Choose **`Object`** (object tracking), not Head / Controller / Hand. Details in [Tracking mode and Toolkit settings](#pico-tracker) |
+| 2 | **Set Mode to `Object`** | **Tracking** panel → `PICO Motion Tracker` → `Mode` dropdown | Choose **`Object`** (object tracking), not Head / Controller / Hand. Details in [Tracking mode and XTac-UMI XR settings](#pico-tracker) |
 | 3 | **Tick `High-Acc`** | Same row, right of `Mode` | High-accuracy tracking — steadier pose, less jitter |
 | 4 | **Tick `Send`** | **Data & Control** section | **Starts pushing** tracking data to the PC. Do this last; before it is ticked the PC reads no pose at all |
 
-![XenseVR-Toolkit main screen: Status WORKING, Mode=Object, High-Acc and Send both ticked](assets/pico4/toolkit-main.jpg){ width="560" }
+![XTac-UMI XR main screen: Status WORKING, Mode=Object, High-Acc and Send both ticked](assets/pico4/toolkit-main.jpg){ width="560" }
 
 !!! tip "`Num:` is the count of online trackers"
     `Num:` to the right of `High-Acc` shows how many trackers are connected — a bimanual rig
@@ -337,7 +337,7 @@ PC only receives tracking data once all four are done.
 
 ### Startup and frame alignment {#pico-frame}
 
-**Wear the headset and face straight towards the robot when you launch XenseVR-Toolkit**, then
+**Wear the headset and face straight towards the robot when you launch XTac-UMI XR**, then
 follow the [UI checklist](#pico-toolkit-ui) to enter the PC's IP, select `Object`, and tick
 `High-Acc` and `Send`. The moment it launches, the **world frame's origin and orientation are
 frozen**.
@@ -352,7 +352,7 @@ Recorded poses land in a **gravity-aligned world frame**: **+X = straight ahead,
     up). **Only the orientation matters** — where you stand (the origin) does not affect later
     use.
 
-!!! warning "Do not restart XenseVR-Toolkit between episodes"
+!!! warning "Do not restart XTac-UMI XR between episodes"
     A restart changes the origin and orientation for everything recorded afterwards, leaving poses
     inside one dataset referenced to different frames.
 
@@ -409,7 +409,7 @@ data carries an `sn` distinguishing the trackers.
    (see [3.4 Network connection](#pico-network)).
 3. Power on the headset, and **short-press** the tracker's power button until the **blue light comes on**
    (first use needs [binding](#pico-tracker-bind) first).
-4. **Facing straight towards the robot**, launch the XenseVR-Toolkit app (this **freezes the world
+4. **Facing straight towards the robot**, launch the XTac-UMI XR app (this **freezes the world
    origin and orientation** — see [frames](#pico-frame)), and complete the
    [UI checklist](#pico-toolkit-ui): network → tracker `Object` → `High-Acc` → `Send`.
 5. Start the host's XenseVR PC Service (`runService.sh`).
@@ -419,7 +419,7 @@ data carries an `sn` distinguishing the trackers.
 flowchart LR
     A[Plug in gripper USB] --> N[Connect Pico4 Ultra Enterprise<br/>wired network, WiFi off]
     N --> B[Power on Pico4 Ultra Enterprise<br/>pair the tracker]
-    B --> C[Launch XenseVR-Toolkit<br/>freeze the origin]
+    B --> C[Launch XTac-UMI XR<br/>freeze the origin]
     C --> D[Start XenseVR PC Service]
     D --> E[Run calibration / recording]
 ```
