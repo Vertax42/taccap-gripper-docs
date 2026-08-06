@@ -212,7 +212,7 @@ Wave the gripper: `raw xyz` should move smoothly and the SN should match what yo
 If the quaternion flips hemisphere (sign jumps), the pose path already applies a continuity
 fix — **please file a bug if you still see jumps**.
 
-## 4.3 End-to-end smoke test
+## 4.3 End-to-end smoke test {#43}
 
 Use the supported `lerobot-teleoperate` entry point to verify the gripper, tactile and wrist camera
 streams. This command only reads and previews devices — **it does not record a dataset**. To check

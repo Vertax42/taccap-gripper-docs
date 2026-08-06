@@ -17,6 +17,52 @@ setup, no teleoperation involved.
 !!! note "No --teleop.* on the command line"
     Because it is self-driven, recording commands carry **no `--teleop.*` arguments at all**.
 
+## Before recording: preview once with `lerobot-teleoperate` {#preview}
+
+`lerobot-teleoperate` **only reads and previews the devices — it writes nothing**, so running it
+costs you nothing. Recording does cost something: a ruined episode has to be redone. And most of
+what goes wrong (a camera stream that never came up, a tracker with no pose, `gripper.pos` not
+reaching 1.0, the two arms swapped) is obvious at a glance in the preview.
+
+Unlike [4.3 End-to-end smoke test](04-calibration.md#43), **everything stays enabled here** —
+the point is to confirm the whole chain is present.
+
+**Single gripper (right side shown):**
+
+```bash
+lerobot-teleoperate \
+    --robot.type=taccap_gripper \
+    --robot.side=right \
+    --robot.enable_head_camera=false \
+    --fps=30 \
+    --display_data=true \
+    --show_trajectory=true
+```
+
+**Bimanual:**
+
+```bash
+lerobot-teleoperate \
+    --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
+    --fps=30 \
+    --display_data=true \
+    --show_trajectory=true
+```
+
+Check each of these in Rerun:
+
+| What | Expected |
+|---|---|
+| Both tactile streams | Both showing; the texture changes clearly when pressed |
+| Wrist camera | Showing, with no cable or clutter in the view |
+| `gripper.pos` | **1.0** wide open, **0.0** closed — short of 1.0, see [4.1.3](04-calibration.md#413) |
+| The EE marker in `/world` | Moves smoothly with the gripper; no jumps, no freezing |
+| Bimanual: the two trails | Independent, and each on the correct hand — not swapped |
+
+`Ctrl+C` once it all looks right, then record below. If you use the headset camera, set
+`--robot.enable_head_camera` to `true` here as well so you preview that too (see [§5.7](#57)).
+
 ## 5.2 Recording with a single gripper
 
 Devices are **auto-discovered by the serial rules** — you never list gripper, tactile or camera

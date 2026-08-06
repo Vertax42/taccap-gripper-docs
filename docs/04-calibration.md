@@ -188,7 +188,7 @@ python -m lerobot.robots.taccap_gripper.calibrate_tracker --side right
 
 四元数出现半球翻转(符号跳变)时,位姿读取内部已有连续性修正;**若仍看到跳变请报 bug**。
 
-## 4.3 端到端冒烟测试
+## 4.3 端到端冒烟测试 {#43}
 
 使用当前实际支持的 `lerobot-teleoperate` 入口验证夹爪、触觉和腕相机数据流。该命令只读取并预览设备,
 **不会录制数据集**。为单独检查夹爪本体与相机,下面先关闭 Pico4 追踪器,运行 10 秒后自动退出。

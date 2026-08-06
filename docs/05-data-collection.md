@@ -14,6 +14,51 @@
 !!! note "命令行上没有 --teleop.*"
     正因为自驱动,录制命令里**不出现任何 `--teleop.*` 参数**。
 
+## 开录前:先用 `lerobot-teleoperate` 看一眼 {#preview}
+
+`lerobot-teleoperate` **只读取并预览设备,不写任何数据**,跑一遍是零成本的;录制则是有成本的
+——一条集录废了要重来。而多数问题(某路相机没上来、追踪器没位姿、`gripper.pos` 顶不到 1.0、
+双臂左右接反)在预览里一眼就能看出来。
+
+和 [4.3 端到端冒烟测试](04-calibration.md#43) 不同,这里**所有设备都开着**,要确认的正是
+整条链路是否凑齐。
+
+**单夹爪(以右侧为例):**
+
+```bash
+lerobot-teleoperate \
+    --robot.type=taccap_gripper \
+    --robot.side=right \
+    --robot.enable_head_camera=false \
+    --fps=30 \
+    --display_data=true \
+    --show_trajectory=true
+```
+
+**双夹爪:**
+
+```bash
+lerobot-teleoperate \
+    --robot.type=bi_taccap_gripper \
+    --robot.enable_head_camera=false \
+    --fps=30 \
+    --display_data=true \
+    --show_trajectory=true
+```
+
+在 Rerun 里逐项确认:
+
+| 看什么 | 期望 |
+|---|---|
+| 左右两路触觉 | 都有画面;按压时纹理明显变化 |
+| 腕相机 | 有画面,视野里没有线缆或杂物遮挡 |
+| `gripper.pos` | 张到底到 **1.0**、闭合到 **0.0**——顶不到 1.0 见 [4.1.3](04-calibration.md#413) |
+| `/world` 里的 EE 标记 | 随夹爪平滑移动,不跳变、不卡住 |
+| 双臂:左右两条轨迹 | 各自独立且对应正确的手,没有接反 |
+
+都正常再 `Ctrl+C` 退出,继续下面的录制。用头显相机时把
+`--robot.enable_head_camera` 改成 `true` 一并预览(见 [§5.7](#57))。
+
 ## 5.2 单夹爪录制
 
 设备**按序列号规则自动发现**——不列举夹爪/触觉/相机序列号。单只夹爪自动选中;两只都
