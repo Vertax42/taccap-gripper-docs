@@ -179,6 +179,12 @@ value is still *accurate*.
 
 ## 4.2 Pico4 Ultra Enterprise tracker self-check
 
+!!! note "There is no tracker calibration step — this command only reads"
+    `calibrate` is in the name, but it **writes nothing**: it prints the pose for you to look at.
+    The tracker needs no calibration — the mount transform is **built in** (below) and the side is
+    matched from the SN. This section is purely about confirming the chain is live and the
+    hardware is mounted correctly.
+
 ```bash
 python -m lerobot.robots.taccap_gripper.calibrate_tracker
 # Pin a specific tracker SN (format in 3.3, e.g. PC2310MLL3200496G):
@@ -209,8 +215,8 @@ Wave the gripper: `raw xyz` should move smoothly and the SN should match what yo
     **Test both sides**; a left value mirrored the wrong way shows up as `ee` moving about twice
     as far as it should.
 
-If the quaternion flips hemisphere (sign jumps), the reader applies a continuity fix — **please
-file a bug if you still see jumps**.
+If the quaternion flips hemisphere (sign jumps), the pose path already applies a continuity
+fix — **please file a bug if you still see jumps**.
 
 ## 4.3 End-to-end smoke test
 

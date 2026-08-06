@@ -159,6 +159,11 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
 
 ## 4.2 Pico4 Ultra 企业版追踪器自检
 
+!!! note "追踪器没有标定这一步,这条命令只读不写"
+    命令名里带 `calibrate`,但它**不写入任何东西**——只是把位姿打印出来给你看。追踪器
+    不需要标定:安装变换是**内置**的(见下),左右侧别由 SN 自动匹配。本节纯粹是确认
+    链路通了、装配没错。
+
 ```bash
 python -m lerobot.robots.taccap_gripper.calibrate_tracker
 # 指定某个 tracker SN(格式见 3.3,形如 PC2310MLL3200496G):
@@ -185,7 +190,7 @@ python -m lerobot.robots.taccap_gripper.calibrate_tracker --side right
     看到的漂移量即该变换的误差。**左右两侧都要测**;若左侧的值镜像方向错了,
     表现为 `ee` 的摆动幅度约为应有的两倍。
 
-四元数出现半球翻转(符号跳变)时,reader 内有连续性修正;**若仍看到跳变请报 bug**。
+四元数出现半球翻转(符号跳变)时,位姿读取内部已有连续性修正;**若仍看到跳变请报 bug**。
 
 ## 4.3 端到端冒烟测试
 
