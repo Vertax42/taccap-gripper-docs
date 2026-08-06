@@ -100,8 +100,8 @@ flowchart LR
 !!! warning "子模块已改用 HTTPS——`ffc94d53` 及更早的版本需要 GitHub SSH key"
     早期版本的 `.gitmodules` 用的是 `git@github.com:` 形式,机器上没配 GitHub SSH key 时
     [克隆仓库与子模块](02-environment.md) 那一步会失败(顶层仓库能克隆,拉子模块时报错)。
-    现在已全部改为 `https://`,任何机器都能直接拉,Docker 构建也依赖这一点——构建上下文里
-    没有 SSH 私钥。
+    现在已全部改为 `https://`,任何机器都能直接拉。Docker 路径同样要过这一关——镜像构建
+    只校验子模块是否已就位,拉取仍由宿主机在构建前完成。
 
     卡在这一步时,升级到当前基线,或临时改写 URL:
 
