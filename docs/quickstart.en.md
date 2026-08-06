@@ -13,8 +13,10 @@ then come back.
 
 !!! note "Prerequisites (Getting Ready)"
     - Device understood, **hardware connected and powered** (see [Hardware](hardware.md#install)).
-    - Repo, submodules and **gripper firmware (V2.1)** upgraded per
-      [Required versions](versions.md#required).
+    - Repo, submodules and **gripper firmware** upgraded per
+      [Required versions](versions.md#required). The firmware requirement is **command set
+      V2.1** — build **leader >= 1.2.0 / follower >= 1.1.0**, and a higher build is fine
+      ([the difference](versions.md#v21)).
     - [Installation](02-environment.md) done — either path, with all three SDK packages importing.
     - [Serial permissions + ModemManager](03-host-hardware.md#31) one-off host setup done.
     - Every leader gripper has been through [gripper calibration](04-calibration.md#41) (zero +
