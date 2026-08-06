@@ -91,7 +91,7 @@ Every device is **auto-discovered by serial number + USB topology** and assigned
 | Tactile | `GSPS01<batch><line><seq>` | `GSPS01A25Z0011` |
 | Camera | `XC<batch><line><seq><m\|s>` | `XCA24Z0007m` |
 
-`<seq>` is 4 digits; patch `m` → Master/Leader, `s` → Slave/Follower.
+`<seq>` is 4 digits; patch `m` → leader, `s` → follower.
 
 ### Side rule (odd-left / even-right)
 
@@ -397,14 +397,14 @@ flowchart LR
     D --> E[Run calibration / recording]
 ```
 
-!!! warning "Before recording, check that `gripper.pos` reaches 1.0 wide open"
+!!! warning "An uncalibrated leader is refused at connect"
     `gripper.pos` in the dataset is a normalised opening (`0.0` closed / `1.0` open), and those two
-    endpoints come from the **encoder zero** and **travel span** written into MCU flash. Open the
-    jaw to its mechanical limit and read the value: **topping out below 1.0** (0.68, say) means
-    that unit's travel span was never calibrated, so calibrate it once.
+    endpoints come from the **encoder zero** and **travel span** written into MCU flash. **A leader
+    with no stored travel span will not connect** — the program exits with the calibration command
+    in the error, so there is nothing for you to judge: if it connects, it was calibrated.
 
-    The values live in flash and survive power cycles and host changes — so this is something you
-    do **when the scale looks wrong**, not a routine step before every session.
+    The values live in flash and survive power cycles and host changes. Once per unit is enough;
+    this is not a routine step before every session.
 
     Bimanual rigs especially: **calibrating only one side leaves the two channels on different
     scales**, so the same physical grip reads differently on each side, with nothing in the data

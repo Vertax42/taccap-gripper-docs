@@ -84,7 +84,7 @@ lerobot-record \
 | 参数 | 默认 | 含义 |
 |---|---|---|
 | `--robot.side` | 自动 | `left`/`right`,两只夹爪都接时必填 |
-| `--robot.role` | `leader` | `follower` 绑定从爪(Slave) |
+| `--robot.role` | `leader` | 填 `follower` 绑定从夹爪 |
 | `--robot.enable_tracker` | `true` | 关闭则只录触觉 + 夹爪(无位姿) |
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别自动匹配 |
 | `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
@@ -189,7 +189,7 @@ lerobot-record \
   `--robot.wrist_camera_width/_height/_fps` 调。
 - **头显相机** → `left_head` / `right_head` + `head_camera.*`;**默认关闭**,
   `--robot.enable_head_camera=true` 开启,详见 [§5.7](#57)。
-- **角色** → `--robot.role=follower` 绑定 Slave 单元(默认 `leader`)。
+- **角色** → `--robot.role=follower` 绑定从夹爪(默认 `leader`)。
 
 ## 5.5 录制选项:流式编码与编码器预热 {#55}
 

@@ -7,9 +7,10 @@ work through the checks that confirm the whole chain is alive.
 
 ### 4.1.1 When you need it
 
-**There is one test: open the jaw to its mechanical limit and see whether `gripper.pos` reaches
-`1.0`.** If it does not, that unit's travel span was never calibrated. The values are written to
-flash, so once per unit is enough — this is not something to redo before each session.
+**A leader with no stored travel span is refused at connect**, with an error that names the
+calibration command — so there is nothing to judge for yourself: if it connects, it was
+calibrated. The values are written to flash, so once per unit is enough — this is not something to
+redo before each session.
 
 `gripper.pos` in the dataset is a **normalised opening**: `0.0` fully closed, `1.0` fully open.
 Those endpoints are not computed — they are two numbers written into MCU flash by calibration:
@@ -19,12 +20,24 @@ Those endpoints are not computed — they are two numbers written into MCU flash
 | `0.0` closed | encoder zero | calibration step 1 (fully closed) |
 | `1.0` open | that gripper's travel span | calibration step 2 (open to the mechanical limit, firmware >= V2.1) |
 
-**What happens without the travel span.** The software falls back to dividing by the config
-constant `gripper_open_rad` (default `1.7`) — one number standing in for every gripper ever
-built. Real travel varies per unit: a measured one came out at **1.1486 rad (65.8°)**, so under
-the fallback a fully open jaw reads `1.1486 / 1.7 = 0.676` and **never reaches 1.0** — with a
-ceiling that differs from unit to unit. A policy's notion of "fully open" then does not match the
-physical motion.
+**What happens without the travel span.** A leader fails at connect, and the error names the
+command that fixes it:
+
+```text
+This leader gripper has no encoder-max calibration, so its jaw travel is unknown
+and gripper.pos cannot be computed (...).
+
+Calibrate it once, then re-run:
+
+    python third_party/taccap-gripper/python/examples/calibrate.py <left|right>
+```
+
+**Why refuse rather than approximate.** Scaling by a generic constant makes a fully open jaw read
+low — a measured unit's real travel is **1.1486 rad (65.8°)**, which against `1.7` reads `0.676`
+wide open. The problem is that **nothing afterwards can tell that apart** from a jaw the operator
+simply never opened all the way: the data looks fine, the policy trained on it does not match the
+physical motion, and the scale cannot be recovered. One calibration run costs less than a whole
+dataset.
 
 !!! danger "Calibrating one side of a bimanual rig is worse than calibrating neither"
     With neither calibrated the two scales at least agree. Calibrating one leaves
@@ -93,12 +106,14 @@ the header.
 
 ### 4.1.3 Confirm it took effect
 
-**One: the connect log.** Each side prints a line when the collection program connects:
+**One: the connect log.** When the calibration is in effect, each side prints:
 
 ```text
-[left]  Jaw normalised by the firmware's encoder-max calibration    ← in effect
-[left]  Firmware encoder-max calibration unavailable (...)          ← not calibrated, using fallback
+[left]  Jaw normalised by the firmware's encoder-max calibration
 ```
+
+If that line is missing there is nothing more to check — **an uncalibrated leader does not connect
+at all**; the program exits with the calibration command in the error.
 
 **Two: the curve in Rerun.** Run with `--display_data=true` and find `gripper.pos` in the scalar
 panel:
@@ -108,7 +123,7 @@ panel:
 | Fully open | reaches **1.0** |
 | Fully closed | drops to **0.0** |
 
-Topping out below 1.0 (0.68, say) means it was never calibrated — matching the second log line.
+Connecting at all means the travel span is in effect, so this step is really about the mechanics — a limit stop that was moved, say.
 
 ### 4.1.4 Scope
 
@@ -117,8 +132,8 @@ Topping out below 1.0 (0.68, say) means it was never calibrated — matching the
   instead (see the note below). During collection a follower's `gripper.pos` is still normalised
   by `gripper_open_rad`, unchanged from the older behaviour.
 - **Firmware >= V2.1 (leader 1.2.0) required.** Older firmware does not support it:
-  `calibrate.py` **exits without changing anything**, and during collection the software warns and
-  falls back automatically — the session continues, but the calibration has no effect. Any gripper
+  `calibrate.py` **exits without changing anything**, and at collection time a leader fails at
+  connect with a pointer to the OTA update. Any gripper
   below V2.1 **must be upgraded**; the images ship with the SDK →
   [Firmware OTA upgrade](versions.md#ota). **Update the SDK before the firmware** — the other
   order runs into an old bug where a failed update reported success.

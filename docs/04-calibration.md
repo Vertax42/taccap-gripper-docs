@@ -6,8 +6,8 @@
 
 ### 4.1.1 什么时候需要标
 
-**判断依据只有一条:把夹爪张到机械极限,看 `gripper.pos` 顶不顶得到 `1.0`。**到不了就是
-这台没标过行程上限。标定值写在 flash 里,一台标一次就够,不必每次开录重做。
+**主夹爪没标过行程上限,采集程序会拒绝连接**,并直接告诉你去跑标定。所以不用自己判断
+什么时候该标——能连上就说明标过了。标定值写在 flash 里,一台标一次就够,不必每次开录重做。
 
 数据集里的 `gripper.pos` 是**归一化开度**:`0.0` 完全闭合,`1.0` 完全张开。这两个端点不是
 算出来的,是标定写进 MCU flash 的两个数:
@@ -17,10 +17,21 @@
 | `0.0` 闭合 | 编码器零点 | 标定第 1 步(完全闭合) |
 | `1.0` 张开 | 该夹爪的行程上限 | 标定第 2 步(张到机械极限,固件 ≥ V2.1) |
 
-**没标行程上限会怎样。**软件回退成除以配置常量 `gripper_open_rad`(默认 `1.7`)——一个数
-代表所有出厂夹爪。但每台的真实行程不同:实测某台是 **1.1486 rad(65.8°)**,在回退算法下
-张到底只能读到 `1.1486 / 1.7 = 0.676`,**永远够不到 1.0**,而且这个上限每台各异。
-策略学到的"完全张开"因此和物理动作对不上。
+**没标行程上限会怎样。**主夹爪连接时直接报错退出,报错里就写着要跑哪条命令:
+
+```text
+This leader gripper has no encoder-max calibration, so its jaw travel is unknown
+and gripper.pos cannot be computed (...).
+
+Calibrate it once, then re-run:
+
+    python third_party/taccap-gripper/python/examples/calibrate.py <left|right>
+```
+
+**为什么宁可拒绝启动。**换成用一个通用常量凑合,张到底会读成一个偏小的数——实测某台真实
+行程是 **1.1486 rad(65.8°)**,按 `1.7` 折算张到底只能读到 `0.676`。问题在于**事后没人能
+分辨**这是"没标定"还是"操作员本来就没张到底":数据看着完全正常,训出来的策略却对不上物理
+动作,而且刻度再也补不回来。标定一次的成本,远小于一整批数据作废。
 
 !!! danger "双臂只标一侧,比两侧都不标更糟"
     两侧都没标时刻度至少一致;只标一侧会让 `left_gripper.pos` 和 `right_gripper.pos`
@@ -83,12 +94,13 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
 
 ### 4.1.3 确认标定生效
 
-**一、看启动日志。**采集程序连接时每侧会打印一行:
+**一、看启动日志。**标定生效时,采集程序连接每侧会打印:
 
 ```text
-[left]  Jaw normalised by the firmware's encoder-max calibration    ← 已生效
-[left]  Firmware encoder-max calibration unavailable (...)          ← 未标定，走回退
+[left]  Jaw normalised by the firmware's encoder-max calibration
 ```
+
+没打印这一行就不用往下看了——**未标定的主夹爪根本连不上**,程序会带着标定命令报错退出。
 
 **二、在 Rerun 里看曲线。**开 `--display_data=true`,标量面板里找 `gripper.pos`:
 
@@ -97,7 +109,7 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
 | 完全张开 | 顶到 **1.0** |
 | 完全闭合 | 落到 **0.0** |
 
-顶不到 1.0(例如停在 0.68)就是没标定,和日志的第二种情况对应。
+能连上就说明行程上限已经生效,这一步是复核机械行程本身有没有问题(比如限位被改动过)。
 
 ### 4.1.4 适用范围
 
@@ -105,7 +117,7 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
   它走的是固件的**上电自动标定**(见下方说明)。采集时从夹爪的 `gripper.pos` 仍按
   `gripper_open_rad` 归一化,与旧算法一致。
 - **需要固件 ≥ V2.1(leader 1.2.0)。**更低版本不支持行程标定:`calibrate.py` 会**原样退出、
-  不改动任何东西**,采集时则告警并自动退回旧算法——不中断会话,但标定不生效。
+  不改动任何东西**,采集时主夹爪则直接报错退出,并提示先做 OTA 升级。
   **低于 V2.1 的夹爪必须先升级固件**,镜像随 SDK 附带 → [固件 OTA 升级](versions.md#ota)。
   **先升 SDK 再刷固件**,顺序反了会踩到一个"失败却报成功"的旧 bug。
 - **标定是一次性的。**值写在 MCU flash 里,断电不丢,换主机不用重标。只有拆装编码器、
