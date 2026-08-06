@@ -109,9 +109,8 @@ Combines USB topology with the side rule:
 
 ### Pico4 Ultra Enterprise tracker — a different serial system
 
-Tracker serials look like `PC2310MLL3200496G` and **end in a letter**. The side comes from **the
-digit just before that letter** — the second-to-last character: **odd → left, even → right**.
-For `…496G`, the digit before `G` is `6`, which is even → **right**. The SN is read from the PC
+Tracker serials look like `PC2310MLL3200496G`. **Take the digit before the trailing letter: odd
+is left, even is right.** For `…496G` that is `6` — even, so right. The SN is read from the PC
 Service — see [Reading a tracker SN](#pico-tracker-sn).
 
 !!! note "Mis-burned / mis-installed hardware fails explicitly"
