@@ -36,7 +36,7 @@ lerobot-teleoperate \
     --show_trajectory=true
 ```
 
-**With only one gripper**, use `--robot.type=taccap_gripper` plus `--robot.side=left|right`;
+**Single gripper**: use `--robot.type=taccap_gripper` plus `--robot.side=left|right`;
 everything else is the same.
 
 Check each of these in Rerun:
@@ -60,6 +60,7 @@ serials. Tactile sensors, wrist cameras and trackers each match left/right by th
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_tracker=true \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
@@ -168,6 +169,7 @@ gripper is selected automatically; with both plugged in, pick one with `--robot.
 lerobot-record \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_tracker=true \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
@@ -308,6 +310,7 @@ Both `taccap_gripper` (single) and `bi_taccap_gripper` support it, with the same
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_tracker=true \
     --robot.enable_head_camera=true \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \

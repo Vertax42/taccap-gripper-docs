@@ -102,7 +102,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
         --display_data=true
     ```
 
-**只有一只夹爪时**:把 `--robot.type` 换成 `taccap_gripper` 并加上 `--robot.side=left|right`,其余相同。
+**单夹爪**:把 `--robot.type` 换成 `taccap_gripper` 并加上 `--robot.side=left|right`,其余相同。
 
 移动并开合夹爪检查各路数据;确认无误后按 `Ctrl+C` 退出预览。录制命令用哪一档,预览就用哪一档。
 
@@ -111,6 +111,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_tracker=true \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<你的org>/<数据集名> \
@@ -122,13 +123,13 @@ lerobot-record \
     --dataset.single_task='Pick up the object'
 ```
 
-**只有一只夹爪时**:`--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
+**单夹爪**:`--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
 
 三个容易搞错的:
 
 - `--robot.side` 只在单夹爪模式、且**两只夹爪都接着**时才需要;单只会自动选中。
 - `--fps` 是主循环帧率,`--dataset.fps` 是落盘采样率——**两个参数**,通常设成一样。
-- 位姿默认就录;不需要时才加 `--robot.enable_tracker=false`。
+- `--robot.enable_tracker` 和 `--robot.enable_head_camera` 显式写出,和预览时用的那一档保持一致——预览到哪一档就录哪一档。
 
 全部参数(数据集 / 录制控制 / 设备三类)→ [5.2 参数详解](05-data-collection.md#params)
 

@@ -113,7 +113,7 @@ each adding a layer of hardware — **preview at whichever stage you intend to r
         --display_data=true
     ```
 
-**With only one gripper**: swap `--robot.type` for `taccap_gripper` and add
+**Single gripper**: swap `--robot.type` for `taccap_gripper` and add
 `--robot.side=left|right`; everything else is the same.
 
 Move the gripper and work the jaw to check every stream. `Ctrl+C` to leave the preview. Preview at
@@ -129,6 +129,7 @@ whichever stage matches the recording you are about to make.
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_tracker=true \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<dataset_name> \
@@ -140,7 +141,7 @@ lerobot-record \
     --dataset.single_task='Pick up the object'
 ```
 
-**With only one gripper**: `--robot.type=taccap_gripper` plus `--robot.side=left|right`;
+**Single gripper**: `--robot.type=taccap_gripper` plus `--robot.side=left|right`;
 everything else is the same.
 
 Three that are easy to get wrong:
@@ -148,7 +149,7 @@ Three that are easy to get wrong:
 - `--robot.side` is only needed in single-gripper mode with **both grippers plugged in**; a lone unit auto-resolves.
 - `--fps` is the main loop rate, `--dataset.fps` is the recording sample rate — **two parameters**,
   usually set to the same value.
-- Pose is recorded by default; add `--robot.enable_tracker=false` only when you do not want it.
+- `--robot.enable_tracker` and `--robot.enable_head_camera` are spelled out so they match the preview stage you just ran — record at the stage you previewed.
 
 Every parameter (dataset / recording control / device) → [5.2 Parameter reference](05-data-collection.md#params)
 

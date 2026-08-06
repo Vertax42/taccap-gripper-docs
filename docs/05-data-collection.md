@@ -32,7 +32,7 @@ lerobot-teleoperate \
     --show_trajectory=true
 ```
 
-**只有一只夹爪时**,换成 `--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
+**单夹爪**:换成 `--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
 
 在 Rerun 里逐项确认:
 
@@ -55,6 +55,7 @@ lerobot-teleoperate \
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_tracker=true \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
@@ -157,6 +158,7 @@ Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪
 lerobot-record \
     --robot.type=taccap_gripper \
     --robot.side=right \
+    --robot.enable_tracker=true \
     --robot.enable_head_camera=false \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
@@ -281,6 +283,7 @@ lerobot-record \
 ```bash
 lerobot-record \
     --robot.type=bi_taccap_gripper \
+    --robot.enable_tracker=true \
     --robot.enable_head_camera=true \
     --display_data=true \
     --dataset.repo_id=<your_org>/<your_dataset> \
