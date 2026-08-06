@@ -7,7 +7,8 @@
 `taccap_gripper` **不需要遥操作端**,录制是自驱动的。
 
 数据采用**移位帧(shifted-frame)配对**:动作比观测**领先一步**——*t-1* 步的观测,配
-*t* 步的位姿(EEF TCP 位姿 + 归一化 `gripper.pos`)作为动作。因此每集会少 1 帧
+*t* 步的位姿(EEF TCP 位姿 + 归一化 `gripper.pos`,开了[头显相机](#57)时还包括
+**头显位姿**)作为动作。因此每集会少 1 帧
 (它没有前一帧可配对)。集与集之间的复位阶段是被动等待:重新摆放设备即可,无需遥操。
 
 !!! note "命令行上没有 --teleop.*"
@@ -74,7 +75,8 @@ lerobot-record \
 | `--fps` | `30` | **主循环**帧率(设备读取与预览)。与 `--dataset.fps`(落盘采样率)是两个参数,通常设成相同值 |
 | `--display_data` | `false` | 在 Rerun 中显示相机画面与 3D 视图 |
 | `--show_trajectory` | `true` | Rerun 中叠加 3D 位姿 + 轨迹(需 `display_data` 且有 `tcp.*`) |
-| `--display_compressed_images` | `true` | Rerun 用 JPEG 显示以降内存;要无损设 `false` |
+| `--display_compressed_images` | `false` | Rerun 里是否 JPEG 压缩后再显示。**默认关**——压缩发生在录制主循环上,开着会吃掉大量帧预算;只有 Rerun 查看器在另一台机器上(`--display_ip`)时才划算 |
+| `--display_image_every_n` | `1` | 每 N 帧才刷新一次相机画面(标量始终全速)。**最后手段**,只在仍然超时才动它——它是唯一会改变操作员所见内容的选项 |
 | `--play_sounds` | `true` | 语音播报录制事件 |
 | `--resume` | `false` | 在已有数据集上**续录** |
 | `--teleop.*` | — | 遥操作端;**XTac-UMI G1 自驱动无需**,不用填 |
@@ -141,8 +143,8 @@ lerobot-record \
 | `tactile_left` / `tactile_right` | 视触觉校正图 | uint8,约 `(400, 700, 3)` |
 | `wrist_cam` | 腕部相机 | uint8 `(H, W, 3)` |
 | `left_head` / `right_head`(默认关) | 头显相机,**一只眼一个键** | uint8,默认 `(768, 1024, 3)` |
-| `head_camera.x/y/z`(默认关) | 头显位置,与 `tcp.*` 同一世界系 | float(米) |
-| `head_camera.r1..r6`(默认关) | 头显姿态的 6-D 旋转 | float |
+| `head_camera.x/y/z`(默认关) | 头显位置,与 `tcp.*` 同一世界系;**同时也是动作** | float(米) |
+| `head_camera.r1..r6`(默认关) | 头显姿态的 6-D 旋转;**同时也是动作** | float |
 
 !!! note "6-D 旋转约定"
     `r1..r3` 是旋转矩阵第一列,`r4..r6` 是旋转矩阵第二列。
@@ -254,8 +256,8 @@ lerobot-record \
 | Key | 含义 |
 |---|---|
 | `left_head` / `right_head` | 头显相机画面,**一只眼一个视频键**,默认各 `(768, 1024, 3)` |
-| `head_camera.x/y/z` | 头显位置(米) |
-| `head_camera.r1..r6` | 头显姿态,6-D 旋转(约定同 `tcp.*`) |
+| `head_camera.x/y/z` | 头显位置(米);**同时进 action** |
+| `head_camera.r1..r6` | 头显姿态,6-D 旋转(约定同 `tcp.*`);**同时进 action** |
 
 !!! warning "`left_` / `right_` 在这里指的是**眼睛**,不是左右手"
     双夹爪上 `{side}_wrist`、`{side}_tcp.*` 是按**手臂**分左右的;但头显只有一个,
@@ -302,6 +304,16 @@ lerobot-record \
 (用的是追踪器那套 Pico→world 变换)。这意味着头和手第一次可以直接比较、画在同一个 3D 场景里:
 开 `--display_data=true` 时,`/world` 视图里会多出一个琥珀色的 `HEAD` 标记
 (见 [4.4](04-calibration.md#44))。
+
+!!! note "头显位姿既是观测,也是动作"
+    `head_camera.*` 同时写进 `observation` 和 `action`,和 `tcp.*` 一样参与
+    [移位帧配对](#51)——**演示时操作员看向哪里,本身就是演示的一部分**,是策略要复现的目标,
+    而不只是背景信息。位置 + 6-D 旋转的排布也和 `tcp.*` 完全一致,可以同样地被指令。
+
+    双臂上它**不带 `left_` / `right_` 前缀,而且只出现一次**——两条臂共用一个头显,不像
+    `{side}_tcp.*` 那样左右各记一份。
+
+    落盘的图像**不进 action**,只在观测里。
 
 !!! note "维度变化"
     开启后 `observation.state` 增加 9 维(头显位姿)。单夹爪 10 → 19,双夹爪 20 → 29。

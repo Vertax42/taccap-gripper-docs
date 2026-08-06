@@ -9,7 +9,8 @@ Corresponds to the reference manual's "SDK usage". This is the core chapter: col
 
 The data uses **shifted-frame pairing**: the action **leads the observation by one step** — the
 observation from step *t-1* is paired with the pose from step *t* (the EEF TCP pose plus the
-normalised `gripper.pos`) as its action. Each episode is therefore one frame shorter (the first
+normalised `gripper.pos`, and the **headset pose** too when the [headset camera](#57) is on) as
+its action. Each episode is therefore one frame shorter (the first
 has no predecessor). The reset phase between episodes is a passive wait: just reposition the
 setup, no teleoperation involved.
 
@@ -82,7 +83,8 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
 | `--fps` | `30` | **Main loop** rate (device reads and preview). Separate from `--dataset.fps` (the recording sample rate) — two parameters, usually set the same |
 | `--display_data` | `false` | Show camera streams and the 3D view in Rerun |
 | `--show_trajectory` | `true` | Overlay the 3D pose + trajectory in Rerun (needs `display_data` and a `tcp.*`) |
-| `--display_compressed_images` | `true` | Display via JPEG in Rerun to save memory; set `false` for lossless |
+| `--display_compressed_images` | `false` | Whether to JPEG-compress images before showing them in Rerun. **Off by default** — the encoding happens on the record loop and eats a large share of the frame budget; it only pays off when the Rerun viewer is on another machine (`--display_ip`) |
+| `--display_image_every_n` | `1` | Refresh the camera tiles only every N frames (scalars always stay at full rate). **A last resort**, for a loop that still overruns — it is the only option here that changes what the operator sees |
 | `--play_sounds` | `true` | Spoken announcements of recording events |
 | `--resume` | `false` | **Continue recording** into an existing dataset |
 | `--teleop.*` | — | Teleoperator; **not needed** — the XTac-UMI G1 is self-driven |
@@ -151,8 +153,8 @@ lerobot-record \
 | `tactile_left` / `tactile_right` | Rectified visuotactile image | uint8, about `(400, 700, 3)` |
 | `wrist_cam` | Wrist camera | uint8 `(H, W, 3)` |
 | `left_head` / `right_head` (off by default) | Headset camera, **one key per eye** | uint8, `(768, 1024, 3)` by default |
-| `head_camera.x/y/z` (off by default) | Headset position, same world frame as `tcp.*` | float (metres) |
-| `head_camera.r1..r6` (off by default) | Headset orientation, 6-D rotation | float |
+| `head_camera.x/y/z` (off by default) | Headset position, same world frame as `tcp.*`; **also an action** | float (metres) |
+| `head_camera.r1..r6` (off by default) | Headset orientation, 6-D rotation; **also an action** | float |
 
 !!! note "6-D rotation convention"
     `r1..r3` is the rotation matrix's first column, `r4..r6` its second column.
@@ -280,8 +282,8 @@ It produces three groups of keys:
 | Key | Meaning |
 |---|---|
 | `left_head` / `right_head` | Headset camera, **one video key per eye**, `(768, 1024, 3)` each by default |
-| `head_camera.x/y/z` | Headset position (metres) |
-| `head_camera.r1..r6` | Headset orientation, 6-D rotation (same convention as `tcp.*`) |
+| `head_camera.x/y/z` | Headset position (metres); **also in the action** |
+| `head_camera.r1..r6` | Headset orientation, 6-D rotation (same convention as `tcp.*`); **also in the action** |
 
 !!! warning "`left_` / `right_` here means the **eyes**, not the arms"
     On a bimanual rig `{side}_wrist` and `{side}_tcp.*` are per-**arm**, but there is only one
@@ -335,6 +337,18 @@ measured skew**, so the condition is visible rather than silently recorded.
 `tcp.*`** (the same Pico→world transform the tracker uses). Head and hands are therefore directly
 comparable and can be drawn in one 3D scene: with `--display_data=true`, the `/world` view gains
 an amber `HEAD` marker (see [4.4](04-calibration.md#44)).
+
+!!! note "The headset pose is both an observation and an action"
+    `head_camera.*` is written to both `observation` and `action`, taking part in the
+    [shifted-frame pairing](#51) exactly as `tcp.*` does — **where the operator looked while
+    demonstrating is part of the demonstration**, something a policy is meant to reproduce rather
+    than mere context. It carries the same position + 6-D rotation layout as `tcp.*`, so it can be
+    commanded the same way.
+
+    On a bimanual rig it is **unprefixed and appears once** — one headset serves both arms, unlike
+    `{side}_tcp.*`, which that rig reports twice.
+
+    Image data stays out of the action; it lives in the observation only.
 
 !!! note "Dimension change"
     Enabling it adds 9 dimensions (the headset pose) to `observation.state`: 10 → 19 for a single

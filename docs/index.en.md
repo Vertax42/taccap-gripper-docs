@@ -10,7 +10,7 @@ hide:
 
 # Handheld tactile data collection, from unboxing to a dataset
 
-<p class="tc-sub">XTac-UMI G1 handheld tactile gripper × Pico4 Ultra Enterprise Edition tracker<br>capture synchronized vision · tactile · pose data with lerobot, straight to a training-ready <code>LeRobotDataset</code></p>
+<p class="tc-sub">XTac-UMI G1 handheld tactile gripper × Pico4 Ultra Enterprise Edition headset and tracker<br>capture synchronized vision · tactile · first-person stereo · hand and head pose with lerobot, straight to a training-ready <code>LeRobotDataset</code></p>
 
 [Quickstart :material-arrow-right-bold:](quickstart.md){ .md-button .md-button--primary }
 [Installation](02-environment.md){ .md-button }

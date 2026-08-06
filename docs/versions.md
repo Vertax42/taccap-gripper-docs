@@ -61,7 +61,7 @@ flowchart LR
 | `rerun-sdk` | `>=0.24.0,<0.27.0`(`--display_data` 用) | 0.26.2 |
 | `opencv-python` | 固定 `==4.12.0.88`(XenseRobotics 各 SDK 统一) | 4.12.0.88 |
 | NumPy | `>=1.26.4` | 2.2.6 |
-| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@667612e1` |
+| `xense-taccap-lerobot` | 基于 lerobot 0.5.1 定制;版本号 `0.5.1+xtac.0.0.3`(与文档版本同步) | `main@f491cae5` |
 | `xense.taccap`(`taccap-gripper` SDK) | 与主仓库子模块版本配套 | 0.1.7(`16412dc`) |
 | 夹爪固件协议 | 帧格式 V2.1(`hw_v1.1.0`) | leader 1.2.0 / follower 1.1.0(镜像随 SDK 附带,见 [固件 OTA 升级](#ota)) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
@@ -122,6 +122,14 @@ flowchart LR
     更早的版本遇到未标定的主夹爪是**告警后退回** `gripper_open_rad` 常量,会话照常跑完——
     也就是说**能采出刻度错的数据而不报错**。停在旧版本时,务必按 [4.1.3](04-calibration.md#41)
     自己确认 `gripper.pos` 张到底能到 `1.0`。
+
+!!! note "头显位姿进 action、显示默认不压缩,需要 `f491cae5` 之后的版本"
+    两项变化都在这之后:`head_camera.*` 从"仅观测"变成**同时也是动作**
+    (见 [5.7 位姿与可视化](05-data-collection.md#57));`--display_compressed_images`
+    的默认值从 `true` 改为 **`false`**,并新增 `--display_image_every_n`。
+
+    停在更早的版本时:头显位姿只作为观测落盘,策略不会被要求复现它;Rerun 显示默认走 JPEG
+    压缩,开 `--display_data=true` 更容易出现 `[slow_frame]`。
 
 !!! note "Docker 交付镜像需要 `9387ef05` 之后的版本"
     [2. 环境部署](02-environment.md#docker) 里那条 Docker 路径——交付目录、

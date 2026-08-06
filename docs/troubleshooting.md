@@ -144,6 +144,19 @@
 
 ## 采集与录制
 
+??? failure "开了 `--display_data=true` 后日志频繁出现 `[slow_frame]`"
+    **原因**:Rerun 显示本身占掉了帧预算。实测双夹爪 + 头显(四路触觉、两路腕相机、两只眼),
+    JPEG 压缩后每帧 13.2 ms,不压缩 3.1 ms——30 fps 的预算只有 33.3 ms,压缩就占了 40%,
+    这还没算相机读取和位姿计算。
+
+    **先看 `[slow_frame]` 那行末尾的 `top_obs=`**:是某个传感器慢,还是显示贵,两者在超时
+    数字上看着一样,解法却相反。
+
+    **解决**:两个默认值本来就是快的那个(`--display_compressed_images=false`、
+    `--display_image_every_n=1`),先确认没被改过。仍然超时再把 `--display_image_every_n`
+    调大——相机画面刷新变稀,`tcp.*` 和 `gripper.pos` 等标量仍是全速。这是最后手段,
+    因为它是唯一会改变操作员所见内容的选项。
+
 ??? failure "编码器跟不上、日志出现丢帧告警"
     **原因**:实时编码队列满时会丢最旧帧(不阻塞采集循环)。
     **解决**:增大 `--dataset.encoder_threads`、用 `--dataset.vcodec=auto` 硬件编码、
