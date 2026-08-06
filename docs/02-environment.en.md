@@ -195,8 +195,8 @@ Submodules and the packages they install:
 
 | Submodule | Package installed |
 |---|---|
-| `third_party/taccap-gripper` | `xense.taccap` (XTac-UMI G1 tactile gripper SDK) |
-| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk` (Pico4 Ultra Enterprise tracker / headset camera) |
+| [`third_party/taccap-gripper`](https://github.com/Vertax42/TacCap-Gripper) | `xense.taccap` (XTac-UMI G1 tactile gripper SDK) |
+| [`third_party/XenseVR-PC-Service`](https://github.com/Vertax42/XenseVR-PC-Service) | `xensevr_pc_service_sdk` (Pico4 Ultra Enterprise tracker / headset camera) |
 
 !!! note "The Insight head-camera path is gone"
     The head camera is now the Pico4 Ultra Enterprise headset's own stereo camera, sharing the

@@ -174,8 +174,8 @@ git submodule update --init --recursive --progress
 
 | 子模块 | 安装后的包 |
 |---|---|
-| `third_party/taccap-gripper` | `xense.taccap`(XTac-UMI G1 触觉夹爪 SDK) |
-| `third_party/XenseVR-PC-Service` | `xensevr_pc_service_sdk`(Pico4 Ultra 企业版追踪器 / 头显相机) |
+| [`third_party/taccap-gripper`](https://github.com/Vertax42/TacCap-Gripper) | `xense.taccap`(XTac-UMI G1 触觉夹爪 SDK) |
+| [`third_party/XenseVR-PC-Service`](https://github.com/Vertax42/XenseVR-PC-Service) | `xensevr_pc_service_sdk`(Pico4 Ultra 企业版追踪器 / 头显相机) |
 
 !!! note "Insight 头戴相机链路已移除"
     头戴相机改由 Pico4 Ultra 企业版头显自带的双目相机提供,与追踪器共用同一条连接
