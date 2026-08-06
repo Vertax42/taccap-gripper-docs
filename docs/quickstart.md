@@ -11,11 +11,12 @@
 !!! note "前提(准备工作)"
     - 已了解设备并**连接好硬件、上电**(见 [硬件介绍](hardware.md#install))。
     - 已按 [版本要求](versions.md#required) 升级仓库、子模块与**夹爪固件(V2.1)**。
-    - 已完成 [环境安装](02-environment.md)(`setup_env.sh --install` 通过、三个包能 import)。
+    - 已完成 [环境安装](02-environment.md)——Docker 或 conda 任选一条,三个 SDK 包都能 import。
     - 已做 [串口权限 + ModemManager](03-host-hardware.md#31) 一次性主机配置。
     - 已完成[夹爪标定](04-calibration.md#41)——**每台主夹爪一次**,零点 + 行程上限。
       未标行程上限时 `gripper.pos` 到不了 1.0,双臂只标一侧还会让左右刻度不一致。
-    - `mamba activate xense-taccap`。
+    - 已进入采集环境:conda 路径执行 `mamba activate xense-taccap`;Docker 路径执行
+      `docker compose run --rm xense-taccap` 进容器。
 
 ## 1. 上电顺序
 

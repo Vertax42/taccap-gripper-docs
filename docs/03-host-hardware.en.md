@@ -38,6 +38,11 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 ## 3.2 Stop ModemManager grabbing the port (udev) {#32}
 
+!!! info "On the Docker delivery image this is already done"
+    `install_customer.sh` installs the udev rule below on the **host** (a container cannot manage
+    the host's hot-plug rules). This section stays as the explanation and as a troubleshooting
+    reference — you do not need to redo it.
+
 The gripper MCU is a CH343 USB-serial device (`1a86:55d2`, CDC-ACM). On every hot-plug,
 **ModemManager** (the default cellular-modem service on Ubuntu/GNOME) probes the fresh port with
 AT commands and holds it open for a few seconds, so connecting fails during that window:
@@ -333,6 +338,11 @@ Recorded poses land in a **gravity-aligned world frame**: **+X = straight ahead,
 The tracker talks to the host's **XenseVR PC Service** (RoboticsService) daemon, which handles
 device discovery, status monitoring and live tracking-data distribution. Collection reads poses
 from it.
+
+!!! info "On the Docker delivery image the service starts itself"
+    The container launches it, so the command below is not needed. When you only work on data and
+    do not need the tracker, turn it off with `START_XENSEVR_SERVICE=0` (see
+    [2. Environment Setup · Docker](02-environment.md#docker)).
 
 Start it:
 

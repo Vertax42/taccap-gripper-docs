@@ -24,6 +24,142 @@ installed and verified.
     **With an NVIDIA GPU the driver must be ≥ 570.144** (check with
     `nvidia-smi --query-gpu=driver_version --format=csv,noheader`).
 
+## Choosing an install path {#choose}
+
+There are two paths. They produce the same collection environment — pick one and follow it
+through.
+
+| | **Docker delivery image** | **conda install from source** |
+|---|---|---|
+| What you get | A packaged delivery directory and one script to run | The source repo; you build the environment |
+| Time | Ten-odd minutes, mostly importing the image | Longer — three hardware SDKs are compiled |
+| Architecture | **amd64 only** | amd64 / arm64 |
+| NVIDIA GPU | **Required**, driver ≥ 570.144 | Optional (collection works without one) |
+| Isolation | Lives in a container, host stays clean | Installed into a conda env on the host |
+| Editing the code | Awkward | Easy |
+| Steps | [Docker delivery image](#docker) | 2.1 – 2.5 below |
+
+**Take Docker unless you have a reason not to**: the host only needs the NVIDIA driver, and the
+script installs the rest. Choose conda if you need to modify the collection program, or the host
+is arm64 or has no NVIDIA GPU.
+
+## Docker delivery image {#docker}
+
+The image already contains the full `xense-taccap` environment, the CUDA user-space libraries, the
+collection program and all three hardware SDKs (XenseSDK, TacCap-Gripper, the Pico4 bindings). The
+container also starts the XenseVR PC Service on launch.
+
+!!! warning "The container runs privileged"
+    So that tactile sensors, the wrist camera, the gripper serial port and the Pico4 can be
+    hot-plugged mid-session, the container runs privileged and shares the host network.
+    **Only run it on a collection host you trust.**
+
+### Host requirements
+
+- Ubuntu 22.04 / 24.04, **amd64**
+- **NVIDIA driver ≥ 570.144** — check with
+  `nvidia-smi --query-gpu=driver_version --format=csv,noheader`
+
+The installer **will not install or upgrade the GPU driver** for you (that depends on the card,
+Secure Boot and a reboot); it stops and tells you if the driver is missing or too old. Docker
+Engine, the Compose plugin and the NVIDIA Container Toolkit are installed automatically if absent.
+
+### One-shot install
+
+Copy the whole delivery directory to the collection host and run it as a **normal user**, not
+root:
+
+```bash
+cd xense-taccap-lerobot-<version>-linux-amd64
+./install_customer.sh
+```
+
+The script, in order: checks the system and GPU driver → installs Docker and the NVIDIA Container
+Toolkit as needed → installs the gripper's serial udev rule (the ModemManager rule from
+[3.2](03-host-hardware.md#32)) → verifies the image SHA256 and imports it → runs a PyTorch CUDA
+smoke test.
+
+!!! tip "Behind a proxy"
+    ```bash
+    XENSE_PROXY_URL=http://127.0.0.1:7897 ./install_customer.sh
+    ```
+
+### Host setup after installing
+
+Give the current user Docker access right away:
+
+```bash
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+newgrp docker        # or log out and back in
+docker images
+```
+
+!!! warning "`docker` group membership is close to root"
+    Add only the users who need to collect — not every local account.
+
+To show Rerun windows from inside the container, the host's current **desktop user** also has to
+authorise it once:
+
+```bash
+xhost +si:localuser:root
+# revoke when you are done
+xhost -si:localuser:root
+```
+
+### Entering the container and verifying
+
+```bash
+docker compose run --rm xense-taccap
+```
+
+Inside the container, all four imports must pass and the GPU must be visible:
+
+```bash
+python -c 'import torch; print(torch.__version__, torch.cuda.is_available())'
+python -c 'import xensesdk; print("xensesdk ->", xensesdk.__file__)'
+python -c 'import xense.taccap; print("taccap ->", xense.taccap.__file__)'
+python -c 'import xensevr_pc_service_sdk; print("pico4 ->", xensevr_pc_service_sdk.__file__)'
+```
+
+Then confirm the devices are discovered:
+
+```bash
+lerobot-find-cameras
+lerobot-info
+```
+
+You can also run a single command without an interactive shell:
+
+```bash
+docker compose run --rm xense-taccap lerobot-info
+```
+
+!!! note "Data survives the container"
+    The dataset root inside the container is `/data/lerobot`. It lives in a Docker volume, as do
+    the XenseSDK sensor-config cache and the Hugging Face and Torch caches, so `--rm` removing the
+    temporary container does not touch them. Inspect with
+    `docker compose run --rm xense-taccap bash -lc 'ls -la /data'`.
+
+!!! tip "Working on data only, with no Pico4 attached"
+    The container starts the XenseVR PC Service by default. Turn it off when you do not need the
+    tracker:
+
+    ```bash
+    START_XENSEVR_SERVICE=0 docker compose run --rm xense-taccap
+    ```
+
+Once this is done, skip ahead to [3. Host & Device Setup](03-host-hardware.md) — serial
+permissions and the Pico4 setup are still done on the host.
+
+---
+
+Sections 2.1 – 2.5 below are the **conda install-from-source** path.
+
+!!! info "On Docker? Skip everything from here to 2.5"
+    The image already has the Mamba environment, the collection program and all three hardware
+    SDKs. There is no repo to clone, no environment to create and no `setup_env.sh` to run.
+
 !!! info "Overview"
     Four steps: install Mamba → clone the repo (with submodules) → create the environment →
     `setup_env.sh --install` → verify.

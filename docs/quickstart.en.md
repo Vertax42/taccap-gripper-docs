@@ -15,12 +15,13 @@ then come back.
     - Device understood, **hardware connected and powered** (see [Hardware](hardware.md#install)).
     - Repo, submodules and **gripper firmware (V2.1)** upgraded per
       [Required versions](versions.md#required).
-    - [Installation](02-environment.md) done (`setup_env.sh --install` passed, all three packages import).
+    - [Installation](02-environment.md) done — either path, with all three SDK packages importing.
     - [Serial permissions + ModemManager](03-host-hardware.md#31) one-off host setup done.
     - [Gripper calibration](04-calibration.md#41) done — **once per leader gripper**, zero + travel span.
       Without the travel span `gripper.pos` never reaches 1.0, and calibrating only one side of a
       bimanual rig leaves the two channels on different scales.
-    - `mamba activate xense-taccap`.
+    - You are inside the collection environment: `mamba activate xense-taccap` on the conda
+      path, or `docker compose run --rm xense-taccap` on the Docker one.
 
 ## 1. Power-on order
 

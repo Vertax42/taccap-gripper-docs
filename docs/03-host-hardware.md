@@ -33,6 +33,10 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 ## 3.2 关闭 ModemManager 抢占(udev) {#32}
 
+!!! info "用 Docker 交付镜像的话本节已经做过了"
+    `install_customer.sh` 会把下面这条 udev 规则装到**主机**上(容器管不了主机的热插拔
+    规则)。本节留作原理说明和排查参考,不用重做。
+
 夹爪 MCU 是 CH343 USB 串口(`1a86:55d2`,CDC-ACM)。每次热插拔,**ModemManager**
 (Ubuntu/GNOME 默认的蜂窝调制解调器服务)会用 AT 指令探测新端口并占用几秒,导致这段
 时间内连接失败:
@@ -295,6 +299,10 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
 追踪器与主机的 **XenseVR PC Service**(RoboticsService)守护进程通信;它负责设备发现、
 状态监控与实时追踪数据分发,采集端从它读取位姿。
+
+!!! info "用 Docker 交付镜像的话服务会自动启动"
+    容器启动时会自己拉起这个服务,不用手动执行下面的命令。只处理数据、用不到追踪器时,
+    可以用 `START_XENSEVR_SERVICE=0` 关掉(见 [2. 环境部署 · Docker](02-environment.md#docker))。
 
 启动:
 
