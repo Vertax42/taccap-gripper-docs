@@ -123,11 +123,10 @@ headset — see [Reading a tracker SN](#pico-tracker-sn).
     grippers claiming the same tactile side, or a tactile hub with no matching gripper — so the
     physical rig and the fields in your data cannot silently drift apart.
 
-!!! tip "The error names the side with **two**, not the side that came up empty"
-    A side coming up empty is **usually because its device's serial put itself on the other
-    side**. So discovery reports duplicates first, then gaps, and the gap message tells you how
-    many the other side has — go check the digit before the trailing `G` on the **side that has two**,
-    rather than hunting for the device that "went missing".
+!!! tip "Check the side that has **two**"
+    A side coming up empty usually means its device **put itself on the other side**, so
+    discovery reports duplicates before gaps — re-check the serials on the **side with two**
+    against the side rule above, rather than hunting for the one that "went missing".
 
 ## 3.4 Pico4 Ultra Enterprise setup {#34}
 
