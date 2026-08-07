@@ -252,8 +252,11 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
 
 === "安装并确认"
 
-    点 `XTac-UMI-XR-0.1.X.apk` → 安装 → 完成。装好后回到「**资源库**」,应该能看到名为
-    **XTac-UMI XR** 的应用。
+    点 `XTac-UMI-XR-0.1.X.apk`,在弹出的「要安装此应用吗?」里选「**安装**」。
+
+    ![确认安装](assets/pico4/install-step3-confirm.png){ width="480" }
+
+    装好后回到「**资源库**」,应该能看到名为 **XTac-UMI XR** 的应用。
 
     ![安装包里的 apk,以及装好后出现在资源库里的 XTac-UMI XR](assets/pico4/install-step3-done.jpg){ width="480" }
 

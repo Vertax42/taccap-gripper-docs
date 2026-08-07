@@ -278,8 +278,11 @@ be turned off — "don't take the headset off" is not a workaround.
 
 === "Install and confirm"
 
-    Tap `XTac-UMI-XR-0.1.X.apk` → Install → Done. Back in the **Library**, the app appears as
-    **XTac-UMI XR**.
+    Tap `XTac-UMI-XR-0.1.X.apk` and choose **Install** in the "Install this app?" dialog.
+
+    ![Confirming the install](assets/pico4/install-step3-confirm.png){ width="480" }
+
+    Back in the **Library**, the app appears as **XTac-UMI XR**.
 
     ![The apk in the installer list, and XTac-UMI XR in the library once installed](assets/pico4/install-step3-done.jpg){ width="480" }
 
