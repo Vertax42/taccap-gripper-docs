@@ -337,12 +337,15 @@ PC Service will discover its SN.
     of checking against the PC Service afterwards. **Mount each tracker on the side its SN says**
     (odd-left / even-right, see [3.3](#33)): **odd on the left gripper, even on the right**.
 
+    ![The QR code on the back of the tracker](assets/pico4/tracker-sn-qr.jpg){ width="440" }
+
 1. Open the **Motion Tracker** app from the **Library** and go to the **pairing screen**.
 2. **Hold the tracker's power button for about 6 seconds**, until the indicator **alternates blue
    and red** — that is Bluetooth pairing mode (steady blue is just powered on, not pairing, and
    the app will not find it).
-3. Tap "**Start pairing**" and wait. On success the tracker appears in the "**My trackers**" list
-   with its battery level and number (e.g. `Tracker 150399`), marked "**Connected**".
+3. Tap "**Start pairing**" and wait. **The headset plays a tone when pairing succeeds** — that
+   sound is your confirmation. The tracker then appears in the "**My trackers**" list with its
+   battery level and number (e.g. `Tracker 150399`), marked "**Connected**".
 4. **One tracker per gripper — bind both.** The top of the list should read "**2 paired**".
 
 !!! tip "Power-on is a short press; only pairing needs the hold"
@@ -352,7 +355,16 @@ PC Service will discover its SN.
 
 === "Open the Motion Tracker app"
 
-    ![Library → Motion Tracker](assets/pico4/tracker-enable.png){ width="440" }
+    Open **Motion Tracker** from the **Library**.
+
+    ![Library → Motion Tracker](assets/pico4/tracker-app-open.png){ width="440" }
+
+=== "Go to the pairing screen"
+
+    On the "PICO Motion Tracker" main screen, tap the **icon in the top-right corner** to open the
+    pairing screen.
+
+    ![Motion Tracker main screen; the top-right icon opens pairing](assets/pico4/tracker-pair-entry.png){ width="440" }
 
 === "My trackers: 2 paired"
 
