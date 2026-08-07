@@ -13,11 +13,11 @@
     - 已按 [版本要求](versions.md#required) 升级仓库、子模块与**夹爪固件**——固件要求的是
       **命令集 V2.1**,对应构建号 **主夹爪 ≥ 1.2.0 / 从夹爪 ≥ 1.1.0**(更高版本同样支持,
       不必回刷;[两者的区别](versions.md#v21))。
-    - 已完成 [环境安装](02-environment.md)——Docker 或 conda 任选一条,三个 SDK 包都能 import。
+    - 已完成 [环境安装](02-environment.md)——Mamba 或 Docker 任选一条,三个 SDK 包都能 import。
     - 已做 [串口权限 + ModemManager](03-host-hardware.md#31) 一次性主机配置。
     - 每台主夹爪已做过[夹爪标定](04-calibration.md#41)(零点 + 行程上限,一台一次)。
       **没标定的主夹爪会被拒绝连接**;双夹爪两侧都要标,只标一侧会让左右刻度不一致。
-    - 已进入采集环境:conda 路径执行 `mamba activate xense-taccap`;Docker 路径执行
+    - 已进入采集环境:Mamba 路径执行 `mamba activate xense-taccap`;Docker 路径执行
       `docker compose run --rm xense-taccap` 进容器。
 
 ## 1. 上电顺序

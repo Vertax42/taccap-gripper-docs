@@ -22,7 +22,7 @@ then come back.
     - Every leader gripper has been through [gripper calibration](04-calibration.md#41) (zero +
       travel span, once per unit). **An uncalibrated leader is refused at connect.** Calibrate
       both sides of a bimanual rig — doing one leaves the two channels on different scales.
-    - You are inside the collection environment: `mamba activate xense-taccap` on the conda
+    - You are inside the collection environment: `mamba activate xense-taccap` on the Mamba
       path, or `docker compose run --rm xense-taccap` on the Docker one.
 
 ## 1. Power-on order

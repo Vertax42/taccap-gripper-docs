@@ -29,17 +29,17 @@ installed and verified.
 There are two paths. They produce the same collection environment — pick one and follow it
 through.
 
-| | **conda install from source** | **Docker delivery image** |
+| | **Mamba install from source** | **Docker delivery image** |
 |---|---|---|
 | What you get | The source repo; you build the environment | A packaged delivery directory and one script to run |
 | Time | Longer — three hardware SDKs are compiled | Ten-odd minutes, mostly importing the image |
 | Architecture | amd64 / arm64 | **amd64 only** |
 | NVIDIA GPU | Optional (collection works without one) | **Required**, driver ≥ 570.144 |
-| Isolation | Installed into a conda env on the host | Lives in a container, host stays clean |
+| Isolation | Installed into a Mamba env on the host | Lives in a container, host stays clean |
 | Editing the code | Easy | Awkward |
 | Steps | 2.1 – 2.5 below | [Docker delivery image](#docker) |
 
-**Default to conda (Mamba)** — it is the one that fits everywhere: amd64 and arm64, with or
+**Default to Mamba** — it is the one that fits everywhere: amd64 and arm64, with or
 without an NVIDIA GPU, and it is the one to pick if you will be editing the collection program.
 The commands in the rest of this manual are written for this path.
 
@@ -54,7 +54,7 @@ rather not build an environment yourself.
     On a restricted network, set the terminal's proxy up first (the Docker script accepts
     `XENSE_PROXY_URL` — see [One-shot install](#docker)).
 
-Sections 2.1 – 2.5 below are the **conda install-from-source** path.
+Sections 2.1 – 2.5 below are the **Mamba install-from-source** path.
 
 !!! info "On Docker? Skip 2.1 – 2.5 entirely"
     The image already has the Mamba environment, the collection program and all three hardware
