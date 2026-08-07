@@ -4,17 +4,8 @@ Corresponds to the reference manual's "robot configuration". A gripper being **l
 same as it being **openable** — this chapter covers serial permissions, ModemManager contention,
 the device auto-discovery rules, and the hardware power-on order.
 
-!!! danger "[3.1](#31) and [3.2](#32) are required — without them the gripper will not connect"
-    Both are **one-off host setup** and hold indefinitely once done:
-
-    - **[3.1 Serial permissions](#31)** — outside the `dialout` group, grippers are listed but
-      the port **cannot be opened**: an empty `firmware_sn` and a failed connect.
-    - **[3.2 Keeping ModemManager off](#32)** — without it, the port is held for a few seconds
-      after every hot-plug, which shows up as an **intermittent `Device or resource busy`** and
-      is easy to mistake for a cable or bandwidth problem.
-
-    Skip both and the gripper simply will not connect, which leaves calibration, preview and
-    recording out of reach.
+!!! danger "[3.1 Serial permissions](#31) and [3.2 keeping ModemManager off](#32) are required"
+    Both are **one-off host setup** and hold indefinitely once done.
 
 ## 3.1 Serial permissions (dialout) {#31}
 
