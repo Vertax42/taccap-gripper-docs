@@ -26,7 +26,8 @@ hide:
 flowchart LR
     A[环境部署<br/>setup_env.sh] --> B[主机/硬件配置<br/>串口权限·设备发现]
     B --> C[标定与自检<br/>编码器零点·tracker]
-    C --> D[数据采集<br/>lerobot-record]
+    C --> P[预览实时数据<br/>lerobot-teleoperate]
+    P --> D[数据采集<br/>lerobot-record]
     D --> E[数据集<br/>校验·回放·上传Hub]
 ```
 
@@ -48,9 +49,9 @@ flowchart LR
 
     ---
 
-    标定自检 → `lerobot-record` 录制。数采的核心操作。
+    标定自检 → `lerobot-teleoperate` 预览确认数据流 → `lerobot-record` 录制。数采的核心操作。
 
-    [:octicons-arrow-right-24: 数据采集](05-data-collection.md)
+    [:octicons-arrow-right-24: 标定与自检](04-calibration.md) · [数据采集](05-data-collection.md)
 
 -   :material-database-outline: __③ 数据介绍__
 

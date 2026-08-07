@@ -29,7 +29,8 @@ hide:
 flowchart LR
     A[Environment<br/>setup_env.sh] --> B[Host/Hardware<br/>serial perms · discovery]
     B --> C[Calibration<br/>encoder zero · tracker]
-    C --> D[Data collection<br/>lerobot-record]
+    C --> P[Live preview<br/>lerobot-teleoperate]
+    P --> D[Data collection<br/>lerobot-record]
     D --> E[Dataset<br/>check · replay · push to Hub]
 ```
 
@@ -51,9 +52,9 @@ This is the **xense-taccap-lerobot data-collection quickstart**. Three parts: **
 
     ---
 
-    Calibration → `lerobot-record`. The core data-collection workflow.
+    Calibration → preview the streams with `lerobot-teleoperate` → record with `lerobot-record`. The core data-collection workflow.
 
-    [:octicons-arrow-right-24: Data Collection](05-data-collection.md)
+    [:octicons-arrow-right-24: Calibration](04-calibration.md) · [Data Collection](05-data-collection.md)
 
 -   :material-database-outline: __③ Data__
 
