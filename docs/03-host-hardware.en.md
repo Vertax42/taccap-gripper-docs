@@ -220,15 +220,19 @@ Settings → **Power policy** and set both to "**Never**", **in this order**:
 
 === "Enterprise Settings"
 
-    ![Settings → Enterprise Settings](assets/pico4/power-enterprise-settings.jpeg){ width="480" }
+    Tap **Enterprise Settings** in Developer options.
+
+    ![Developer options → Enterprise Settings](assets/pico4/power-enterprise-settings.jpeg){ width="480" }
 
 === "System Settings → Power policy"
 
     ![Enterprise Settings → System Settings → Power policy](assets/pico4/power-policy-entry.jpeg){ width="480" }
 
-=== "Set both to Never"
+=== "Defaults, before the change"
 
-    ![Screen-off and system sleep both set to Never](assets/pico4/power-sleep-screenoff.jpeg){ width="480" }
+    It ships as **screen-off 30 s, system sleep 5 min, battery icon hidden** — all three change.
+
+    ![The power policy at its factory defaults](assets/pico4/power-policy-before.jpeg){ width="480" }
 
 === "Final settings"
 
