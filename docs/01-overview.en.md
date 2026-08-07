@@ -62,7 +62,7 @@ time alignment and episode handling live in `xense-taccap-lerobot`.
 source, listing "supported range" and "validated baseline" separately. What
 follows are only the constraints that decide whether, and how, this installs:
 
-- **Linux only.** The capture path is V4L2 + UVC; macOS and Windows cannot run it.
+- **Linux amd64 only.** The capture path is V4L2 + UVC; macOS and Windows cannot run it.
   Ubuntu 22.04 / 24.04 are tested.
 - **Python 3.12 or newer.** The main repository declares `requires-python = ">=3.12"`
   and `conda_environment.yaml` pins `python=3.12`; 3.10 and 3.11 will not install —

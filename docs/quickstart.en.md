@@ -101,8 +101,8 @@ each adding a layer of hardware — **preview at whichever stage you intend to r
 
 === "3. Everything, headset camera included"
 
-    Adds the headset's stereo view and the head pose. Needs **PC Service >= v0.2.0 on an amd64
-    host** → [5.7 Headset camera](05-data-collection.md#57).
+    Adds the headset's stereo view and the head pose. Needs **PC Service >= v0.2.0**
+    → [5.7 Headset camera](05-data-collection.md#57).
 
     ```bash
     lerobot-teleoperate \

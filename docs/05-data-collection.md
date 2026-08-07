@@ -98,7 +98,7 @@ lerobot-record \
     推荐命令始终显式指定 `fps=30`、`episode_time_s=120`、`reset_time_s=60` 和 `push_to_hub=false`,避免不同 checkout 的默认值变化影响采集。
     上面的示例把 `--robot.enable_head_camera=false` 也写了出来,同样是这个道理——它默认就是
     `false`,写出来是让这个开关在命令里可见。改成 `true` 即连同头显双目画面与头显位姿一起录
-    (见 [§5.7](#57));需要 **PC Service ≥ v0.2.0 且主机为 amd64**,arm64 上保持 `false`。
+    (见 [§5.7](#57));需要 **PC Service ≥ v0.2.0**。
 
 !!! note "`fps` 与传感器帧率"
     `fps` 是**录制采样率**,不是传感器上限。视触觉传感器本身 120 Hz([硬件参数](hardware.md#specs)),
@@ -324,8 +324,7 @@ lerobot-record \
 
 ### 前置条件
 
-1. **XenseVR PC Service ≥ v0.2.0**(amd64)。更低版本不转发相机画面;arm64 主机目前固定在
-   v0.1.0,即**没有头显相机**。见 [2.4 一键安装](02-environment.md)。
+1. **XenseVR PC Service ≥ v0.2.0**。更低版本不转发相机画面,见 [2.4 一键安装](02-environment.md)。
 2. **头显 APP 正在推流**。相机和追踪器**共用同一条 SDK 连接**,所以头显必须已连上 PC Service
    (见 [3.5 启动 XenseVR PC Service](03-host-hardware.md#35))。反过来,关掉相机不会断开追踪器的
    连接,关掉追踪器也不会断开相机。

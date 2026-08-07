@@ -1,7 +1,7 @@
 # 2. Environment Setup
 
 Corresponds to the reference manual's "development environment setup". This chapter targets
-Ubuntu 22.04 LTS / Ubuntu 24.04 LTS and gets `xense-taccap-lerobot` plus every hardware SDK
+**Ubuntu 22.04 / 24.04 LTS (amd64)** and gets `xense-taccap-lerobot` plus every hardware SDK
 installed and verified.
 
 !!! info "Verified environment for the XTac-UMI G1"
@@ -33,18 +33,17 @@ through.
 |---|---|---|
 | What you get | The source repo; you build the environment | A packaged delivery directory and one script to run |
 | Time | Longer — three hardware SDKs are compiled | Ten-odd minutes, mostly importing the image |
-| Architecture | amd64 / arm64 | **amd64 only** |
 | NVIDIA GPU | Optional (collection works without one) | **Required**, driver ≥ 570.144 |
 | Isolation | Installed into a Mamba env on the host | Lives in a container, host stays clean |
 | Editing the code | Easy | Awkward |
 | Steps | 2.1 – 2.5 below | [Docker delivery image](#docker) |
 
-**Default to Mamba** — it is the one that fits everywhere: amd64 and arm64, with or
-without an NVIDIA GPU, and it is the one to pick if you will be editing the collection program.
-The commands in the rest of this manual are written for this path.
+**Default to Mamba** — it works **with or without an NVIDIA GPU**, and it is the one to pick if
+you will be editing the collection program. The commands in the rest of this manual are written
+for this path.
 
-Docker is there for a machine that already meets **amd64 plus the NVIDIA driver**, when you would
-rather not build an environment yourself.
+Docker is there for a machine that already has the **NVIDIA driver**, when you would rather not
+build an environment yourself.
 
 !!! warning "Both paths need internet access"
     Installing pulls things down — conda fetches conda-forge and PyPI packages, clones the GitHub
@@ -162,9 +161,6 @@ This step will:
     Only v0.2.0 and later forward the headset camera's frames, and both the
     [stereo view and the head pose](05-data-collection.md#57) come down that path. Tracking is
     unaffected — if you do not use the headset camera, the version makes no difference.
-
-    **arm64 hosts do not get the feature**: v0.2.0 ships an amd64 asset only, and
-    `setup_env.sh` falls back to the older release on arm64 and says so.
 
 ## 2.5 Verify the install {#25}
 

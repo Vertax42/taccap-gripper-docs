@@ -343,8 +343,8 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
     PC Service,服务转发给采集端。所以**头显相机和追踪器共用同一个服务、同一条连接**——
     服务没起来,两者都没有。
 
-    转发画面需要 **v0.2.0 以上**(仅 amd64;arm64 的说明见
-    [2.4 一键安装](02-environment.md))。只用追踪器时,版本没有区别。
+    转发画面需要 **v0.2.0 以上**(见 [2.4 一键安装](02-environment.md))。
+    只用追踪器时,版本没有区别。
 
 !!! tip "验证服务与设备"
     服务目录附带 `ConsoleDemo` / `RobotDemoQt` 演示程序(`/opt/apps/roboticsservice/`),

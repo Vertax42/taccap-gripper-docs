@@ -223,8 +223,7 @@ lerobot-teleoperate \
 !!! note "`--robot.enable_head_camera` 为什么写在这里"
     它默认就是 `false`,显式写出来是为了让这个开关**在命令里可见**——改成 `true` 就会
     连同头显双目画面与头显位姿一起录(见 [5.7 头显相机](05-data-collection.md#57))。
-    需要 **PC Service ≥ v0.2.0 且主机为 amd64**;arm64 上没有这个功能,保持 `false`。
-
+    需要 **PC Service ≥ v0.2.0**。
 
 ## 4.4 3D 轨迹可视化(Rerun) {#44}
 

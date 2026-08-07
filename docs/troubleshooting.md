@@ -109,7 +109,7 @@
     **解决**:按这个顺序查——
 
     ```bash
-    # 1) 服务 deb 版本:amd64 需要 0.2.0
+    # 1) 服务 deb 版本:需要 ≥ 0.2.0
     dpkg -s xensevr-pc-service | grep -E '^(Version|Architecture):'
     # 2) 是否带相机接口
     python -c "import xensevr_pc_service_sdk as xrt; print(hasattr(xrt, 'has_pico_camera_frame'))"
@@ -122,11 +122,6 @@
     **原因**:环境里加载的是**旧版接口**(相机接口是随 v0.2.0 一起加的)。
     **解决**:拉最新主仓库与子模块后重跑 `./setup_env.sh --install`;仍然为 `False` 时
     用 `python -c "import xensevr_pc_service_sdk as x; print(x.__file__)"` 确认加载的是哪一份。
-
-??? failure "arm64 主机装不上 v0.2.0 / 下载 404"
-    **原因**:v0.2.0 **只发布了 amd64 包**。`setup_env.sh` 检测到 arm64 会自动退回 v0.1.0
-    并打印说明——所以 arm64 上**没有头显相机**,这是预期行为,不是安装失败。
-    **解决**:确实需要时,在 ARM64 主机上用 `RoboticsService/qt-gcc_aarch64.sh` 自行编译 v0.2.0。
 
 ??? failure "日志反复出现左右眼偏差(skew)告警"
     **原因**:两只眼是两条独立消息,帧序号不同且时间戳差超过

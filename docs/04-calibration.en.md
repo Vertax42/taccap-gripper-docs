@@ -250,9 +250,7 @@ the basic data flow is healthy.
 !!! note "Why `--robot.enable_head_camera` is spelled out"
     `false` is already the default; writing it keeps the switch **visible in the command**. Set it
     to `true` to also record the headset's stereo view and the headset pose (see
-    [5.7 Headset camera](05-data-collection.md#57)). It needs **PC Service >= v0.2.0 on an amd64
-    host**; on arm64 the feature does not exist, so leave it `false`.
-
+    [5.7 Headset camera](05-data-collection.md#57)). It needs **PC Service >= v0.2.0**.
 
 ## 4.4 3D trajectory visualisation (Rerun) {#44}
 

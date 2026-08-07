@@ -106,7 +106,7 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
     collect. The examples above spell out `--robot.enable_head_camera=false` for the same reason:
     `false` is the default, and writing it keeps the switch visible. Set it to `true` to record
     the headset's stereo view and pose as well (see [§5.7](#57)); that needs **PC Service >=
-    v0.2.0 on an amd64 host**, so leave it `false` on arm64.
+    v0.2.0**.
 
 !!! note "`fps` vs. sensor frame rate"
     `fps` is the **recording sample rate**, not a sensor ceiling. The visuotactile sensors
@@ -354,8 +354,7 @@ It produces three groups of keys:
 
 ### Prerequisites
 
-1. **XenseVR PC Service ≥ v0.2.0** (amd64). Older versions do not forward the camera
-   frames; arm64 hosts are currently pinned to v0.1.0, i.e. **no head camera there**. See
+1. **XenseVR PC Service ≥ v0.2.0**. Older versions do not forward the camera frames — see
    [2.4 One-shot install](02-environment.md).
 2. **The headset app must be streaming.** The camera and the trackers **share one SDK
    connection**, so the headset has to be connected to the PC Service (see

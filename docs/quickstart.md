@@ -90,7 +90,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 
 === "③ 全开(含头显相机)"
 
-    再多出头显双目画面与头部位姿。需要 **PC Service ≥ v0.2.0 且主机为 amd64**
+    再多出头显双目画面与头部位姿。需要 **PC Service ≥ v0.2.0**
     → [5.7 头显相机](05-data-collection.md#57)。
 
     ```bash

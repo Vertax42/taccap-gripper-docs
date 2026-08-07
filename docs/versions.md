@@ -87,7 +87,7 @@ flowchart LR
 
 | 组件 | 支持范围 / 约束 | 已验证基线 |
 |---|---|---|
-| 操作系统 | Ubuntu 22.04 / 24.04 | Ubuntu 22.04.5 LTS / 24.04.4 LTS |
+| 操作系统 / 架构 | Ubuntu 22.04 / 24.04,**amd64** | Ubuntu 22.04.5 LTS / 24.04.4 LTS,x86_64 |
 | Linux 内核 | 不构成约束 | 6.8 / 6.14 / 7.0 系列均已验证 |
 | NVIDIA GPU / 驱动 | GPU 可选;**装了 NVIDIA GPU 则驱动需 ≥ 570.144**。多路视频建议使用 NVIDIA H.264 硬件编码 | 驱动 570.144 / 580.126.09 |
 | Python | **≥ 3.12**(`pyproject.toml` 的 `requires-python`;`conda_environment.yaml` 固定 `python=3.12`) | 3.12.13 |
@@ -102,7 +102,7 @@ flowchart LR
 | 夹爪固件命令集 | **V2.1**(帧格式另计,为 V1.8;区别见[三套编号](#v21)) | 命令集 V2.1 |
 | 夹爪固件构建 | leader **≥ 1.2.0** / follower **≥ 1.1.0** 即支持命令集 V2.1 | 当前基线附带 leader **1.2.1** / follower **1.1.1**(固件源码分支 `hw_v1.1.0`);镜像版本随 SDK 走,以 `firmware/manifest.json` 为准,见 [固件 OTA 升级](#ota) |
 | `xensesdk` | 由安装脚本提供 | 2.1.1 |
-| XenseVR PC Service(`.deb` 守护进程) | amd64 ≥ **v0.2.0**;arm64 目前只有 v0.1.0 | v0.2.0(子模块 `6c5ff61d`)|
+| XenseVR PC Service(`.deb` 守护进程) | ≥ **v0.2.0** | v0.2.0(子模块 `6c5ff61d`)|
 | `xensevr_pc_service_sdk`(Python 接口) | 随主仓库子模块一起编译安装 | 0.1.0 —— **包版本号没跟着服务走**,见下 |
 
 !!! warning "`pip show xensevr-pc-service-sdk` 会显示 0.1.0,这是正常的"
@@ -119,9 +119,6 @@ flowchart LR
     v0.2.0 相对 v0.1.0 只多做一件事:**转发头显相机的视频帧**,这是
     [头显相机](05-data-collection.md#57)画面的通路。老版本头显 APK 配 v0.2.0 也照常工作,
     所以**不用头显相机就没有任何行为变化**。
-
-    v0.2.0 只发布了 amd64 包:`setup_env.sh` 在 arm64 上会自动退回 v0.1.0 并打印说明
-    (代价是 arm64 没有头显相机),需要时用仓库的 `RoboticsService/qt-gcc_aarch64.sh` 自行编译。
 
 !!! note "版本以本地为准"
     命令与字段应以你本地这一版主仓库、以及夹爪 SDK 附带的设备说明为准。

@@ -389,8 +389,8 @@ data carries an `sn` distinguishing the trackers.
     eye's frames to the PC Service, which forwards them to collection, and `xensevr_pc_service_sdk` caches the newest frame per eye. So **the head camera
     and the trackers share one service and one connection** — no service, neither works.
 
-    Forwarding the frames needs **v0.2.0 or later** (amd64 only; see
-    [2.4 One-shot install](02-environment.md) for arm64). The other way round, if you only use
+    Forwarding the frames needs **v0.2.0 or later** (see
+    [2.4 One-shot install](02-environment.md)). The other way round, if you only use
     trackers, v0.2.0 behaves exactly like v0.1.0.
 
 !!! tip "Verifying the service and devices"

@@ -93,7 +93,7 @@ flowchart TB
 **具体版本号见 [版本与支持](versions.md)** —— 那一页是唯一出处,同时列出"支持范围"和
 "已验证基线"。这里只讲几条会影响能不能装、怎么装的硬约束:
 
-- **只支持 Linux。**采集路径是 V4L2 + UVC,macOS / Windows 用不了。已验证 Ubuntu 22.04 / 24.04。
+- **只支持 Linux amd64。**采集路径是 V4L2 + UVC,macOS / Windows 用不了。已验证 Ubuntu 22.04 / 24.04。
 - **Python 至少 3.12。**主仓库 `requires-python = ">=3.12"`,`conda_environment.yaml` 也固定
   `python=3.12`;3.10/3.11 装不上,不是"能跑但不推荐"。
 - **GPU 可选,但用 NVIDIA 就得 ≥ 570.144。**多路视频建议用 NVIDIA 硬件编码,没有 GPU 也能采;
