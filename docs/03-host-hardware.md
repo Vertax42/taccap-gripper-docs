@@ -365,7 +365,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
 !!! warning "读 SN 需要整条链路先跑起来"
     `get_motion_tracker_serial_numbers()` 报的是**服务当前收到数据的**追踪器。
-    所以要先:追踪器已绑定并开机 → XTac-UMI XR 按[界面清单](#pico-toolkit-ui)勾上 `Send`
+    所以要先:追踪器已绑定并开机 → XTac-UMI XR 显示[「已连接」](#pico-toolkit-ui)
     → 主机已启动 [XenseVR PC Service](#35)。少任一步,返回的会是空列表。
 
 拿到 SN 后可用 `--robot.tracker_serial=<SN>` 直接钉住,跳过自动匹配。
@@ -400,47 +400,58 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
     ![设置里追踪模式已是独立追踪](assets/pico4/tracker-mode3-done.png){ width="480" }
 
-改完后,在 XTac-UMI XR 里把 **PICO Motion Tracker** 的 `Mode` 选为 **`Object`**。
 
 追踪器由 XenseVR PC Service 按**序列号(SN)**识别;侧别按 SN 末尾字母 `G` 前一个数字单左双右自动匹配
 (见 [3.3](#33)),或用 `--robot.tracker_serial=<SN>` 直接钉住。
 
-### 打开 App 后的界面清单 {#pico-toolkit-ui}
+### 打开 App 后的界面 {#pico-toolkit-ui}
 
-戴上头显、打开 **XTac-UMI XR** 后,在 APP 界面里**按顺序**完成下面四项;
-四项都做完,PC 端才会收到追踪数据。
+戴上头显,从**资源库**打开 **XTac-UMI XR**。界面很简单,只有**状态**、**分辨率**、
+**重连**三项(左边的「折叠」把面板收起来)。**要的就是「状态」显示「已连接」**——
+在那之前 PC 端读不到任何位姿。
 
-| # | 操作 | 界面位置 | 说明 |
-|---|------|----------|------|
-| 1 | **网络连接** | **Network** 面板 → 勾 `Shared network (connect USB first)` → `PC Service:` 填 PC 端 IP → `Enter` | 连上后 `Status:` 显示绿色 **`WORKING`**。详见 [网络连接](#pico-network) |
-| 2 | **Mode 选 `Object`** | **Tracking** 面板 → `PICO Motion Tracker` → `Mode` 下拉 | 选 **`Object`**(物体追踪),不是 Head / Controller / Hand。详见 [追踪模式与 XTac-UMI XR 设置](#pico-tracker) |
-| 3 | **勾选 `High-Acc`** | 同一行,`Mode` 右侧 | 高精度追踪模式,位姿更稳、抖动更小 |
-| 4 | **勾选 `Send`** | **Data & Control** 分区 | **开始向 PC 端推送**追踪数据。这是最后一步,勾上之前 PC 侧读不到任何位姿 |
+=== "打开软件"
 
-![XTac-UMI XR 主界面:Status WORKING、Mode=Object、High-Acc 与 Send 均已勾选](assets/pico4/toolkit-main.jpg){ width="560" }
+    从**资源库**点开 **XTac-UMI XR**。
 
-!!! tip "`Num:` 就是在线追踪器数量"
-    `High-Acc` 右边的 `Num:` 显示当前连上的追踪器个数,**双爪应为 `Num: 2`**。
-    只有 1 或 0,说明某枚没开机、没绑定或已断连——先回
-    [绑定](#pico-tracker-bind) 排查,不用等 PC 端才发现。
+    ![资源库 → XTac-UMI XR](assets/pico4/app-step1-open.png){ width="480" }
 
-!!! warning "`Send` 必须最后勾"
-    `Send` 是数据推送的总开关:**网络连上、Mode = `Object`、`High-Acc` 都设好之后,再勾 `Send`**。
-    若中途改过 Mode 或 High-Acc,**取消 `Send` 再重新勾选**,让数据流带着新设置重开;
-    不必重启 APP(重启会重置世界系,见 [坐标系对齐](#pico-frame))。
+=== "状态:未连接"
+
+    刚打开时通常显示「**状态:未连接**」。点「**重连**」。
+
+    ![XTac-UMI XR:状态 未连接](assets/pico4/app-step2-disconnected.jpg){ width="420" }
+
+=== "允许相机权限"
+
+    首次打开会问「允许"XTac-UMI XR"使用相机权限吗?」,点「**允许**」。
+    [头显相机](05-data-collection.md#57)要用到它,点了「不允许」就取不到头显画面。
+
+    ![允许 XTac-UMI XR 使用相机权限](assets/pico4/app-step3-camera.png){ width="380" }
+
+=== "状态:已连接"
+
+    「**状态:已连接**」就是可以开始采集的状态。
+
+    ![XTac-UMI XR:状态 已连接](assets/pico4/app-step4-connected.jpg){ width="420" }
+
+!!! tip "「分辨率」保持默认"
+    默认 `1024`,没有特殊需要不用动它。
+
+!!! warning "一直连不上?先查网络这一步"
+    点了「重连」仍是「未连接」,问题多半不在 APP,而在
+    [网络连接](#pico-network):有线共享网络没接好,或数采电脑的 WiFi 没关。
 
 !!! tip "自检:PC 端有没有真的收到"
-    四项设好后,在主机上用 `/opt/apps/roboticsservice/` 的 `ConsoleDemo` 或
-    `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 确认能读到带 `sn` 的位姿。
-    界面看着连上了但 PC 无数据,**首先检查 `Send` 是否漏勾**。
+    显示「已连接」之后,在主机上用 `/opt/apps/roboticsservice/` 的 `ConsoleDemo` 或
+    `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 确认能读到带 `sn` 的位姿——
+    头显里显示连上,和主机真的收到数据,是两件事。
 
 ### 启动与坐标系对齐 {#pico-frame}
 
 **佩戴 Pico4 Ultra 企业版启动 XTac-UMI XR 时,面朝机器人正前方**,再按
-[界面清单](#pico-toolkit-ui)输入 PC 端 IP、选 `Object`、勾 `High-Acc` 与 `Send`。启动瞬间
+[界面清单](#pico-toolkit-ui)确认状态显示「**已连接**」。启动瞬间
 **冻结世界系的原点与方向**。
-
-![启动软件 · 输入 PC IP](assets/pico4/launch-connect.png){ width="520" }
 
 录制位姿落在**重力对齐的世界系**:**X 正 = 面朝前方,Y 正 = 左,Z 正 = 上**。
 
@@ -496,7 +507,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 2. 接好 Pico4 Ultra 企业版的**有线共享网络**,并**关闭数采电脑的 WiFi**(见 [3.4 网络连接](#pico-network))。
 3. 开启 Pico4 Ultra 企业版,**短按**追踪器电源键至**蓝灯亮起**(首次使用需先[绑定](#pico-tracker-bind))。
 4. **面朝机器人正前方**,启动 XTac-UMI XR APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame)),
-   并按 [界面清单](#pico-toolkit-ui) 完成:连网络 → tracker 选 `Object` → 勾 `High-Acc` → 勾 `Send`。
+   并确认 APP 的[状态显示「已连接」](#pico-toolkit-ui)。
 5. 启动主机的 XenseVR PC Service(`runService.sh`)。
 6. 运行标定 / 自检 / 录制脚本。
 

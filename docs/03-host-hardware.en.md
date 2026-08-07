@@ -405,8 +405,8 @@ print(xrt.get_motion_tracker_serial_numbers())   # e.g. ['PC2310MLL3200496G', ..
 
 !!! warning "Reading SNs needs the whole chain up first"
     `get_motion_tracker_serial_numbers()` reports the trackers the service is **currently
-    receiving data from**. So first: tracker bound and powered on → XTac-UMI XR with `Send`
-    ticked per the [UI checklist](#pico-toolkit-ui) → [XenseVR PC Service](#35) running on the
+    receiving data from**. So first: tracker bound and powered on → XTac-UMI XR showing
+    ["Connected"](#pico-toolkit-ui) → [XenseVR PC Service](#35) running on the
     host. Miss any one and you get an empty list.
 
 With the SN in hand you can pin it via `--robot.tracker_serial=<SN>` and skip auto-matching.
@@ -444,51 +444,62 @@ Once bound:
 
     ![Settings showing tracking mode set to standalone](assets/pico4/tracker-mode3-done.png){ width="480" }
 
-Then, in XTac-UMI XR, set the **PICO Motion Tracker** `Mode` to **`Object`**.
 
 The XenseVR PC Service identifies trackers by **serial number (SN)**; the side is matched
 automatically from the digit before the trailing `G`, odd-left / even-right (see [3.3](#33)), or pinned
 with `--robot.tracker_serial=<SN>`.
 
-### UI checklist after opening the app {#pico-toolkit-ui}
+### The app's screen {#pico-toolkit-ui}
 
-With the headset on and **XTac-UMI XR** open, work through these four items **in order**. The
-PC only receives tracking data once all four are done.
+With the headset on, open **XTac-UMI XR** from the **Library**. The screen is small: **Status**,
+**Resolution** and **Reconnect** (plus "Collapse" on the left, which folds the panel away).
+**What you want is Status reading "Connected"** — until then the PC reads no pose at all.
 
-| # | Action | Where | Notes |
-|---|------|----------|------|
-| 1 | **Network connection** | **Network** panel → tick `Shared network (connect USB first)` → put the PC's IP in `PC Service:` → `Enter` | Once connected, `Status:` turns green **`WORKING`**. Details in [Network connection](#pico-network) |
-| 2 | **Set Mode to `Object`** | **Tracking** panel → `PICO Motion Tracker` → `Mode` dropdown | Choose **`Object`** (object tracking), not Head / Controller / Hand. Details in [Tracking mode and XTac-UMI XR settings](#pico-tracker) |
-| 3 | **Tick `High-Acc`** | Same row, right of `Mode` | High-accuracy tracking — steadier pose, less jitter |
-| 4 | **Tick `Send`** | **Data & Control** section | **Starts pushing** tracking data to the PC. Do this last; before it is ticked the PC reads no pose at all |
+=== "Open the app"
 
-![XTac-UMI XR main screen: Status WORKING, Mode=Object, High-Acc and Send both ticked](assets/pico4/toolkit-main.jpg){ width="560" }
+    Open **XTac-UMI XR** from the **Library**.
 
-!!! tip "`Num:` is the count of online trackers"
-    `Num:` to the right of `High-Acc` shows how many trackers are connected — a bimanual rig
-    should read **`Num: 2`**. A 1 or a 0 means one is off, unbound or disconnected: go back to
-    [binding](#pico-tracker-bind) rather than waiting to discover it on the PC side.
+    ![Library → XTac-UMI XR](assets/pico4/app-step1-open.png){ width="480" }
 
-!!! warning "`Send` must be ticked last"
-    `Send` is the master switch for the data stream: **connect the network, set Mode = `Object`
-    and `High-Acc` first, then tick `Send`.** If you change Mode or High-Acc later, **untick and
-    re-tick `Send`** so the stream restarts carrying the new settings. No app restart is needed —
-    restarting resets the world frame (see [Frame alignment](#pico-frame)).
+=== "Status: Not connected"
+
+    It usually opens on "**Status: Not connected**". Tap "**Reconnect**".
+
+    ![XTac-UMI XR: status not connected](assets/pico4/app-step2-disconnected.jpg){ width="420" }
+
+=== "Allow camera access"
+
+    On first launch it asks whether to allow XTac-UMI XR to use the camera. Tap "**Allow**" —
+    the [headset camera](05-data-collection.md#57) needs it, and denying leaves you without
+    headset frames.
+
+    ![Allow XTac-UMI XR to use the camera](assets/pico4/app-step3-camera.png){ width="380" }
+
+=== "Status: Connected"
+
+    "**Status: Connected**" is the state you collect from.
+
+    ![XTac-UMI XR: status connected](assets/pico4/app-step4-connected.jpg){ width="420" }
+
+!!! tip "Leave Resolution at its default"
+    It defaults to `1024`; there is no reason to change it unless you have one.
+
+!!! warning "Still not connecting?"
+    If Reconnect leaves it on "Not connected", the problem is usually not the app but
+    [the network](#pico-network): the wired shared network is not up, or the PC's WiFi is
+    still on.
 
 !!! tip "Self-check: is the PC actually receiving?"
-    With all four set, confirm on the host that a pose with an `sn` comes through — via
+    Once it says Connected, confirm on the host that a pose with an `sn` comes through — via
     `ConsoleDemo` in `/opt/apps/roboticsservice/` or
-    `python -m lerobot.robots.taccap_gripper.calibrate_tracker`. If the UI looks connected but the
-    PC sees nothing, **check `Send` first**.
+    `python -m lerobot.robots.taccap_gripper.calibrate_tracker`. The headset saying it is
+    connected and the host actually receiving data are two different things.
 
 ### Startup and frame alignment {#pico-frame}
 
 **Wear the headset and face straight towards the robot when you launch XTac-UMI XR**, then
-follow the [UI checklist](#pico-toolkit-ui) to enter the PC's IP, select `Object`, and tick
-`High-Acc` and `Send`. The moment it launches, the **world frame's origin and orientation are
-frozen**.
-
-![Launching the app · entering the PC IP](assets/pico4/launch-connect.png){ width="520" }
+check that [Status reads "Connected"](#pico-toolkit-ui). The moment it launches, the **world
+frame's origin and orientation are frozen**.
 
 Recorded poses land in a **gravity-aligned world frame**: **+X = straight ahead, +Y = left,
 +Z = up**.
@@ -555,8 +566,8 @@ data carries an `sn` distinguishing the trackers.
 3. Power on the headset, and **short-press** the tracker's power button until the **blue light comes on**
    (first use needs [binding](#pico-tracker-bind) first).
 4. **Facing straight towards the robot**, launch the XTac-UMI XR app (this **freezes the world
-   origin and orientation** — see [frames](#pico-frame)), and complete the
-   [UI checklist](#pico-toolkit-ui): network → tracker `Object` → `High-Acc` → `Send`.
+   origin and orientation** — see [frames](#pico-frame)), and check that its
+   [status reads "Connected"](#pico-toolkit-ui).
 5. Start the host's XenseVR PC Service (`runService.sh`).
 6. Run the calibration / self-check / recording scripts.
 

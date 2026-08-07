@@ -86,15 +86,19 @@
     **解决**:**长按电源键约 6 秒**,直到指示灯**蓝红交替闪烁**,再点「开始配对」。
     见 [绑定运动追踪器到头显](03-host-hardware.md#pico-tracker-bind)。
 
-??? failure "头显里显示已连上,PC 端却收不到任何位姿"
-    **原因**:APP 里 **`Send` 没勾**(数据推送总开关);或 tracker 下拉未选 `Object`。
-    **解决**:按 [界面清单](03-host-hardware.md#pico-toolkit-ui) 逐项核对:
-    连网络 → tracker = `Object` → 勾 `High-Acc` → 勾 `Send`。
+??? failure "XTac-UMI XR 一直显示「未连接」"
+    **原因**:多半不在 APP,而是有线共享网络没接好,或数采电脑的 WiFi 没关。
+    **解决**:先点「**重连**」;仍然不行就回
+    [网络连接](03-host-hardware.md#pico-network) 重新接一遍,并确认电脑 WiFi 已关闭。
+    见 [打开 App 后的界面](03-host-hardware.md#pico-toolkit-ui)。
 
-??? failure "改了 Mode 或 High-Acc 但 PC 端行为没变"
-    **原因**:`Send` 已经勾着,设置是在数据流开着的时候改的。
-    **解决**:**取消 `Send` 再重新勾选**,让数据流带新设置重开(不要重启 APP,重启会重置世界系)。
-    见 [界面清单](03-host-hardware.md#pico-toolkit-ui)。
+??? failure "头显里显示「已连接」,PC 端却收不到任何位姿"
+    **原因**:头显显示连上,只说明 APP 连到了服务;主机侧的服务没起来、或追踪器没开机
+    没绑定,一样收不到位姿。
+    **解决**:确认主机已启动 [XenseVR PC Service](03-host-hardware.md#35);再用
+    `/opt/apps/roboticsservice/` 的 `ConsoleDemo` 或
+    `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 看能否读到带 `sn` 的位姿。
+    读不到就回 [绑定](03-host-hardware.md#pico-tracker-bind) 确认两枚追踪器都已开机并「已连接」。
 
 ??? failure "追踪器侧别匹配错 / PC 服务枚举不稳"
     **原因**:序列号不合规,或枚举抖动。
