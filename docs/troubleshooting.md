@@ -63,7 +63,7 @@
     **解决**:**先关闭数采电脑 WiFi**(只保留 Pico4 Ultra 企业版有线共享网络,见
     [3.4 网络连接](03-host-hardware.md#pico-network));再按 [上电顺序](03-host-hardware.md#36)
     逐项确认;启动服务 `/opt/apps/roboticsservice/runService.sh`;必要时用
-    `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 自检。
+    `python -m lerobot.robots.taccap_gripper.check_tracker` 自检。
 
 ??? failure "位姿参考系在集之间漂移"
     **原因**:分集途中**重启了 XTac-UMI XR**,世界原点被重设。
@@ -97,7 +97,7 @@
     没绑定,一样收不到位姿。
     **解决**:确认主机已启动 [XenseVR PC Service](03-host-hardware.md#35);再用
     `/opt/apps/roboticsservice/` 的 `ConsoleDemo` 或
-    `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 看能否读到带 `sn` 的位姿。
+    `python -m lerobot.robots.taccap_gripper.check_tracker` 看能否读到带 `sn` 的位姿。
     读不到就回 [绑定](03-host-hardware.md#pico-tracker-bind) 确认两枚追踪器都已开机并「已连接」。
 
 ??? failure "追踪器侧别匹配错 / PC 服务枚举不稳"

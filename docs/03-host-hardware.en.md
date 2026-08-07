@@ -507,7 +507,7 @@ connect. Opening the app does not connect it.
 !!! tip "Self-check: is the PC actually receiving?"
     Once it says Connected, confirm on the host that a pose with an `sn` comes through — via
     `ConsoleDemo` in `/opt/apps/roboticsservice/` or
-    `python -m lerobot.robots.taccap_gripper.calibrate_tracker`. The headset saying it is
+    `python -m lerobot.robots.taccap_gripper.check_tracker`. The headset saying it is
     connected and the host actually receiving data are two different things.
 
 ### Startup and frame alignment {#pico-frame}

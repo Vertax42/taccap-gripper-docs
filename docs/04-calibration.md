@@ -152,16 +152,15 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
 ## 4.2 Pico4 Ultra 企业版追踪器自检
 
 !!! note "追踪器没有标定这一步,这条命令只读不写"
-    命令名里带 `calibrate`,但它**不写入任何东西**——只是把位姿打印出来给你看。追踪器
-    不需要标定:安装变换是**内置**的(见下),左右侧别由 SN 自动匹配。本节纯粹是确认
-    链路通了、装配没错。
+    追踪器不需要标定:安装变换是**内置**的(见下),左右侧别由 SN 自动匹配。这条命令
+    **不写入任何东西**——只是把位姿打印出来给你看。本节纯粹是确认链路通了、装配没错。
 
 ```bash
-python -m lerobot.robots.taccap_gripper.calibrate_tracker
+python -m lerobot.robots.taccap_gripper.check_tracker
 # 指定某个 tracker SN(格式见 3.3,形如 PC2310MLL3200496G):
-python -m lerobot.robots.taccap_gripper.calibrate_tracker <tracker SN>
+python -m lerobot.robots.taccap_gripper.check_tracker <tracker SN>
 # 应用该侧内置的 tracker→TCP 安装变换:
-python -m lerobot.robots.taccap_gripper.calibrate_tracker --side right
+python -m lerobot.robots.taccap_gripper.check_tracker --side right
 ```
 
 以 10 Hz 打印 `raw`(追踪器自身位姿)与 `ee`(经刚性安装变换后的 TCP)。挥动夹爪,

@@ -171,17 +171,16 @@ value is still *accurate*.
 ## 4.2 Pico4 Ultra Enterprise tracker self-check
 
 !!! note "There is no tracker calibration step — this command only reads"
-    `calibrate` is in the name, but it **writes nothing**: it prints the pose for you to look at.
     The tracker needs no calibration — the mount transform is **built in** (below) and the side is
-    matched from the SN. This section is purely about confirming the chain is live and the
-    hardware is mounted correctly.
+    matched from the SN. This command **writes nothing**: it prints the pose for you to look at.
+    This section is purely about confirming the chain is live and the hardware is mounted correctly.
 
 ```bash
-python -m lerobot.robots.taccap_gripper.calibrate_tracker
+python -m lerobot.robots.taccap_gripper.check_tracker
 # Pin a specific tracker SN (format in 3.3, e.g. PC2310MLL3200496G):
-python -m lerobot.robots.taccap_gripper.calibrate_tracker <tracker SN>
+python -m lerobot.robots.taccap_gripper.check_tracker <tracker SN>
 # Apply that side's built-in tracker->TCP mount transform:
-python -m lerobot.robots.taccap_gripper.calibrate_tracker --side right
+python -m lerobot.robots.taccap_gripper.check_tracker --side right
 ```
 
 Prints `raw` (the tracker's own pose) and `ee` (the TCP after the rigid mount transform) at 10 Hz.

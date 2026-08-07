@@ -454,7 +454,7 @@ XenseVR PC Service——但**要点一下「重连」才会连上**,打开 APP �
 
 !!! tip "自检:PC 端有没有真的收到"
     显示「已连接」之后,在主机上用 `/opt/apps/roboticsservice/` 的 `ConsoleDemo` 或
-    `python -m lerobot.robots.taccap_gripper.calibrate_tracker` 确认能读到带 `sn` 的位姿——
+    `python -m lerobot.robots.taccap_gripper.check_tracker` 确认能读到带 `sn` 的位姿——
     头显里显示连上,和主机真的收到数据,是两件事。
 
 ### 启动与坐标系对齐 {#pico-frame}
