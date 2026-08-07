@@ -31,8 +31,10 @@
 | 改代码 | 方便 | 不方便 |
 | 步骤 | 下面 2.1 – 2.5 | [Docker 交付镜像](#docker) |
 
-**要改采集程序、或者主机是 arm64 / 没有 NVIDIA GPU,走 conda**;想省事、机器满足 amd64 +
-NVIDIA 驱动,走 Docker。
+**默认走 conda(Mamba)**——适用面最广:amd64 / arm64 都支持,没有 NVIDIA GPU 也能采,
+要改采集程序也方便。本手册后续章节的命令都按这条路径书写。
+
+机器正好满足 **amd64 + NVIDIA 驱动**、又不想自己建环境时,可以选 Docker。
 
 !!! warning "两条路径都需要能访问外网"
     安装过程要从网上取东西——conda 要拉 conda-forge 与 PyPI 包、克隆 GitHub 仓库与子模块、

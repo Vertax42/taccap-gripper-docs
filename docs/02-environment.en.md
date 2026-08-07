@@ -39,9 +39,12 @@ through.
 | Editing the code | Easy | Awkward |
 | Steps | 2.1 – 2.5 below | [Docker delivery image](#docker) |
 
-**Choose conda if you need to modify the collection program, or the host is arm64 or has no
-NVIDIA GPU**; take Docker for the least work, on a machine that meets amd64 plus the NVIDIA
-driver.
+**Default to conda (Mamba)** — it is the one that fits everywhere: amd64 and arm64, with or
+without an NVIDIA GPU, and it is the one to pick if you will be editing the collection program.
+The commands in the rest of this manual are written for this path.
+
+Docker is there for a machine that already meets **amd64 plus the NVIDIA driver**, when you would
+rather not build an environment yourself.
 
 !!! warning "Both paths need internet access"
     Installing pulls things down — conda fetches conda-forge and PyPI packages, clones the GitHub
