@@ -15,14 +15,11 @@ Two situations call for it — the program catches one, the other is only visibl
 | **Calibrated, but the stored span no longer matches** | It connects, but a jaw opened to its mechanical limit reads clearly short of `1.0` (around `0.8`, say) | **Only you, in the preview** — see [4.1.3](#413) |
 
 The second usually follows **refitting the encoder or moving a limit stop**: the program knows a
-value was stored, not whether it is still right, so it does not raise for this.
-
-Outside those two there is nothing to redo. The values are written to flash and survive power
-cycles and host changes; once per unit is enough, and it is not a routine step before every
-session.
-
-`gripper.pos` in the dataset is a **normalised opening**: `0.0` fully closed, `1.0` fully open.
-Those endpoints are not computed — they are two numbers written into MCU flash by calibration:
+value was stored, not whether it is still right, so it does not raise. Outside those two there is
+nothing to redo — the values live in MCU flash and survive power cycles and host changes, so
+**once per unit is enough**. `gripper.pos` in the dataset is a **normalised opening**, `0.0` fully
+closed and `1.0` fully open, and those two endpoints are the two numbers calibration writes to
+flash:
 
 | Endpoint | Source | Written by |
 | --- | --- | --- |
