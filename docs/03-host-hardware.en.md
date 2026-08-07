@@ -308,7 +308,7 @@ work**:
    to "**File transfer**". **Re-check this after every USB re-plug** — it reverts to the default.
    If you cannot select it, reboot the Pico and try again.
 2. **Start the service on the PC first** (see [§3.5](#35)): `runService.sh`.
-3. Open **XTac-UMI XR** and wait for the status to read "**Connected**" (see
+3. Open **XTac-UMI XR**, tap "**Reconnect**", and the status reads "**Connected**" (see
    [the app's screen](#pico-toolkit-ui)).
 
 Over **WiFi**, put the headset and the collection PC on the **same network**; everything else is
@@ -460,7 +460,8 @@ With the headset on, open **XTac-UMI XR** from the **Library**. The screen is sm
 **What you want is Status reading "Connected"** — until then the PC reads no pose at all.
 
 **There is no PC IP to enter**: once the [wired shared network](#pico-network) is up, the app
-finds and connects to the XenseVR PC Service on the host by itself.
+finds the XenseVR PC Service on the host by itself — but **you have to tap "Reconnect"** to
+connect. Opening the app does not connect it.
 
 === "Open the app"
 
@@ -470,8 +471,8 @@ finds and connects to the XenseVR PC Service on the host by itself.
 
 === "Status: Not connected"
 
-    It usually opens on "**Status: Not connected**" and connects on its own a moment later. If it
-    does not, tap "**Reconnect**".
+    It opens on "**Status: Not connected**". **Tap "Reconnect"** — it does not connect by itself,
+    however long you wait.
 
     ![XTac-UMI XR: status not connected](assets/pico4/app-step2-disconnected.jpg){ width="420" }
 
@@ -512,8 +513,8 @@ finds and connects to the XenseVR PC Service on the host by itself.
 ### Startup and frame alignment {#pico-frame}
 
 **Wear the headset and face straight towards the robot when you launch XTac-UMI XR**, then
-check that [Status reads "Connected"](#pico-toolkit-ui). The moment it launches, the **world
-frame's origin and orientation are frozen**.
+tap "**Reconnect**" to get [Status to "Connected"](#pico-toolkit-ui). The moment it launches, the
+**world frame's origin and orientation are frozen**.
 
 Recorded poses land in a **gravity-aligned world frame**: **+X = straight ahead, +Y = left,
 +Z = up**.
@@ -591,7 +592,7 @@ full-body mocap / **standalone Tracker**). Collection uses two of them:
 4. Start the host's XenseVR PC Service (`runService.sh`).
 5. **Facing straight towards the robot**, launch the XTac-UMI XR app (this **freezes the world
    origin and orientation** — see [frames](#pico-frame)), and check that its
-   [status reads "Connected"](#pico-toolkit-ui).
+   tap "**Reconnect**" so the [status reads "Connected"](#pico-toolkit-ui).
 6. Run the calibration / self-check / recording scripts.
 
 ```mermaid

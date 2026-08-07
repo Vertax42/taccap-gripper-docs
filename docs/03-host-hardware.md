@@ -279,7 +279,8 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
 1. 在 Pico4 Ultra 企业版内打开 设置 → 开发者选项 → 打开「USB 调试」→「USB 连接」选择「**传输文件**」。
    **每次拔插 USB 后都要回来确认这一项**——它会掉回默认值。选不了就重启 Pico 再试。
 2. **电脑端先启动服务**(见 [§3.5](#35)):`runService.sh`。
-3. 打开 **XTac-UMI XR**,等状态变成「**已连接**」(见 [打开 App 后的界面](#pico-toolkit-ui))。
+3. 打开 **XTac-UMI XR**,点「**重连**」,状态变成「**已连接**」
+   (见 [打开 App 后的界面](#pico-toolkit-ui))。
 
 走 **WiFi** 时把头显和数采电脑接进**同一个网络**,其余相同。
 
@@ -412,8 +413,8 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 **重连**三项(左边的「折叠」把面板收起来)。**要的就是「状态」显示「已连接」**——
 在那之前 PC 端读不到任何位姿。
 
-**不用填 PC 端 IP**:[有线共享网络](#pico-network)接好后,APP 会自动识别并连上主机上的
-XenseVR PC Service。
+**不用填 PC 端 IP**:[有线共享网络](#pico-network)接好后,APP 会自动识别主机上的
+XenseVR PC Service——但**要点一下「重连」才会连上**,打开 APP 不会自动连。
 
 === "打开软件"
 
@@ -423,7 +424,7 @@ XenseVR PC Service。
 
 === "状态:未连接"
 
-    刚打开时通常显示「**状态:未连接**」,等一下就会自己连上;没连上就点「**重连**」。
+    刚打开时是「**状态:未连接**」。**点一下「重连」**才会连——它不会自己连上,等多久都没用。
 
     ![XTac-UMI XR:状态 未连接](assets/pico4/app-step2-disconnected.jpg){ width="420" }
 
@@ -459,7 +460,7 @@ XenseVR PC Service。
 ### 启动与坐标系对齐 {#pico-frame}
 
 **佩戴 Pico4 Ultra 企业版启动 XTac-UMI XR 时,面朝机器人正前方**,再按
-[界面清单](#pico-toolkit-ui)确认状态显示「**已连接**」。启动瞬间
+[界面清单](#pico-toolkit-ui)点「**重连**」,把状态连成「**已连接**」。启动瞬间
 **冻结世界系的原点与方向**。
 
 录制位姿落在**重力对齐的世界系**:**X 正 = 面朝前方,Y 正 = 左,Z 正 = 上**。
@@ -524,7 +525,7 @@ XenseVR PC Service。
 3. 开启 Pico4 Ultra 企业版,**短按**追踪器电源键至**蓝灯亮起**(首次使用需先[绑定](#pico-tracker-bind))。
 4. 启动主机的 XenseVR PC Service(`runService.sh`)。
 5. **面朝机器人正前方**,启动 XTac-UMI XR APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame)),
-   并确认 APP 的[状态显示「已连接」](#pico-toolkit-ui)。
+   点「**重连**」使[状态变为「已连接」](#pico-toolkit-ui)。
 6. 运行标定 / 自检 / 录制脚本。
 
 ```mermaid
