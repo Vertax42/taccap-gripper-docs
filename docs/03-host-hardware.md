@@ -410,6 +410,9 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 **重连**三项(左边的「折叠」把面板收起来)。**要的就是「状态」显示「已连接」**——
 在那之前 PC 端读不到任何位姿。
 
+**不用填 PC 端 IP**:[有线共享网络](#pico-network)接好后,APP 会自动识别并连上主机上的
+XenseVR PC Service。
+
 === "打开软件"
 
     从**资源库**点开 **XTac-UMI XR**。
@@ -418,7 +421,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
 === "状态:未连接"
 
-    刚打开时通常显示「**状态:未连接**」。点「**重连**」。
+    刚打开时通常显示「**状态:未连接**」,等一下就会自己连上;没连上就点「**重连**」。
 
     ![XTac-UMI XR:状态 未连接](assets/pico4/app-step2-disconnected.jpg){ width="420" }
 
@@ -435,8 +438,12 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
     ![XTac-UMI XR:状态 已连接](assets/pico4/app-step4-connected.jpg){ width="420" }
 
-!!! tip "「分辨率」保持默认"
-    默认 `1024`,没有特殊需要不用动它。
+!!! tip "「分辨率」是头显双目相机的分辨率"
+    指的是[头显相机](05-data-collection.md#57)的取流分辨率,默认 `1024`,
+    不用头显相机时它不起作用。没有特殊需要保持默认即可。
+
+!!! note "高精度追踪已默认常开"
+    高精度追踪模式(位姿更稳、抖动更小)现在默认开启,界面上没有开关,不需要手动设置。
 
 !!! warning "一直连不上?先查网络这一步"
     点了「重连」仍是「未连接」,问题多半不在 APP,而在

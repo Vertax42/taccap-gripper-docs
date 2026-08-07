@@ -455,6 +455,9 @@ With the headset on, open **XTac-UMI XR** from the **Library**. The screen is sm
 **Resolution** and **Reconnect** (plus "Collapse" on the left, which folds the panel away).
 **What you want is Status reading "Connected"** — until then the PC reads no pose at all.
 
+**There is no PC IP to enter**: once the [wired shared network](#pico-network) is up, the app
+finds and connects to the XenseVR PC Service on the host by itself.
+
 === "Open the app"
 
     Open **XTac-UMI XR** from the **Library**.
@@ -463,7 +466,8 @@ With the headset on, open **XTac-UMI XR** from the **Library**. The screen is sm
 
 === "Status: Not connected"
 
-    It usually opens on "**Status: Not connected**". Tap "**Reconnect**".
+    It usually opens on "**Status: Not connected**" and connects on its own a moment later. If it
+    does not, tap "**Reconnect**".
 
     ![XTac-UMI XR: status not connected](assets/pico4/app-step2-disconnected.jpg){ width="420" }
 
@@ -481,8 +485,14 @@ With the headset on, open **XTac-UMI XR** from the **Library**. The screen is sm
 
     ![XTac-UMI XR: status connected](assets/pico4/app-step4-connected.jpg){ width="420" }
 
-!!! tip "Leave Resolution at its default"
-    It defaults to `1024`; there is no reason to change it unless you have one.
+!!! tip "\"Resolution\" is the headset's stereo camera resolution"
+    It sets the capture resolution of the [headset camera](05-data-collection.md#57) and defaults
+    to `1024`; it does nothing if you are not using that camera. Leave it alone unless you have a
+    reason.
+
+!!! note "High-accuracy tracking is always on now"
+    High-accuracy tracking — steadier pose, less jitter — is enabled by default. There is no
+    toggle for it and nothing to set.
 
 !!! warning "Still not connecting?"
     If Reconnect leaves it on "Not connected", the problem is usually not the app but
