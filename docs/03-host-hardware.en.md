@@ -557,17 +557,21 @@ Start it:
     The service allows a single instance; starting a second one fails or conflicts.
 
 The service can supply several kinds of tracking data (headset Head / controllers / hand tracking /
-full-body mocap / **standalone Tracker**). Collection uses the **standalone Tracker** pose, whose
-data carries an `sn` distinguishing the trackers.
+full-body mocap / **standalone Tracker**). Collection uses two of them:
 
-!!! note "The headset camera runs through this service too (needs v0.2.0)"
-    The [headset camera](05-data-collection.md#57) is not a separate link: the headset sends each
-    eye's frames to the PC Service, which forwards them to collection, and `xensevr_pc_service_sdk` caches the newest frame per eye. So **the head camera
-    and the trackers share one service and one connection** — no service, neither works.
+- **Standalone Tracker pose** — the grippers' pose; the data carries an `sn` distinguishing the
+  trackers.
+- **Head pose** — the headset's own pose, used together with the
+  [headset's stereo frames](05-data-collection.md#57).
 
-    Forwarding the frames needs **v0.2.0 or later** (see
-    [2.4 One-shot install](02-environment.md)). The other way round, if you only use
-    trackers, v0.2.0 behaves exactly like v0.1.0.
+!!! note "The headset camera and head pose run through this service too"
+    They are not a separate link: the headset sends each eye's frames and its own pose to the PC
+    Service, which forwards them to collection. So **they share one service and one connection
+    with the trackers** — no service, neither works.
+
+    Two things enable this path: a service at **v0.2.0 or later** (see
+    [2.4 One-shot install](02-environment.md)) and **XTac-UMI XR** installed on the headset. If
+    you only use trackers, the service version makes no difference.
 
 !!! tip "Verifying the service and devices"
     The service directory ships `ConsoleDemo` / `RobotDemoQt` demos
