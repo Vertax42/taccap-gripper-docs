@@ -201,17 +201,17 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
 
     开发者选项里点「**企业设置**」。
 
-    ![开发者选项 → 企业设置](assets/pico4/power-step1-enterprise.jpeg){ width="480" }
+    ![开发者选项 → 企业设置](assets/pico4/power-step1-enterprise.jpg){ width="480" }
 
 === "系统设置 → 电源策略"
 
-    ![企业设置 → 系统设置 → 电源策略](assets/pico4/power-step2-policy.jpeg){ width="480" }
+    ![企业设置 → 系统设置 → 电源策略](assets/pico4/power-step2-policy.jpg){ width="480" }
 
 === "改之前的默认值"
 
     出厂默认是**灭屏 30 秒、系统休眠 5 分钟、电量图标不显示**——三项都要改。
 
-    ![电源策略的出厂默认值](assets/pico4/power-step3-before.jpeg){ width="480" }
+    ![电源策略的出厂默认值](assets/pico4/power-step3-before.jpg){ width="480" }
 
 === "最终设置"
 
