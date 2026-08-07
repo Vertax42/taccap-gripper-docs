@@ -237,14 +237,25 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
 !!! info "预配置设备可跳过本节"
     本节的设置写在头显里,断电不丢。出厂已配置的设备无需重做——除非恢复出厂设置或更换头显。
 
-**1. 拷贝 apk**:用 USB 线连接 Pico4 Ultra 企业版与电脑,把 `XTac-UMI-XR-0.1.X.apk`
-拷到 Pico4 Ultra 企业版的 `Download/` 目录(`0.1.X` 是版本号,以你拿到的那份为准)。
+=== "拷贝 apk(电脑侧)"
 
-![电脑侧把 apk 拷进 Pico 的 Download 目录](assets/pico4/copy-apk.jpg){ width="560" }
+    用 USB 线连接 Pico4 Ultra 企业版与电脑,把 `XTac-UMI-XR-0.1.X.apk` 拷到头显的
+    `Download/` 目录(`0.1.X` 是版本号,以你拿到的那份为准)。
 
-**2. 安装**:在 Pico4 Ultra 企业版内打开 文件管理 → Download → `XTac-UMI-XR-0.1.X.apk` → 安装 → 完成。装好后在头显里显示的名称是 **XTac-UMI XR**。
+    ![电脑侧把 apk 拷进 Pico 的 Download 目录](assets/pico4/install-step1-copy.jpg){ width="480" }
 
-![安装 XTac-UMI XR](assets/pico4/install-apk.png){ width="520" }
+=== "在头显里找到它"
+
+    戴上头显,任务栏点「**文件管理**」,进「**Download**」文件夹。
+
+    ![文件管理 → Download](assets/pico4/install-step2-filemanager.png){ width="480" }
+
+=== "安装并确认"
+
+    点 `XTac-UMI-XR-0.1.X.apk` → 安装 → 完成。装好后回到「**资源库**」,应该能看到名为
+    **XTac-UMI XR** 的应用。
+
+    ![安装包里的 apk,以及装好后出现在资源库里的 XTac-UMI XR](assets/pico4/install-step3-done.jpg){ width="480" }
 
 ### 网络连接(重要) {#pico-network}
 

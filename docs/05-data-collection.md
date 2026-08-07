@@ -2,7 +2,7 @@
 
 对应参考手册的"SDK 使用"。本章是核心:用 `lerobot-record` 采集并写出 `LeRobotDataset`。
 
-## 5.1 采集原理
+## 5.1 采集原理 {#51}
 
 `taccap_gripper` **不需要遥操作端**,录制是自驱动的。
 

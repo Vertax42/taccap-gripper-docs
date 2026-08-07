@@ -263,14 +263,25 @@ be turned off — "don't take the headset off" is not a workaround.
     What this section sets is stored on the headset and survives power cycles. A unit configured at
     the factory needs none of it again — unless it is factory-reset or swapped.
 
-**1. Copy the apk**: connect the headset to the PC over USB and copy `XTac-UMI-XR-0.1.X.apk` into
-the headset's `Download/` directory.
+=== "Copy the apk (PC side)"
 
-![The apk copied into the Pico's Download folder, seen from the PC](assets/pico4/copy-apk.jpg){ width="560" }
+    Connect the headset to the PC over USB and copy `XTac-UMI-XR-0.1.X.apk` into the headset's
+    `Download/` directory (`0.1.X` is the version — use whichever build you were given).
 
-**2. Install**: on the headset, File Manager → Download → `XTac-UMI-XR-0.1.X.apk` → Install → Done. It appears on the headset as **XTac-UMI XR**.
+    ![The apk copied into the Pico's Download folder, seen from the PC](assets/pico4/install-step1-copy.jpg){ width="480" }
 
-![Installing XTac-UMI XR](assets/pico4/install-apk.png){ width="520" }
+=== "Find it on the headset"
+
+    Put the headset on, open **File Manager** from the taskbar, and go into **Download**.
+
+    ![File Manager → Download](assets/pico4/install-step2-filemanager.png){ width="480" }
+
+=== "Install and confirm"
+
+    Tap `XTac-UMI-XR-0.1.X.apk` → Install → Done. Back in the **Library**, the app appears as
+    **XTac-UMI XR**.
+
+    ![The apk in the installer list, and XTac-UMI XR in the library once installed](assets/pico4/install-step3-done.jpg){ width="480" }
 
 ### Network connection (important) {#pico-network}
 

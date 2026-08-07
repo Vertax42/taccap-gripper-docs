@@ -3,7 +3,7 @@
 Corresponds to the reference manual's "SDK usage". This is the core chapter: collecting with
 `lerobot-record` and writing out a `LeRobotDataset`.
 
-## 5.1 How collection works
+## 5.1 How collection works {#51}
 
 `taccap_gripper` **needs no teleoperator** — recording is self-driven.
 
