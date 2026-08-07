@@ -132,7 +132,7 @@ mamba activate xense-taccap
 
 这一步会:
 
-- 用 `conda_environment.yaml` 更新 conda/mamba 环境
+- 用 `conda_environment.yaml` 更新 mamba/conda 环境
 - 从 `pyproject.toml` 安装主包
 - 安装 `xensesdk` 视触觉传感器 SDK
 - 安装 **XenseVR PC Service 守护进程**(约 100 MB 的 `.deb`,装到 `/opt/apps/roboticsservice`)

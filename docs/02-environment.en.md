@@ -145,7 +145,7 @@ mamba activate xense-taccap
 
 This step will:
 
-- update the conda/mamba environment from `conda_environment.yaml`
+- update the mamba/conda environment from `conda_environment.yaml`
 - install the main package from `pyproject.toml`
 - install the `xensesdk` visuotactile sensor SDK
 - install the **XenseVR PC Service daemon** (a ~100 MB `.deb`, into `/opt/apps/roboticsservice`)
