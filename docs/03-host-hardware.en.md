@@ -181,12 +181,12 @@ be turned off — "don't take the headset off" is not a workaround.
     "Power policy" is only offered in the **Pico Enterprise** edition's Enterprise Settings; the
     consumer settings menu has no such item and cannot set screen-off to "Never".
 
-**3. Copy the apk**: connect the headset to the PC over USB and copy `XTac-UMI-XR.apk` into
+**3. Copy the apk**: connect the headset to the PC over USB and copy `XTac-UMI-XR-0.1.0.apk` into
 the headset's `Download/` directory.
 
 ![Copying the apk to Download](assets/pico4/copy-apk.png){ width="520" }
 
-**4. Install**: on the headset, File Manager → Download → `XTac-UMI-XR.apk` → Install → Done.
+**4. Install**: on the headset, File Manager → Download → `XTac-UMI-XR-0.1.0.apk` → Install → Done. It appears on the headset as **XTac-UMI XR**.
 
 ![Installing XTac-UMI XR](assets/pico4/install-apk.png){ width="520" }
 

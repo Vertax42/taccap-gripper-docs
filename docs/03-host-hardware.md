@@ -161,11 +161,11 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
     「电源策略」只在 **Pico 企业版**的「企业设置」中提供;消费版设置菜单里没有这一项,
     也无法把灭屏调到「永不」。
 
-**3. 拷贝 apk**:用 USB 线连接 Pico4 Ultra 企业版与电脑,把 `XTac-UMI-XR.apk` 拷到 Pico4 Ultra 企业版的 `Download/` 目录。
+**3. 拷贝 apk**:用 USB 线连接 Pico4 Ultra 企业版与电脑,把 `XTac-UMI-XR-0.1.0.apk` 拷到 Pico4 Ultra 企业版的 `Download/` 目录(文件名末尾是版本号,以你拿到的那份为准)。
 
 ![拷贝 apk 到 Download](assets/pico4/copy-apk.png){ width="520" }
 
-**4. 安装**:在 Pico4 Ultra 企业版内打开 文件管理 → Download → `XTac-UMI-XR.apk` → 安装 → 完成。
+**4. 安装**:在 Pico4 Ultra 企业版内打开 文件管理 → Download → `XTac-UMI-XR-0.1.0.apk` → 安装 → 完成。装好后在头显里显示的名称是 **XTac-UMI XR**。
 
 ![安装 XTac-UMI XR](assets/pico4/install-apk.png){ width="520" }
 
