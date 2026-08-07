@@ -222,21 +222,21 @@ Settings → **Power policy** and set both to "**Never**", **in this order**:
 
     Tap **Enterprise Settings** in Developer options.
 
-    ![Developer options → Enterprise Settings](assets/pico4/power-enterprise-settings.jpeg){ width="480" }
+    ![Developer options → Enterprise Settings](assets/pico4/power-step1-enterprise.jpeg){ width="480" }
 
 === "System Settings → Power policy"
 
-    ![Enterprise Settings → System Settings → Power policy](assets/pico4/power-policy-entry.jpeg){ width="480" }
+    ![Enterprise Settings → System Settings → Power policy](assets/pico4/power-step2-policy.jpeg){ width="480" }
 
 === "Defaults, before the change"
 
     It ships as **screen-off 30 s, system sleep 5 min, battery icon hidden** — all three change.
 
-    ![The power policy at its factory defaults](assets/pico4/power-policy-before.jpeg){ width="480" }
+    ![The power policy at its factory defaults](assets/pico4/power-step3-before.jpeg){ width="480" }
 
 === "Final settings"
 
-    ![Power policy: screen-off and system sleep both Never, battery icon always shown](assets/pico4/power-policy.png){ width="480" }
+    ![Power policy: screen-off and system sleep both Never, battery icon always shown](assets/pico4/power-step4-final.png){ width="480" }
 
 When you are done it should match "**Final settings**": **screen-off Never, system sleep Never,
 battery icon always shown**.
