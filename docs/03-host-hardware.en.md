@@ -134,8 +134,8 @@ The **standalone motion tracker** that ships with the Pico4 Ultra Enterprise mou
 gripper and provides the 6-DoF pose. **XTac-UMI XR** (the VR client app) runs on the headset,
 and the pose reaches collection via the [XenseVR PC Service](#35). First time through,
 This section is written for **configuring a new Pico from scratch**, in the order **unbox and
-update → install the app → network → bind the tracker → tracking mode and UI → startup
-alignment**.
+update → system settings → install the app → network → bind the tracker → tracking mode and UI →
+startup alignment**.
 
 !!! tip "Given a factory-configured headset? Skip ahead"
     Developer mode, the power policy, the app, the tracker binding and the tracking mode are all
@@ -185,7 +185,7 @@ access**, go to **Settings → System update** and hit **Download and install** 
     It ships on an older build and **only works properly once updated**. Do this before pairing
     the tracker or installing the app.
 
-### First-time XTac-UMI XR install (Pico4 Ultra Enterprise) {#pico-app}
+### System settings: developer mode and power policy {#pico-system}
 
 !!! info "Skip this section on a pre-configured headset"
     What this section sets is stored on the headset and survives power cycles. A unit configured at
@@ -220,12 +220,18 @@ be turned off — "don't take the headset off" is not a workaround.
     "Power policy" is only offered in the **Pico Enterprise** edition's Enterprise Settings; the
     consumer settings menu has no such item and cannot set screen-off to "Never".
 
-**3. Copy the apk**: connect the headset to the PC over USB and copy `XTac-UMI-XR-0.1.0.apk` into
+### Installing XTac-UMI XR (Pico4 Ultra Enterprise) {#pico-app}
+
+!!! info "Skip this section on a pre-configured headset"
+    What this section sets is stored on the headset and survives power cycles. A unit configured at
+    the factory needs none of it again — unless it is factory-reset or swapped.
+
+**1. Copy the apk**: connect the headset to the PC over USB and copy `XTac-UMI-XR-0.1.0.apk` into
 the headset's `Download/` directory.
 
 ![Copying the apk to Download](assets/pico4/copy-apk.png){ width="520" }
 
-**4. Install**: on the headset, File Manager → Download → `XTac-UMI-XR-0.1.0.apk` → Install → Done. It appears on the headset as **XTac-UMI XR**.
+**2. Install**: on the headset, File Manager → Download → `XTac-UMI-XR-0.1.0.apk` → Install → Done. It appears on the headset as **XTac-UMI XR**.
 
 ![Installing XTac-UMI XR](assets/pico4/install-apk.png){ width="520" }
 
