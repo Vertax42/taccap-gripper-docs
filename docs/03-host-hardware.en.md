@@ -201,8 +201,13 @@ Settings → **Power policy** and set both to "**Never**", **in this order**:
 
 1. **System sleep = Never** first;
 2. **Screen off = Never** second;
-3. While you are there, set the **battery and charging indicator to always show** — handy for
+3. While you are there, set **Battery and charging icon** to **Always show** — handy for
    checking the charge mid-session.
+
+![Power policy: screen-off and system sleep both Never, battery icon always shown](assets/pico4/power-policy.png){ width="520" }
+
+When you are done it should match the screenshot: **screen-off Never, system sleep Never, battery
+icon always shown**.
 
 !!! warning "The order matters"
     The screen-off timeout is bounded by the system sleep timeout. Set screen-off first, while
