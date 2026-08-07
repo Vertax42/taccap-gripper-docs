@@ -377,13 +377,7 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 2. 进入设置,追踪模式选「**独立追踪**」。
 3. 在 XTac-UMI XR 里,把 **PICO Motion Tracker** 的 `Mode` 选为 **`Object`**。
 
-=== "独立追踪模式"
-
-    ![追踪模式:独立追踪](assets/pico4/tracker-standalone.png){ width="440" }
-
-=== "XTac-UMI XR:Mode = Object"
-
-    ![XTac-UMI XR PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
+![追踪模式:独立追踪](assets/pico4/tracker-standalone.png){ width="440" }
 
 追踪器由 XenseVR PC Service 按**序列号(SN)**识别;侧别按 SN 末尾字母 `G` 前一个数字单左双右自动匹配
 (见 [3.3](#33)),或用 `--robot.tracker_serial=<SN>` 直接钉住。

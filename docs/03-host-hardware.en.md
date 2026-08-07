@@ -420,13 +420,7 @@ Once bound:
 2. In its settings, set the tracking mode to "**Standalone tracking**".
 3. In XTac-UMI XR, set the **PICO Motion Tracker** `Mode` to **`Object`**.
 
-=== "Standalone tracking mode"
-
-    ![Tracking mode: standalone](assets/pico4/tracker-standalone.png){ width="440" }
-
-=== "XTac-UMI XR: Mode = Object"
-
-    ![XTac-UMI XR PICO Motion Tracker = Object](assets/pico4/toolkit-tracker-object.png){ width="440" }
+![Tracking mode: standalone](assets/pico4/tracker-standalone.png){ width="440" }
 
 The XenseVR PC Service identifies trackers by **serial number (SN)**; the side is matched
 automatically from the digit before the trailing `G`, odd-left / even-right (see [3.3](#33)), or pinned
