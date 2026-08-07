@@ -176,7 +176,10 @@ and the sticker off the lenses, then hold the power button to switch it on.
     ![Protective sticker on the lenses](assets/pico4/unbox-lens-sticker.jpg){ width="440" }
 
 **2. Update the system** — **required on a new unit**: join a **WiFi network with internet
-access** and update to **5.15.5.U or later**.
+access**, go to **Settings → System update** and hit **Download and install** to reach
+**5.15.5.U or later**. The package is about 1.9 GB, so allow time for the download and reboot.
+
+![Settings → System update, offering 5.15.5.U](assets/pico4/system-update.jpg){ width="560" }
 
 !!! danger "A new headset has to be updated first"
     It ships on an older build and **only works properly once updated**. Do this before pairing
