@@ -133,8 +133,9 @@ headset — see [Reading a tracker SN](#pico-tracker-sn).
 The **standalone motion tracker** that ships with the Pico4 Ultra Enterprise mounts on top of the
 gripper and provides the 6-DoF pose. **XTac-UMI XR** (the VR client app) runs on the headset,
 and the pose reaches collection via the [XenseVR PC Service](#35). First time through,
-This section is written for **configuring a new Pico from scratch**, in the order **install →
-network → bind the tracker → tracking mode and UI → startup alignment**.
+This section is written for **configuring a new Pico from scratch**, in the order **unbox and
+update → install the app → network → bind the tracker → tracking mode and UI → startup
+alignment**.
 
 !!! tip "Given a factory-configured headset? Skip ahead"
     Developer mode, the power policy, the app, the tracker binding and the tracking mode are all
@@ -144,6 +145,22 @@ network → bind the tracker → tracking mode and UI → startup alignment**.
     **Start at [Connect the network](#pico-network)**: plug the USB in, short-press the tracker
     until the LED is solid blue, then work through the [UI checklist](#pico-toolkit-ui) and
     [align the frame](#pico-frame). Those three are needed **before every session** either way.
+
+### Unboxing and the system update {#pico-unbox}
+
+!!! info "Skip this section on a pre-configured headset"
+    What this section sets is stored on the headset and survives power cycles. A unit configured at
+    the factory needs none of it again — unless it is factory-reset or swapped.
+
+**1. Unbox**: peel the protective film off the body, the tape off the controllers and the sticker
+off the lenses, then hold the power button to switch it on.
+
+**2. Update the system** — **required on a new unit**: join a **WiFi network with internet
+access** and update to **5.15.5.U or later**.
+
+!!! danger "A new headset has to be updated first"
+    It ships on an older build and **only works properly once updated**. Do this before pairing
+    the tracker or installing the app.
 
 ### First-time XTac-UMI XR install (Pico4 Ultra Enterprise) {#pico-app}
 
@@ -160,7 +177,9 @@ times → "Developer options" appears on the left → turn on **USB debugging**.
 Settings → **Power policy** and set both to "**Never**", **in this order**:
 
 1. **System sleep = Never** first;
-2. **Screen off = Never** second.
+2. **Screen off = Never** second;
+3. While you are there, set the **battery and charging indicator to always show** — handy for
+   checking the charge mid-session.
 
 !!! warning "The order matters"
     The screen-off timeout is bounded by the system sleep timeout. Set screen-off first, while
@@ -201,7 +220,8 @@ the XenseVR PC Service through it.
 Steps:
 
 1. On the headset: Settings → Developer options → enable "USB debugging" → set "USB connection"
-   to "**File transfer**".
+   to "**File transfer**". **Re-check this after every USB re-plug** — it reverts to the default.
+   If you cannot select it, reboot the Pico and try again.
 2. Open **XTac-UMI XR** → tick **"shared network (connect USB first)"** → wait for the headset
    to assign the PC an IP → enter the **PC Service IP** to connect.
 3. Start the service on the PC (see [§3.5](#35)): `runService.sh`.
@@ -217,6 +237,11 @@ Steps:
 **On first use, or after swapping a tracker**, the PICO Motion Tracker must be bound to **this
 headset**. Until it is, it cannot be selected in tracking mode, and neither XTac-UMI XR nor the
 PC Service will discover its SN.
+
+!!! tip "Scan the QR code on the back of the tracker first"
+    It gives you that tracker's full SN, so you can confirm the right one during pairing instead
+    of checking against the PC Service afterwards. **Mount each tracker on the side its SN says**
+    (odd-left / even-right, see [3.3](#33)): **odd on the left gripper, even on the right**.
 
 1. Open the **Motion Tracker** app from the **Library** and go to the **pairing screen**.
 2. **Hold the tracker's power button for about 6 seconds**, until the indicator **alternates blue
