@@ -133,23 +133,17 @@ headset — see [Reading a tracker SN](#pico-tracker-sn).
 The **standalone motion tracker** that ships with the Pico4 Ultra Enterprise mounts on top of the
 gripper and provides the 6-DoF pose. **XTac-UMI XR** (the VR client app) runs on the headset,
 and the pose reaches collection via the [XenseVR PC Service](#35). First time through,
-follow all five steps: **install → network → bind the tracker → tracking mode and UI → startup
-alignment**.
+This section is written for **configuring a new Pico from scratch**, in the order **install →
+network → bind the tracker → tracking mode and UI → startup alignment**.
 
-### A pre-configured headset: three things to do {#pico-preconfigured}
+!!! tip "Given a factory-configured headset? Skip ahead"
+    Developer mode, the power policy, the app, the tracker binding and the tracking mode are all
+    set at the factory and stored on the headset — anything marked **"skip on a pre-configured
+    headset"** does not apply to you.
 
-A headset configured at the factory already has developer mode, the power policy, the app, the
-tracker binding and the tracking mode set — all of it stored on the headset and kept across power
-cycles. Before **each** collection session you still need to:
-
-1. **Power the tracker on** — a **short press**; the LED goes solid blue.
-2. **[Connect the network](#pico-network)** — plug the USB in and enter the collection host's IP
-   in the app. **Every time you re-plug**, and turn the host's WiFi off while collecting.
-3. **Work through the [UI checklist](#pico-toolkit-ui)**, then **[align the frame](#pico-frame)** —
-   `Send` goes last, and the world origin freezes the moment the app starts, so **do not restart
-   the app partway through a dataset**.
-
-Sections below marked "skip on a pre-configured headset" do not apply to you; everything else does.
+    **Start at [Connect the network](#pico-network)**: plug the USB in, short-press the tracker
+    until the LED is solid blue, then work through the [UI checklist](#pico-toolkit-ui) and
+    [align the frame](#pico-frame). Those three are needed **before every session** either way.
 
 ### First-time XTac-UMI XR install (Pico4 Ultra Enterprise) {#pico-app}
 
