@@ -38,7 +38,7 @@ Calibrate it once, then re-run:
     python third_party/taccap-gripper/python/examples/calibrate.py <left|right>
 ```
 
-!!! danger "双臂只标一侧,比两侧都不标更糟"
+!!! danger "双夹爪只标一侧,比两侧都不标更糟"
     两侧都没标时刻度至少一致;只标一侧会让 `left_gripper.pos` 和 `right_gripper.pos`
     落在**不同刻度**上——同一个握持动作左右读数不同,而数据里看不出任何异常。
     **要标就两侧都标。**
