@@ -152,8 +152,28 @@ alignment**.
     What this section sets is stored on the headset and survives power cycles. A unit configured at
     the factory needs none of it again — unless it is factory-reset or swapped.
 
-**1. Unbox**: peel the protective film off the body, the tape off the controllers and the sticker
-off the lenses, then hold the power button to switch it on.
+**1. Unbox**: peel the protective sticker off the front sensor bar, the tape off the controllers
+and the sticker off the lenses, then hold the power button to switch it on.
+
+=== "Sealed box"
+
+    ![PICO 4 Ultra Enterprise, sealed](assets/pico4/unbox-box.jpg){ width="440" }
+
+=== "Front sticker"
+
+    ![Protective sticker on the front sensor bar](assets/pico4/unbox-film.png){ width="440" }
+
+=== "Sticker removed"
+
+    ![The headset with the sticker peeled off](assets/pico4/unbox-film-done.jpg){ width="440" }
+
+=== "Controller tape"
+
+    ![Tape holding the controllers](assets/pico4/unbox-controller-tape.png){ width="440" }
+
+=== "Lens sticker"
+
+    ![Protective sticker on the lenses](assets/pico4/unbox-lens-sticker.jpg){ width="440" }
 
 **2. Update the system** — **required on a new unit**: join a **WiFi network with internet
 access** and update to **5.15.5.U or later**.
