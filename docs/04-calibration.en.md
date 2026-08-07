@@ -75,9 +75,9 @@ One command, two steps, following the prompts:
 
 1. **Hold the gripper fully closed** → Enter. Latched as the encoder zero, then re-read to verify
    the residual (tolerance ±0.01 rad).
-2. **Open to the mechanical limit** → Enter. That angle is sampled and written **straight** to MCU
-   flash as the encoder max (there is no second confirmation — hold the pose before pressing
-   Enter), followed by a 10 Hz live readout so you can eyeball the result.
+2. **Open fully (against the mechanical limit)** → Enter. That angle is sampled and written
+   **straight** to MCU flash as the encoder max (there is no second confirmation — hold it open
+   before pressing Enter), followed by a 10 Hz live readout so you can eyeball the result.
 
 Output looks like:
 
@@ -106,10 +106,10 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
 A unit that was calibrated before also gets an `existing span: … — will be overwritten` line in
 the header.
 
-!!! warning "Get the pose right before pressing Enter"
-    The firmware latches the raw count at the instant it receives the command. The gripper must
-    **already** be in the target pose (fully closed for step 1, against the mechanical limit for
-    step 2) when you press Enter — moving it afterwards wastes the calibration.
+!!! warning "Hold it at the opening before pressing Enter"
+    The firmware latches the raw count at the instant it receives the command. The jaw must
+    **already** be at the target opening (fully closed for step 1, fully open for step 2) when you
+    press Enter — moving it afterwards wastes the calibration.
 
 !!! tip "Closed is always 0"
     The zero lives in firmware; there is **no `gripper_closed_rad` config**. `position_rad` keeps

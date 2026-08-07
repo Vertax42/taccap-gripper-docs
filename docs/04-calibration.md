@@ -68,8 +68,8 @@ python third_party/taccap-gripper/python/examples/calibrate.py right
 一条命令走完两步,按提示操作:
 
 1. **保持夹爪完全闭合** → 回车。锁存为编码器零点,随后复读校验残差(容差 ±0.01 rad)。
-2. **张开到机械极限** → 回车。采样该姿态的角度并**直接写入** MCU flash 作为 encoder max
-   (没有二次确认,按回车前请先摆好姿态),随后进入 10 Hz 实时读数便于目视核对。
+2. **完全张开(顶到机械极限)** → 回车。采样此时的角度并**直接写入** MCU flash 作为 encoder max
+   (没有二次确认,按回车前请先张到位),随后进入 10 Hz 实时读数便于目视核对。
 
 输出形如:
 
@@ -97,9 +97,9 @@ Step 2/2: open the gripper to its MECHANICAL LIMIT.
 
 若这台之前标过,抬头还会多一行 `existing span: … — will be overwritten`。
 
-!!! warning "先摆好姿态,再按 Enter"
-    固件在收到命令的瞬间锁存当时的原始计数。按 Enter 前夹爪必须**已经**在目标姿态
-    (第 1 步完全闭合、第 2 步顶到机械极限),中途再动就白标了。
+!!! warning "先夹到位,再按 Enter"
+    固件在收到命令的瞬间锁存当时的原始计数。按 Enter 前夹爪必须**已经**在目标开合位置
+    (第 1 步完全闭合、第 2 步完全张开),中途再动就白标了。
 
 !!! tip "闭合恒为 0"
     零点写在固件里,**没有 `gripper_closed_rad` 配置**。`position_rad` 保持输出原始弧度,
