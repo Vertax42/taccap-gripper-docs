@@ -112,10 +112,14 @@ Combines USB topology with the side rule:
 
 ### Pico4 Ultra Enterprise tracker — a different serial system
 
-Tracker serials look like `PC2310MLL3200496G`. **Take the digit before the trailing `G`: odd is
-left, even is right.** For `…496G` that is `6` — even, so right.
+Tracker serials look like `PC2310MLL3200496G`, **ending in the letter `G`**.
 
-The SN is read from the PC Service — see [Reading a tracker SN](#pico-tracker-sn).
+**The side is the digit in front of that `G`: odd is left, even is right.**
+
+In the serial above, the digit before `G` is `6` — even, so that tracker is on the **right**.
+
+The SN has to be read from the PC Service; it is not shown on the headset — see
+[Reading a tracker SN](#pico-tracker-sn).
 
 !!! note "Mis-burned / mis-installed hardware fails explicitly"
     Discovery **fails outright and names** the offending hub/serial when it meets a
