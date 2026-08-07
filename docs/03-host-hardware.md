@@ -303,7 +303,12 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
     扫出来的就是这枚追踪器的完整 SN,配对时可以直接核对,不用等装好了再去 PC Service 查。
     **装的时候按 SN 对应侧别**(单左双右,见 [3.3](#33)):**单数装左夹爪,双数装右夹爪**。
 
-    ![追踪器背面的二维码](assets/pico4/tracker-sn-qr.jpg){ width="440" }
+    | 扫这里 | 扫出来是这样 |
+    |---|---|
+    | ![追踪器背面的二维码](assets/pico4/tracker-sn-qr.jpg){ width="300" } | ![左追踪器的扫描结果](assets/pico4/tracker-sn-left.png){ width="320" }<br>`G` 前是 `1`,单数 → 装**左**夹爪<br><br>![右追踪器的扫描结果](assets/pico4/tracker-sn-right.png){ width="320" }<br>`G` 前是 `8`,双数 → 装**右**夹爪 |
+
+    红框圈出的六位数,就是配对后「**我的追踪器**」列表里显示的编号(如 `Tracker 150311`)——
+    列表里哪一项对应哪一枚,靠这六位数对上。
 
 1. 从 **资源库** 打开「**体感追踪器**」App,进入**配对界面**。
 2. **长按追踪器电源键约 6 秒**,直到指示灯**蓝红交替闪烁**——这是蓝牙配对状态
@@ -375,9 +380,27 @@ print(xrt.get_motion_tracker_serial_numbers())   # 例:['PC2310MLL3200496G', ...
 
 1. 在 Pico4 Ultra 企业版里打开「**体感追踪**」。
 2. 进入设置,追踪模式选「**独立追踪**」。
-3. 在 XTac-UMI XR 里,把 **PICO Motion Tracker** 的 `Mode` 选为 **`Object`**。
 
-![追踪模式:独立追踪](assets/pico4/tracker-standalone.png){ width="440" }
+=== "进设置找到「追踪模式」"
+
+    出厂默认是「**全身动捕**」——把追踪器戴在身上追人体姿态,不是我们要的。
+
+    ![设置 → 追踪模式](assets/pico4/tracker-mode1-entry.png){ width="480" }
+
+=== "选「独立追踪」"
+
+    「**独立追踪**」是把追踪器固定在物体上追物体的位姿——夹爪就属于这种用法。
+    选中后点「**确定**」。
+
+    ![追踪模式:选独立追踪并确定](assets/pico4/tracker-mode2-pick.png){ width="480" }
+
+=== "改完的样子"
+
+    「追踪模式」这一行应该显示「**独立追踪**」。
+
+    ![设置里追踪模式已是独立追踪](assets/pico4/tracker-mode3-done.png){ width="480" }
+
+改完后,在 XTac-UMI XR 里把 **PICO Motion Tracker** 的 `Mode` 选为 **`Object`**。
 
 追踪器由 XenseVR PC Service 按**序列号(SN)**识别;侧别按 SN 末尾字母 `G` 前一个数字单左双右自动匹配
 (见 [3.3](#33)),或用 `--robot.tracker_serial=<SN>` 直接钉住。

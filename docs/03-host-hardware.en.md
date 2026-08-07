@@ -337,7 +337,12 @@ PC Service will discover its SN.
     of checking against the PC Service afterwards. **Mount each tracker on the side its SN says**
     (odd-left / even-right, see [3.3](#33)): **odd on the left gripper, even on the right**.
 
-    ![The QR code on the back of the tracker](assets/pico4/tracker-sn-qr.jpg){ width="440" }
+    | Scan this | You get this |
+    |---|---|
+    | ![The QR code on the back of the tracker](assets/pico4/tracker-sn-qr.jpg){ width="300" } | ![Scan result, left tracker](assets/pico4/tracker-sn-left.png){ width="320" }<br>`1` before the `G` — odd → **left** gripper<br><br>![Scan result, right tracker](assets/pico4/tracker-sn-right.png){ width="320" }<br>`8` before the `G` — even → **right** gripper |
+
+    The six boxed digits are the number shown in the "**My trackers**" list after pairing (e.g.
+    `Tracker 150311`) — that is how you tell which list entry is which physical tracker.
 
 1. Open the **Motion Tracker** app from the **Library** and go to the **pairing screen**.
 2. **Hold the tracker's power button for about 6 seconds**, until the indicator **alternates blue
@@ -418,9 +423,28 @@ Once bound:
 
 1. Open "**Motion Tracking**" on the headset.
 2. In its settings, set the tracking mode to "**Standalone tracking**".
-3. In XTac-UMI XR, set the **PICO Motion Tracker** `Mode` to **`Object`**.
 
-![Tracking mode: standalone](assets/pico4/tracker-standalone.png){ width="440" }
+=== "Find \"Tracking mode\" in Settings"
+
+    It ships as "**Full-body motion capture**" — trackers worn on the body to follow a human
+    pose, which is not what we want.
+
+    ![Settings → Tracking mode](assets/pico4/tracker-mode1-entry.png){ width="480" }
+
+=== "Choose \"Standalone tracking\""
+
+    "**Standalone tracking**" fixes a tracker to an object and follows that object's pose — which
+    is what a gripper is. Select it and tap **Confirm**.
+
+    ![Tracking mode: pick standalone and confirm](assets/pico4/tracker-mode2-pick.png){ width="480" }
+
+=== "What it looks like afterwards"
+
+    The "Tracking mode" row should now read "**Standalone tracking**".
+
+    ![Settings showing tracking mode set to standalone](assets/pico4/tracker-mode3-done.png){ width="480" }
+
+Then, in XTac-UMI XR, set the **PICO Motion Tracker** `Mode` to **`Object`**.
 
 The XenseVR PC Service identifies trackers by **serial number (SN)**; the side is matched
 automatically from the digit before the trailing `G`, odd-left / even-right (see [3.3](#33)), or pinned
