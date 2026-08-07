@@ -354,7 +354,7 @@ It produces three groups of keys:
 
 ### Prerequisites
 
-1. **XenseVR PC Service ≥ v0.2.0** (amd64). v0.1.0 drops the `0x30` messages that carry camera
+1. **XenseVR PC Service ≥ v0.2.0** (amd64). Older versions do not forward the camera
    frames; arm64 hosts are currently pinned to v0.1.0, i.e. **no head camera there**. See
    [2.4 One-shot install](02-environment.md).
 2. **The headset app must be streaming.** The camera and the trackers **share one SDK

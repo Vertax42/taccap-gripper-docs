@@ -386,11 +386,10 @@ data carries an `sn` distinguishing the trackers.
 
 !!! note "The headset camera runs through this service too (needs v0.2.0)"
     The [headset camera](05-data-collection.md#57) is not a separate link: the headset sends each
-    eye's JPEG to the PC Service as an `0x30` custom message, the service forwards it verbatim to
-    the SDK, and `xensevr_pc_service_sdk` caches the newest frame per eye. So **the head camera
+    eye's frames to the PC Service, which forwards them to collection, and `xensevr_pc_service_sdk` caches the newest frame per eye. So **the head camera
     and the trackers share one service and one connection** — no service, neither works.
 
-    v0.1.0 drops `0x30`, so the head camera needs **v0.2.0** (amd64 only; see
+    Forwarding the frames needs **v0.2.0 or later** (amd64 only; see
     [2.4 One-shot install](02-environment.md) for arm64). The other way round, if you only use
     trackers, v0.2.0 behaves exactly like v0.1.0.
 

@@ -324,8 +324,8 @@ lerobot-record \
 
 ### 前置条件
 
-1. **XenseVR PC Service ≥ v0.2.0**(amd64)。v0.1.0 会丢弃承载相机帧的 `0x30` 消息;
-   arm64 主机目前固定在 v0.1.0,即**没有头显相机**。见 [2.4 一键安装](02-environment.md)。
+1. **XenseVR PC Service ≥ v0.2.0**(amd64)。更低版本不转发相机画面;arm64 主机目前固定在
+   v0.1.0,即**没有头显相机**。见 [2.4 一键安装](02-environment.md)。
 2. **头显 APP 正在推流**。相机和追踪器**共用同一条 SDK 连接**,所以头显必须已连上 PC Service
    (见 [3.5 启动 XenseVR PC Service](03-host-hardware.md#35))。反过来,关掉相机不会断开追踪器的
    连接,关掉追踪器也不会断开相机。

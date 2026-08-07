@@ -158,17 +158,13 @@ This step will:
     (override the URL with `$XENSEVR_DEB_URL`) and runs `sudo dpkg -i`. It is skipped when the
     same version is already installed.
 
-!!! warning "v0.2.0 is what makes the headset camera work"
-    v0.2.0 **forwards message type `0x30`** (video frame with timestamp) to SDK clients rather
-    than dropping it — that is the path the [headset camera](05-data-collection.md#57) frames
-    take. Tracking behaviour is identical to v0.1.0 (`0x30` was unused there, and an older
-    headset APK works unchanged against the new service), so **if you do not use the head camera,
-    this upgrade changes nothing for you**.
+!!! warning "Headset stereo and head pose need PC Service >= v0.2.0"
+    Only v0.2.0 and later forward the headset camera's frames, and both the
+    [stereo view and the head pose](05-data-collection.md#57) come down that path. Tracking is
+    unaffected — if you do not use the headset camera, the version makes no difference.
 
-    **arm64 hosts stay on v0.1.0.** v0.2.0 ships an amd64 asset only; `setup_env.sh` detects
-    arm64, pins to the newest release that has an arm64 build and says so — at the cost of no
-    head camera there. Build it yourself on an ARM64 host with the repository's
-    `RoboticsService/qt-gcc_aarch64.sh` if you need it.
+    **arm64 hosts do not get the feature**: v0.2.0 ships an amd64 asset only, and
+    `setup_env.sh` falls back to the older release on arm64 and says so.
 
 ## 2.5 Verify the install {#25}
 
