@@ -518,6 +518,15 @@ frame's origin and orientation are frozen**.
 Recorded poses land in a **gravity-aligned world frame**: **+X = straight ahead, +Y = left,
 +Z = up**.
 
+The picture below is that world frame — **the origin sits where the headset was at the moment of
+launch**, with **red = X (forward), green = Y (left), blue = Z (up)**:
+
+![The world frame frozen at the headset's position at launch: red X forward, green Y left, blue Z up](assets/pico4/world-frame-origin.png){ width="420" }
+
+The frame is drawn on the headset, but it only follows the headset for that one instant — once
+frozen it stays put in space, and **turning your head or walking around does not carry it with
+you**. Every `tcp.*` pose in the dataset is referenced to this fixed frame.
+
 !!! warning "Face straight towards the robot at launch"
     Facing straight ahead is what aligns world +X with the robot's forward direction (Y left, Z
     up). **Only the orientation matters** — where you stand (the origin) does not affect later
@@ -526,10 +535,6 @@ Recorded poses land in a **gravity-aligned world frame**: **+X = straight ahead,
 !!! warning "Do not restart XTac-UMI XR between episodes"
     A restart changes the origin and orientation for everything recorded afterwards, leaving poses
     inside one dataset referenced to different frames.
-
-- **Pico4 Ultra Enterprise's native frame**: left-handed (X right, Y up, Z inward), origin = the
-  headset position at launch.
-- **Recording frame**: collection remaps it to the world frame above (X forward, Y left, Z up).
 
 ## 3.5 Start the XenseVR PC Service {#35}
 
