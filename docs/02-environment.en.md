@@ -99,11 +99,6 @@ Submodules and the packages they install:
 | [`third_party/taccap-gripper`](https://github.com/Vertax42/TacCap-Gripper) | `xense.taccap` (XTac-UMI G1 tactile gripper SDK) |
 | [`third_party/XenseVR-PC-Service`](https://github.com/Vertax42/XenseVR-PC-Service) | `xensevr_pc_service_sdk` (Pico4 Ultra Enterprise tracker / headset camera) |
 
-!!! note "The Insight head-camera path is gone"
-    The head camera is now the Pico4 Ultra Enterprise headset's own stereo camera, sharing the
-    trackers' connection — see [5.7 Headset camera](05-data-collection.md#57). The `pyinsight`
-    and `XenseVR-RobotVision-PC` submodules have been removed from the main repository.
-
 !!! note "xensesdk is not a submodule"
     `xensesdk` is the visuotactile sensor SDK. `setup_env.sh --install` installs it
     automatically — there is no submodule to pull.
