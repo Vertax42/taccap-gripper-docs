@@ -1,4 +1,4 @@
-# 5. Data Collection
+# 5. Data preview and collection
 
 Corresponds to the reference manual's "SDK usage". This is the core chapter: collecting with
 `lerobot-record` and writing out a `LeRobotDataset`.
@@ -24,8 +24,7 @@ costs you nothing. Recording does cost something: a ruined episode has to be red
 what goes wrong (a camera stream that never came up, a tracker with no pose, `gripper.pos` not
 reaching 1.0, the two arms swapped) is obvious at a glance in the preview.
 
-Unlike [4.3 End-to-end smoke test](04-calibration.md#43), **everything stays enabled here** —
-the point is to confirm the whole chain is present.
+Run it with **everything enabled** — the point is to confirm the whole chain is present.
 
 ```bash
 lerobot-teleoperate \
@@ -49,8 +48,49 @@ Check each of these in Rerun:
 | The EE marker and trail in `/world` | Moves smoothly with the gripper; no jumps, no freezing — **keep the tracker in the headset's view**, since anything blocking it loses tracking |
 | Bimanual: the two trails | Independent, and each on the correct hand — not swapped |
 
-`Ctrl+C` once it all looks right, then record below. If you use the headset camera, set
-`--robot.enable_head_camera` to `true` here as well so you preview that too (see [§5.7](#57)).
+`Ctrl+C` once it all looks right, then record below.
+
+!!! note "Why `--robot.enable_head_camera` is spelled out"
+    It already defaults to `false`; writing it keeps the switch **visible in the command** — set
+    it to `true` and the headset's stereo frames and head pose come along for the preview and the
+    recording (see [5.7 Headset camera](#57)). Needs **PC Service ≥ v0.2.0**.
+
+!!! tip "Let it stop on its own, and print per-frame timing"
+    Add `--teleop_time_s=10` to exit automatically after ten seconds, and `--debug_timing=true`
+    to print sampling times and the camera count — handy when you would rather not sit on
+    `Ctrl+C`.
+
+### The `/world` 3D view in Rerun {#world-view}
+
+`--display_data=true` opens a `/world` 3D view: each gripper is drawn as a labelled ellipsoid
+plus an axis triad at its live **EEF TCP pose** (`tcp.*`), trailing a breadcrumb of where it has
+been.
+
+- The scene is declared `FLU` (X forward / Y left / Z up), so the viewer knows which axis is
+  "forward" and opens looking down +X. The world axes are labelled `+X forward / +Y left /
+  +Z up`, so the orientation stays readable after you rotate the view.
+- The breadcrumb keeps the last **90 samples (about 3 s at 30 fps)** and **fades with age** —
+  enough to see the stroke you just made without two grippers' trails tangling.
+- With the [headset camera](#57) on, the headset is drawn into the same `/world` as a smaller
+  **amber `HEAD` marker**, without a trail (the head moves constantly; a second breadcrumb would
+  bury the grippers'). Head pose and `tcp.*` share **one gravity-aligned world frame**, so where
+  the operator looked and what the hands did can be read together.
+- `--show_trajectory` is on by default; set it to `false` to turn it off. It is skipped
+  automatically when `--robot.enable_tracker=false`, since there is no pose to draw.
+
+!!! tip "A glance that confirms the marker is right"
+    Lay the gripper flat and look at the EE marker in `/world`: it should sit at the **two-finger
+    midpoint** with its axes **X forward / Y left / Z up**. If the position or the orientation is
+    off, the tracker is not seated properly or is on the wrong side.
+
+!!! note "The `tracker pose` tab in the scalar panel"
+    The `tracker pose` tab next to `tcp pose` is the **tracker's own raw pose**. It is there to
+    look at and **never reaches a dataset** — recorded poses are `tcp.*`.
+
+!!! note "How this differs from the standalone SDK example"
+    The markers and breadcrumbs look much like the SDK's own tracker example. The difference is
+    the frame: this flow uses the gravity-aligned world frame (X forward, Y left, Z up), while the
+    SDK example shows the raw Pico4 frame.
 
 ## 5.2 Recording with both grippers
 
@@ -225,7 +265,7 @@ lerobot-record \
     it does not matter which way you start out. The TCP is the two-finger midpoint, which does not
     move when the jaw opens and closes symmetrically, so it is independent of `gripper.pos`. To
     see it for yourself, lay the gripper flat and check that the EE marker in Rerun's `/world`
-    sits at the two-finger midpoint → [4.4 3D trajectory visualisation](04-calibration.md#44).
+    sits at the two-finger midpoint → [the `/world` 3D view](#world-view).
 
 !!! tip "The IMU is a reserved capability — the standard flow does not record it"
     The gripper has an IMU and the collection program supports recording it, but the **standard
@@ -396,7 +436,7 @@ measured skew**, so the condition is visible rather than silently recorded.
 `head_camera.*` is the **headset pose**, remapped into the **same gravity-aligned world frame as
 `tcp.*`** (the same Pico→world transform the tracker uses). Head and hands are therefore directly
 comparable and can be drawn in one 3D scene: with `--display_data=true`, the `/world` view gains
-an amber `HEAD` marker (see [4.4](04-calibration.md#44)).
+an amber `HEAD` marker (see [the `/world` 3D view](#world-view)).
 
 !!! note "The headset pose is both an observation and an action"
     `head_camera.*` is written to both `observation` and `action`, taking part in the

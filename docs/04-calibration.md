@@ -1,6 +1,7 @@
 # 4. 标定与自检
 
-对应参考手册的"测试网络连接"并扩展。正式录制前先完成夹爪标定,再逐项确认整条链路可用。
+对应参考手册的"测试网络连接"并扩展。本章做**一次性**的两件事:夹爪标定,和追踪器自检。
+整条链路是否凑齐,在开录前用[预览](05-data-collection.md#preview)确认。
 
 ## 4.1 夹爪标定(零点 + 行程) {#41}
 
@@ -182,97 +183,6 @@ python -m lerobot.robots.taccap_gripper.check_tracker --side right
     表现为 `ee` 的摆动幅度约为应有的两倍。
 
 四元数出现半球翻转(符号跳变)时,位姿读取内部已有连续性修正;**若仍看到跳变请报 bug**。
-
-## 4.3 端到端冒烟测试 {#43}
-
-使用当前实际支持的 `lerobot-teleoperate` 入口验证夹爪、触觉和腕相机数据流。该命令只读取并预览设备,
-**不会录制数据集**。为单独检查夹爪本体与相机,下面先关闭 Pico4 追踪器,运行 10 秒后自动退出。
-
-**单夹爪(以右侧为例):**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_tracker=false \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --teleop_time_s=10 \
-    --debug_timing=true
-```
-
-**双夹爪:**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_tracker=false \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --teleop_time_s=10 \
-    --debug_timing=true
-```
-
-命令能持续输出采样耗时与相机数量,且无设备发现、连接或读取异常,即表示基础数据流正常。
-
-!!! note "`--robot.enable_head_camera` 为什么写在这里"
-    它默认就是 `false`,显式写出来是为了让这个开关**在命令里可见**——改成 `true` 就会
-    连同头显双目画面与头显位姿一起录(见 [5.7 头显相机](05-data-collection.md#57))。
-    需要 **PC Service ≥ v0.2.0**。
-
-## 4.4 3D 轨迹可视化(Rerun) {#44}
-
-使用 `lerobot-teleoperate` 并开启 `--display_data=true`,即可实时预览全部观测和 3D 轨迹。
-
-**单夹爪(以右侧为例):**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true \
-    --show_trajectory=true
-```
-
-**双夹爪:**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true \
-    --show_trajectory=true
-```
-
-Rerun 查看器会多出一个 `/world` 3D 视图:夹爪以带标签的椭球 + 坐标三轴在其实时
-**EEF TCP 位姿**(`tcp.*`)处绘制,并拖出一条走过的轨迹面包屑。
-
-- 我们的位姿已在重力对齐世界系,场景声明为 `FLU`(X 前 / Y 左 / Z 上)——比只说明朝上轴的
-  `RIGHT_HAND_Z_UP` 更完整,查看器因此知道哪个轴是"前",初始视角会朝 +X。世界轴带
-  `+X forward / +Y left / +Z up` 标注,转动视角后仍读得出朝向。
-- 轨迹面包屑保留最近 **90 个采样点(30 fps 下约 3 秒)**,并且**越旧越淡**。够看清刚做完的
-  那一笔,又不至于两只夹爪的轨迹缠成一团。
-- 开了[头显相机](05-data-collection.md#57)时,头显也会画进同一个 `/world`——一个更小的
-  **琥珀色 `HEAD` 标记**,不带轨迹(头一直在动,再拖一条面包屑会把夹爪轨迹盖掉)。
-  头显位姿与 `tcp.*` 用的是**同一个重力对齐世界系**(同一套 Pico→world 重映射),
-  所以"人在看哪"和"手在做什么"可以直接放在一起读。
-- `--show_trajectory` 默认开启;设为 `false` 可关闭。当 `--robot.enable_tracker=false`
-  (无位姿可画)时会自动跳过。
-
-!!! tip "一眼确认标记画对了"
-    把夹爪平放,看 `/world` 里的 EE 标记:应落在**两指中点**,三轴呈 **X 前 / Y 左 / Z 上**。
-    位置或朝向对不上,说明追踪器没装到位或装反了侧别。
-
-!!! note "标量面板里的 `tracker pose`"
-    `tcp pose` 旁边那个 `tracker pose` 页签是**追踪器自身的原始位姿**,只用于查看,
-    **不会写进数据集**(数据集里的位姿是 `tcp.*`)。
-
-!!! note "与 SDK 独立示例的区别"
-    轨迹标记与面包屑的可视化形式和 SDK 自带的追踪器示例相似,区别在坐标系:正式采集
-    流程用的是重力对齐的世界系(X 前、Y 左、Z 上),SDK 示例显示的是 Pico4 的原始坐标系。
 
 标定与自检通过后,即可开始正式采集。
 

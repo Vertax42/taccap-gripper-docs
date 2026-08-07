@@ -629,4 +629,4 @@ flowchart LR
     Full procedure, how to confirm it took effect, and scope →
     [4.1 Gripper calibration (zero + travel span)](04-calibration.md#41)
 
-Next → [4. Calibration & Smoke Test](04-calibration.md)
+Next → [4. Calibration & self-check](04-calibration.md)

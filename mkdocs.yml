@@ -93,8 +93,8 @@ plugins:
             环境部署: Environment Setup
             主机与设备配置: Host & Device Setup
             软件使用: Software Usage
-            标定与自检: Calibration & Smoke Test
-            数据采集: Data Collection
+            标定与自检: Calibration & self-check
+            数据预览与采集: Data preview and collection
             采集规范与最佳实践: Best Practices
             数据介绍: Data
             数据集与示例: Dataset & Examples
@@ -169,7 +169,7 @@ nav:
       - 主机与设备配置: 03-host-hardware.md
   - 软件使用:
       - 标定与自检: 04-calibration.md
-      - 数据采集: 05-data-collection.md
+      - 数据预览与采集: 05-data-collection.md
       - 采集规范与最佳实践: best-practices.md
   - 数据介绍:
       - 数据集与示例: 06-dataset.md

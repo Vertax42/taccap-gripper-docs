@@ -125,7 +125,7 @@ flowchart LR
 
 !!! note "头显相机需要 `ffc94d53` 之后的版本"
     本手册中的[头显相机](05-data-collection.md#57)、Insight 链路移除、以及
-    [4.4](04-calibration.md#44) 里 Rerun 视图的改动,来自
+    [`/world` 3D 视图](05-data-collection.md#world-view)的改动,来自
     [PR #9](https://github.com/Vertax42/xense-taccap-lerobot/pull/9),已合入 `main`(`ffc94d53`)。
 
     checkout 停在更早的版本时:`--robot.enable_head_camera` 在单夹爪上还不存在,

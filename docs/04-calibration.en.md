@@ -1,7 +1,8 @@
-# 4. Calibration & Smoke Test
+# 4. Calibration & self-check
 
-Extends the reference manual's "test the network connection". Calibrate the gripper first, then
-work through the checks that confirm the whole chain is alive.
+Extends the reference manual's "test the network connection". This chapter covers the two
+**one-off** jobs: calibrating the gripper, and the tracker self-check. Whether the whole chain is
+present is confirmed with the [preview](05-data-collection.md#preview) just before recording.
 
 ## 4.1 Gripper calibration (zero + travel span) {#41}
 
@@ -207,107 +208,6 @@ Wave the gripper: `raw xyz` should move smoothly and the SN should match what yo
 
 If the quaternion flips hemisphere (sign jumps), the pose path already applies a continuity
 fix — **please file a bug if you still see jumps**.
-
-## 4.3 End-to-end smoke test {#43}
-
-Use the supported `lerobot-teleoperate` entry point to verify the gripper, tactile and wrist camera
-streams. This command only reads and previews devices — **it does not record a dataset**. To check
-the gripper and cameras on their own, the commands below disable the Pico4 tracker and exit after
-10 seconds.
-
-**Single gripper (right side shown):**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_tracker=false \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --teleop_time_s=10 \
-    --debug_timing=true
-```
-
-**Bimanual:**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_tracker=false \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --teleop_time_s=10 \
-    --debug_timing=true
-```
-
-Steady sample-timing output and camera counts, with no discovery, connection or read errors, means
-the basic data flow is healthy.
-
-!!! note "Why `--robot.enable_head_camera` is spelled out"
-    `false` is already the default; writing it keeps the switch **visible in the command**. Set it
-    to `true` to also record the headset's stereo view and the headset pose (see
-    [5.7 Headset camera](05-data-collection.md#57)). It needs **PC Service >= v0.2.0**.
-
-## 4.4 3D trajectory visualisation (Rerun) {#44}
-
-Run `lerobot-teleoperate` with `--display_data=true` to preview every observation plus the 3D
-trajectory live.
-
-**Single gripper (right side shown):**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true \
-    --show_trajectory=true
-```
-
-**Bimanual:**
-
-```bash
-lerobot-teleoperate \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true \
-    --show_trajectory=true
-```
-
-The Rerun viewer gains a `/world` 3D view: the gripper is drawn as a labelled ellipsoid plus an
-axis triad at its live **EEF TCP pose** (`tcp.*`), trailing a breadcrumb of where it has been.
-
-- Our poses are already in the gravity-aligned world frame, and the scene declares `FLU`
-  (X forward, Y left, Z up) — more complete than `RIGHT_HAND_Z_UP`, which only names the up axis,
-  so the viewer knows which way is *forward* and aims its initial camera down +X. The world axes
-  are labelled `+X forward` / `+Y left` / `+Z up`, so the orientation stays readable after you
-  orbit.
-- The breadcrumb keeps the last **90 samples (~3 s at 30 fps)** and **fades toward its oldest
-  end** — long enough to read the stroke you just made, short enough that two gripper trails do
-  not knot together.
-- With the [headset camera](05-data-collection.md#57) on, the headset is drawn in the same
-  `/world`: a smaller **amber `HEAD` marker**, with no trail (the head wanders continuously and
-  its breadcrumb would bury the gripper trails). The headset pose is in the **same
-  gravity-aligned world frame** as `tcp.*` — the same Pico→world remap is applied to both — so
-  where the operator was looking and what their hands were doing can be read against each other.
-- `--show_trajectory` is on by default; set it to `false` to drop that view. It is skipped
-  automatically when `--robot.enable_tracker=false`, since there is no pose to draw.
-
-!!! tip "A glance that confirms the marker is right"
-    Lay the gripper flat and look at the EE marker in `/world`: it should sit at the **two-finger
-    midpoint** with its axes **X forward / Y left / Z up**. If the position or the orientation is
-    off, the tracker is not seated properly or is on the wrong side.
-
-!!! note "The `tracker pose` tab in the scalar panel"
-    The `tracker pose` tab next to `tcp pose` is the **tracker's own raw pose**. It is there to
-    look at and **never reaches a dataset** — recorded poses are `tcp.*`.
-
-!!! note "How this differs from the standalone SDK example"
-    The markers and breadcrumbs look much like the SDK's own tracker example. The difference is
-    the frame: the collection flow uses the gravity-aligned world frame (X forward, Y left, Z up),
-    while the SDK example shows the raw Pico4 frame.
 
 Once calibration and the self-checks pass, you are ready to collect.
 
