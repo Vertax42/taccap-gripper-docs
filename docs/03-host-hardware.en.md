@@ -175,6 +175,10 @@ and the sticker off the lenses, then hold the power button to switch it on.
 
     ![Protective sticker on the lenses](assets/pico4/unbox-lens-sticker.jpg){ width="440" }
 
+=== "Power on"
+
+    ![Hold the power button to switch it on](assets/pico4/unbox-power-on.png){ width="440" }
+
 **2. Update the system** — **required on a new unit**: join a **WiFi network with internet
 access**, go to **Settings → System update** and hit **Download and install** to reach
 **5.15.5.U or later**. The package is about 1.9 GB, so allow time for the download and reboot.
@@ -194,7 +198,17 @@ access**, go to **Settings → System update** and hit **Download and install** 
 **1. Enable developer mode**: on the headset, Settings → About → tap "Software version" several
 times → "Developer options" appears on the left → turn on **USB debugging**.
 
-![Pico4 Ultra Enterprise developer mode / USB debugging](assets/pico4/devmode.png){ width="520" }
+=== "Open Settings"
+
+    ![Library → Settings](assets/pico4/devmode.png){ width="480" }
+
+=== "Tap the build number"
+
+    ![About → tap the software version repeatedly](assets/pico4/devmode-tap-version.png){ width="480" }
+
+=== "Developer options + USB debugging"
+
+    ![Developer options appears; turn on USB debugging](assets/pico4/devmode-usb-debug.png){ width="480" }
 
 **2. Disable sleep and screen-off**: with developer mode on, go to Enterprise Settings → System
 Settings → **Power policy** and set both to "**Never**", **in this order**:
@@ -204,9 +218,23 @@ Settings → **Power policy** and set both to "**Never**", **in this order**:
 3. While you are there, set **Battery and charging icon** to **Always show** — handy for
    checking the charge mid-session.
 
-![Power policy: screen-off and system sleep both Never, battery icon always shown](assets/pico4/power-policy.png){ width="520" }
+=== "Enterprise Settings"
 
-When you are done it should match the screenshot: **screen-off Never, system sleep Never, battery
+    ![Settings → Enterprise Settings](assets/pico4/power-enterprise-settings.jpeg){ width="480" }
+
+=== "System Settings → Power policy"
+
+    ![Enterprise Settings → System Settings → Power policy](assets/pico4/power-policy-entry.jpeg){ width="480" }
+
+=== "Set both to Never"
+
+    ![Screen-off and system sleep both set to Never](assets/pico4/power-sleep-screenoff.jpeg){ width="480" }
+
+=== "The finished state"
+
+    ![Power policy: screen-off and system sleep both Never, battery icon always shown](assets/pico4/power-policy.png){ width="480" }
+
+When you are done it should match the last shot: **screen-off Never, system sleep Never, battery
 icon always shown**.
 
 !!! warning "The order matters"
