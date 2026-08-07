@@ -230,12 +230,12 @@ Settings → **Power policy** and set both to "**Never**", **in this order**:
 
     ![Screen-off and system sleep both set to Never](assets/pico4/power-sleep-screenoff.jpeg){ width="480" }
 
-=== "The finished state"
+=== "Final settings"
 
     ![Power policy: screen-off and system sleep both Never, battery icon always shown](assets/pico4/power-policy.png){ width="480" }
 
-When you are done it should match the last shot: **screen-off Never, system sleep Never, battery
-icon always shown**.
+When you are done it should match "**Final settings**": **screen-off Never, system sleep Never,
+battery icon always shown**.
 
 !!! warning "The order matters"
     The screen-off timeout is bounded by the system sleep timeout. Set screen-off first, while
