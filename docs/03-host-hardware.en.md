@@ -231,12 +231,12 @@ be turned off — "don't take the headset off" is not a workaround.
     What this section sets is stored on the headset and survives power cycles. A unit configured at
     the factory needs none of it again — unless it is factory-reset or swapped.
 
-**1. Copy the apk**: connect the headset to the PC over USB and copy `XTac-UMI-XR-0.1.0.apk` into
+**1. Copy the apk**: connect the headset to the PC over USB and copy `XTac-UMI-XR-0.1.X.apk` into
 the headset's `Download/` directory.
 
-![Copying the apk to Download](assets/pico4/copy-apk.png){ width="520" }
+![The apk copied into the Pico's Download folder, seen from the PC](assets/pico4/copy-apk.jpg){ width="560" }
 
-**2. Install**: on the headset, File Manager → Download → `XTac-UMI-XR-0.1.0.apk` → Install → Done. It appears on the headset as **XTac-UMI XR**.
+**2. Install**: on the headset, File Manager → Download → `XTac-UMI-XR-0.1.X.apk` → Install → Done. It appears on the headset as **XTac-UMI XR**.
 
 ![Installing XTac-UMI XR](assets/pico4/install-apk.png){ width="520" }
 
