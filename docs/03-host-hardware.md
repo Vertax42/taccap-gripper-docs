@@ -278,12 +278,14 @@ Pico4 Ultra 企业版配套的**独立运动追踪器**装在夹爪顶部,提供
 
 1. 在 Pico4 Ultra 企业版内打开 设置 → 开发者选项 → 打开「USB 调试」→「USB 连接」选择「**传输文件**」。
    **每次拔插 USB 后都要回来确认这一项**——它会掉回默认值。选不了就重启 Pico 再试。
-2. 打开 **XTac-UMI XR** → 勾选 **"shared network (connect USB first)"** → 等待 Pico4 Ultra 企业版为
-   PC 端分配 IP → 输入 **PC Service 的 IP** 连接。
-3. 电脑端启动服务(见 [§3.5](#35)):`runService.sh`。
+2. **电脑端先启动服务**(见 [§3.5](#35)):`runService.sh`。
+3. 打开 **XTac-UMI XR**,等状态变成「**已连接**」(见 [打开 App 后的界面](#pico-toolkit-ui))。
 
-走 **WiFi** 时不用勾 `shared network`(那一项是给 USB 共享网络用的):两端连上同一网络后,
-在同一处填 **PC Service 的 IP** 即可,第 3 步相同。
+走 **WiFi** 时把头显和数采电脑接进**同一个网络**,其余相同。
+
+!!! warning "服务要在打开 APP 之前起来"
+    APP 是去连主机上的 XenseVR PC Service 的,**服务没起来,APP 只会停在「未连接」**。
+    先 `runService.sh`,再打开 APP。
 
 !!! danger "走有线时,关掉数采电脑的 WiFi"
     有线共享网络会与电脑上的**其他网络(尤其 WiFi)冲突**(路由 / 网卡抢占),导致追踪器
@@ -513,19 +515,23 @@ XenseVR PC Service。
 1. 将 XTac-UMI G1 插入主机(USB)。
 2. 接好 Pico4 Ultra 企业版的**有线共享网络**,并**关闭数采电脑的 WiFi**(见 [3.4 网络连接](#pico-network))。
 3. 开启 Pico4 Ultra 企业版,**短按**追踪器电源键至**蓝灯亮起**(首次使用需先[绑定](#pico-tracker-bind))。
-4. **面朝机器人正前方**,启动 XTac-UMI XR APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame)),
+4. 启动主机的 XenseVR PC Service(`runService.sh`)。
+5. **面朝机器人正前方**,启动 XTac-UMI XR APP(**冻结世界系原点与方向**,见 [坐标系](#pico-frame)),
    并确认 APP 的[状态显示「已连接」](#pico-toolkit-ui)。
-5. 启动主机的 XenseVR PC Service(`runService.sh`)。
 6. 运行标定 / 自检 / 录制脚本。
 
 ```mermaid
 flowchart LR
     A[插入夹爪 USB] --> N[接 Pico4 Ultra 企业版<br/>有线网络并关闭 WiFi]
     N --> B[开启 Pico4 Ultra 企业版<br/>配对追踪器]
-    B --> C[启动 XTac-UMI XR<br/>冻结原点]
-    C --> D[启动 XenseVR PC Service]
-    D --> E[跑标定/录制]
+    B --> D[启动 XenseVR PC Service]
+    D --> C[启动 XTac-UMI XR<br/>冻结原点、显示已连接]
+    C --> E[跑标定/录制]
 ```
+
+!!! warning "第 4 步必须在第 5 步之前"
+    APP 去连的就是主机上的这个服务。**服务没起来,APP 只会停在「未连接」**,
+    这时重启 APP 去重连还会把世界系原点重设一次。
 
 !!! warning "主夹爪没标定的话,采集程序会拒绝连接"
     数据集里的 `gripper.pos` 是归一化开度(`0.0` 闭合 / `1.0` 张开),这两个端点来自写在

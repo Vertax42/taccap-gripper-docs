@@ -29,12 +29,15 @@ then come back.
 
 ```mermaid
 flowchart LR
-    A[Plug in gripper USB] --> N[Connect Pico4 Ultra Enterprise<br/>wired network, turn WiFi off] --> B[Power on Pico4 Ultra Enterprise<br/>pair the tracker] --> C[Face the robot, launch<br/>XTac-UMI XR] --> D[Start XenseVR PC Service]
+    A[Plug in gripper USB] --> N[Connect Pico4 Ultra Enterprise<br/>wired network, turn WiFi off] --> B[Power on Pico4 Ultra Enterprise<br/>pair the tracker] --> D[Start XenseVR PC Service] --> C[Face the robot, launch<br/>XTac-UMI XR]
 ```
 
 ```bash
-/opt/apps/roboticsservice/runService.sh    # start the XenseVR PC Service
+/opt/apps/roboticsservice/runService.sh    # start it before opening the app
 ```
+
+!!! warning "Service first, then the app"
+    The app connects to this service. With it down, the app just sits on "Not connected".
 
 !!! danger "On the wired link, turn the host's WiFi off"
     The Pico4 Ultra Enterprise uses a **wired shared network**. Host WiFi conflicts with it and

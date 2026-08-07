@@ -24,12 +24,15 @@
 
 ```mermaid
 flowchart LR
-    A[插夹爪 USB] --> N[接 Pico4 Ultra 企业版<br/>有线网络并关闭 WiFi] --> B[开启 Pico4 Ultra 企业版<br/>配对追踪器] --> C[面朝机器人启动<br/>XTac-UMI XR] --> D[启动 XenseVR PC Service]
+    A[插夹爪 USB] --> N[接 Pico4 Ultra 企业版<br/>有线网络并关闭 WiFi] --> B[开启 Pico4 Ultra 企业版<br/>配对追踪器] --> D[启动 XenseVR PC Service] --> C[面朝机器人启动<br/>XTac-UMI XR]
 ```
 
 ```bash
-/opt/apps/roboticsservice/runService.sh    # 启动 XenseVR PC Service
+/opt/apps/roboticsservice/runService.sh    # 启动 XenseVR PC Service(要在打开 APP 之前)
 ```
+
+!!! warning "服务先起,再打开 APP"
+    APP 去连的就是这个服务。服务没起来,APP 只会停在「未连接」。
 
 !!! danger "走有线时关闭电脑 WiFi"
     **有线共享网络**会与电脑 WiFi 冲突,导致追踪不稳 / 连不上。采集期间关闭数采电脑 WiFi。

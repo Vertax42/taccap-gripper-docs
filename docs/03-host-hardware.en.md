@@ -307,12 +307,16 @@ work**:
 1. On the headset: Settings → Developer options → enable "USB debugging" → set "USB connection"
    to "**File transfer**". **Re-check this after every USB re-plug** — it reverts to the default.
    If you cannot select it, reboot the Pico and try again.
-2. Open **XTac-UMI XR** → tick **"shared network (connect USB first)"** → wait for the headset
-   to assign the PC an IP → enter the **PC Service IP** to connect.
-3. Start the service on the PC (see [§3.5](#35)): `runService.sh`.
+2. **Start the service on the PC first** (see [§3.5](#35)): `runService.sh`.
+3. Open **XTac-UMI XR** and wait for the status to read "**Connected**" (see
+   [the app's screen](#pico-toolkit-ui)).
 
-Over **WiFi**, leave `shared network` unticked — it is there for the USB link — put both ends on
-the same network and enter the **PC Service IP** in the same field. Step 3 is unchanged.
+Over **WiFi**, put the headset and the collection PC on the **same network**; everything else is
+the same.
+
+!!! warning "The service has to be up before you open the app"
+    The app connects to the XenseVR PC Service on the host. **With the service down, the app just
+    sits on "Not connected".** Run `runService.sh` first, then open the app.
 
 !!! danger "On the wired link, turn the collection PC's WiFi off"
     The wired shared network **conflicts with other networks on the PC — WiFi above all**
@@ -575,20 +579,24 @@ data carries an `sn` distinguishing the trackers.
    (see [3.4 Network connection](#pico-network)).
 3. Power on the headset, and **short-press** the tracker's power button until the **blue light comes on**
    (first use needs [binding](#pico-tracker-bind) first).
-4. **Facing straight towards the robot**, launch the XTac-UMI XR app (this **freezes the world
+4. Start the host's XenseVR PC Service (`runService.sh`).
+5. **Facing straight towards the robot**, launch the XTac-UMI XR app (this **freezes the world
    origin and orientation** — see [frames](#pico-frame)), and check that its
    [status reads "Connected"](#pico-toolkit-ui).
-5. Start the host's XenseVR PC Service (`runService.sh`).
 6. Run the calibration / self-check / recording scripts.
 
 ```mermaid
 flowchart LR
     A[Plug in gripper USB] --> N[Connect Pico4 Ultra Enterprise<br/>wired network, WiFi off]
     N --> B[Power on Pico4 Ultra Enterprise<br/>pair the tracker]
-    B --> C[Launch XTac-UMI XR<br/>freeze the origin]
-    C --> D[Start XenseVR PC Service]
-    D --> E[Run calibration / recording]
+    B --> D[Start XenseVR PC Service]
+    D --> C[Launch XTac-UMI XR<br/>freeze origin, shows Connected]
+    C --> E[Run calibration / recording]
 ```
+
+!!! warning "Step 4 has to come before step 5"
+    The app connects to that service. **With it down, the app sits on "Not connected"** — and
+    restarting the app to retry resets the world origin all over again.
 
 !!! warning "An uncalibrated leader is refused at connect"
     `gripper.pos` in the dataset is a normalised opening (`0.0` closed / `1.0` open), and those two
