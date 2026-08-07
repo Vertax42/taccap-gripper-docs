@@ -31,8 +31,9 @@ flowchart LR
 /opt/apps/roboticsservice/runService.sh    # 启动 XenseVR PC Service
 ```
 
-!!! danger "数采时关闭电脑 WiFi"
-    Pico4 Ultra 企业版走**有线共享网络**,电脑 WiFi 会与之冲突导致追踪不稳/连不上。数采期间关闭数采电脑 WiFi。
+!!! danger "走有线时关闭电脑 WiFi"
+    **有线共享网络**会与电脑 WiFi 冲突,导致追踪不稳 / 连不上。采集期间关闭数采电脑 WiFi。
+    头显也支持 WiFi 接入,但**正式采集建议走有线**,见 [3.4 网络连接](03-host-hardware.md#pico-network)。
     见 [3.4 网络连接](03-host-hardware.md#pico-network)。
 
 !!! warning "采集全程不要重启 XTac-UMI XR"

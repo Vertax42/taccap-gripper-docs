@@ -242,16 +242,21 @@ the headset's `Download/` directory.
 
 ### Network connection (important) {#pico-network}
 
-The headset joins the collection PC over a **wired USB shared network**, and tracking data reaches
-the XenseVR PC Service through it.
+Tracking data has to reach the XenseVR PC Service on the collection PC. **Both wired and wireless
+work**:
 
-!!! danger "Turn the collection PC's WiFi off while collecting"
-    The headset's wired shared network **conflicts with other networks on the PC — WiFi above
-    all** (routing and interface contention), leaving the tracker unreachable or its pose
-    unstable. **Turn WiFi off on the collection PC for the whole session**, keeping only the
-    headset's wired shared network.
+| Link | How |
+|---|---|
+| **Wired USB shared network** (recommended) | Type-C straight to the collection PC; the headset assigns it an IP |
+| WiFi | Headset and collection PC on the **same network**, no cable |
 
-Steps:
+!!! tip "Prefer the wired link for collection"
+    **In a busy WiFi environment — congested channels, interference — the wireless link suffers**,
+    showing up as a stuttering or jittery pose, or dropped data, none of which is easy to tell
+    apart from other faults. The wired shared network is steadier and is what to use for real
+    collection; wireless suits quick checks or setups where a cable is impractical.
+
+**Wired setup:**
 
 1. On the headset: Settings → Developer options → enable "USB debugging" → set "USB connection"
    to "**File transfer**". **Re-check this after every USB re-plug** — it reverts to the default.
@@ -259,6 +264,15 @@ Steps:
 2. Open **XTac-UMI XR** → tick **"shared network (connect USB first)"** → wait for the headset
    to assign the PC an IP → enter the **PC Service IP** to connect.
 3. Start the service on the PC (see [§3.5](#35)): `runService.sh`.
+
+Over **WiFi**, leave `shared network` unticked — it is there for the USB link — put both ends on
+the same network and enter the **PC Service IP** in the same field. Step 3 is unchanged.
+
+!!! danger "On the wired link, turn the collection PC's WiFi off"
+    The wired shared network **conflicts with other networks on the PC — WiFi above all**
+    (routing and interface contention), leaving the tracker unreachable or its pose unstable.
+    **If you are on the cable, turn the PC's WiFi off**, keeping only the headset's shared
+    network.
 
 ![USB connection set to file transfer](assets/pico4/usb-shared-network.jpg){ width="520" }
 

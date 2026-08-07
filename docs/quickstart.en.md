@@ -36,7 +36,7 @@ flowchart LR
 /opt/apps/roboticsservice/runService.sh    # start the XenseVR PC Service
 ```
 
-!!! danger "Turn the host's WiFi off while collecting"
+!!! danger "On the wired link, turn the host's WiFi off"
     The Pico4 Ultra Enterprise uses a **wired shared network**. Host WiFi conflicts with it and
     makes tracking unstable or unreachable. Turn WiFi off on the collection host for the whole
     session. See [3.4 Network](03-host-hardware.md#pico-network).
