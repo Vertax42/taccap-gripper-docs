@@ -296,21 +296,14 @@ axis triad at its live **EEF TCP pose** (`tcp.*`), trailing a breadcrumb of wher
 - `--show_trajectory` is on by default; set it to `false` to drop that view. It is skipped
   automatically when `--robot.enable_tracker=false`, since there is no pose to draw.
 
-!!! note "The TRACKER frame and its dashed link are gone"
-    Earlier versions also drew a smaller, dimmer tracker frame beside the EE frame, joined by a
-    dashed line labelled with its length in mm. That was **scaffolding for verifying the mount
-    transform**; the transform was checked on hardware on 2026-08-02 and is correct, so all it
-    did afterwards was clutter the EE frame.
+!!! tip "A glance that confirms the marker is right"
+    Lay the gripper flat and look at the EE marker in `/world`: it should sit at the **two-finger
+    midpoint** with its axes **X forward / Y left / Z up**. If the position or the orientation is
+    off, the tracker is not seated properly or is on the wrong side.
 
-    The tracker pose is still published as **display-only** `tracker.*` keys — absent from
-    `observation_features`, so it never reaches a dataset — and the scalar panel still has a
-    `tracker pose` tab next to `tcp pose`, which is where to read the raw numbers if the
-    transform is ever in question again.
-
-    Checking the mount now comes down to **one row**: with the gripper lying flat, the EE marker
-    should sit at the **two-finger midpoint**, axes X forward / Y left / Z up. That is the row
-    that matters — a distance check alone proves nothing, since both settings put the EE the
-    right 195 mm from the tracker, just 51° apart.
+!!! note "The `tracker pose` tab in the scalar panel"
+    The `tracker pose` tab next to `tcp pose` is the **tracker's own raw pose**. It is there to
+    look at and **never reaches a dataset** — recorded poses are `tcp.*`.
 
 !!! note "How this differs from the standalone SDK example"
     The markers and breadcrumbs look much like the SDK's own tracker example. The difference is
