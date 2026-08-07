@@ -99,7 +99,7 @@ Every device is **auto-discovered by serial number + USB topology** and assigned
 ### Side rule (odd-left / even-right)
 
 The **last digit** of the 4-digit sequence: **odd → left, even → right**. This governs gripper and
-camera side, and the tactile *finger*.
+camera side, and which of a gripper's **two fingertip tactile sensors** is which.
 
 ### Tactile left/right → `{side}_tactile_{left,right}`
 
@@ -108,7 +108,7 @@ Combines USB topology with the side rule:
 - **Which gripper (side)**: the two GSPS sensors sharing a gripper's **USB hub** are that
   gripper's pair. That gripper's side is read from its **firmware SN** (the side reported by
   `scan_grippers()`) — **not** the CH343 `mcu_serial`. So: hub → gripper → side.
-- **Which finger (left/right)**: the **last digit** of the GSPS serial (odd-left / even-right).
+- **Which fingertip tactile sensor (left/right)**: the **last digit** of the GSPS serial (odd-left / even-right).
 
 ### Pico4 Ultra Enterprise tracker — a different serial system
 
@@ -119,7 +119,7 @@ headset — see [Reading a tracker SN](#pico-tracker-sn).
 
 !!! note "Mis-burned / mis-installed hardware fails explicitly"
     Discovery **fails outright and names** the offending hub/serial when it meets a
-    non-conforming serial, the wrong count on a side, two sensors mapping to the same finger, two
+    non-conforming serial, the wrong count on a side, two fingertip sensors mapping to the same side, two
     grippers claiming the same tactile side, or a tactile hub with no matching gripper — so the
     physical rig and the fields in your data cannot silently drift apart.
 
