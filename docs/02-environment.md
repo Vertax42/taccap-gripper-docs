@@ -21,125 +21,32 @@
 
 有两条路径,装出来的采集环境是同一套,选一条走完即可。
 
-| | **Docker 交付镜像** | **conda 源码安装** |
+| | **conda 源码安装** | **Docker 交付镜像** |
 |---|---|---|
-| 拿到的东西 | 一个打包好的交付目录,跑一个脚本 | 源码仓库,自己建环境 |
-| 耗时 | 十几分钟(主要在导入镜像) | 较长,要编译三个硬件 SDK |
-| 架构 | **仅 amd64** | amd64 / arm64 |
-| NVIDIA GPU | **必需**,驱动 ≥ 570.144 | 可选(没有 GPU 也能采) |
-| 环境隔离 | 装在容器里,不污染主机 | 装在主机的 conda 环境里 |
-| 改代码 | 不方便 | 方便 |
-| 步骤 | [Docker 交付镜像](#docker) | 下面 2.1 – 2.5 |
+| 拿到的东西 | 源码仓库,自己建环境 | 一个打包好的交付目录,跑一个脚本 |
+| 耗时 | 较长,要编译三个硬件 SDK | 十几分钟(主要在导入镜像) |
+| 架构 | amd64 / arm64 | **仅 amd64** |
+| NVIDIA GPU | 可选(没有 GPU 也能采) | **必需**,驱动 ≥ 570.144 |
+| 环境隔离 | 装在主机的 conda 环境里 | 装在容器里,不污染主机 |
+| 改代码 | 方便 | 不方便 |
+| 步骤 | 下面 2.1 – 2.5 | [Docker 交付镜像](#docker) |
 
-**没有特殊要求就走 Docker**:主机上只需要 NVIDIA 驱动,其余依赖由脚本装好。
-需要改采集程序、或者主机是 arm64 / 没有 NVIDIA GPU,走 conda。
+**要改采集程序、或者主机是 arm64 / 没有 NVIDIA GPU,走 conda**;想省事、机器满足 amd64 +
+NVIDIA 驱动,走 Docker。
 
-## Docker 交付镜像 {#docker}
+!!! warning "两条路径都需要能访问外网"
+    安装过程要从网上取东西——conda 要拉 conda-forge 与 PyPI 包、克隆 GitHub 仓库与子模块、
+    下载 XenseVR PC Service 的 `.deb`;Docker 要装 Docker Engine 与 NVIDIA Container Toolkit。
+    **离线机器两条都走不通。**
 
-镜像里已经包含完整的 `xense-taccap` 环境、CUDA 用户态库、采集程序和三个硬件 SDK
-(XenseSDK、TacCap-Gripper、Pico4 绑定),容器启动时还会自动拉起 XenseVR PC Service。
-
-!!! warning "容器以特权模式运行"
-    为了支持采集过程中热插拔触觉传感器、腕相机、夹爪串口和 Pico4,容器使用特权模式
-    并共享主机网络。**只在你信任的采集主机上运行。**
-
-### 主机要求
-
-- Ubuntu 22.04 / 24.04,**amd64**
-- **NVIDIA 驱动 ≥ 570.144** —— `nvidia-smi --query-gpu=driver_version --format=csv,noheader` 可查
-
-安装脚本**不会替你装或升级显卡驱动**(涉及显卡型号、Secure Boot 和重启),驱动不满足
-会直接停下来提示。Docker Engine、Compose 插件和 NVIDIA Container Toolkit 缺了则由脚本自动装。
-
-### 一键安装
-
-把交付目录整个拷到采集主机,用**普通用户**(不要用 root)执行:
-
-```bash
-cd xense-taccap-lerobot-<版本>-linux-amd64
-./install_customer.sh
-```
-
-脚本依次完成:检查系统与显卡驱动 → 按需安装 Docker 与 NVIDIA Container Toolkit →
-安装夹爪串口的 udev 规则(即 [3.2](03-host-hardware.md#32) 的 ModemManager 屏蔽规则)→
-校验镜像 SHA256 并导入 → 跑一次 PyTorch CUDA 冒烟测试。
-
-!!! tip "需要走代理时"
-    ```bash
-    XENSE_PROXY_URL=http://127.0.0.1:7897 ./install_customer.sh
-    ```
-
-### 安装后的主机设置
-
-让当前用户立刻拿到 Docker 权限:
-
-```bash
-sudo systemctl enable --now docker
-sudo usermod -aG docker "$USER"
-newgrp docker        # 或者注销重登
-docker images
-```
-
-!!! warning "`docker` 组成员权限接近 root"
-    只把需要采集的用户加进去,不要图省事把所有本地用户都加上。
-
-要在容器里显示 Rerun 窗口,还需由主机当前**图形桌面用户**授权一次:
-
-```bash
-xhost +si:localuser:root
-# 采集结束后可撤销
-xhost -si:localuser:root
-```
-
-### 进入容器与验证
-
-```bash
-docker compose run --rm xense-taccap
-```
-
-在容器里逐条确认——四个 import 全过、GPU 可见:
-
-```bash
-python -c 'import torch; print(torch.__version__, torch.cuda.is_available())'
-python -c 'import xensesdk; print("xensesdk ->", xensesdk.__file__)'
-python -c 'import xense.taccap; print("taccap ->", xense.taccap.__file__)'
-python -c 'import xensevr_pc_service_sdk; print("pico4 ->", xensevr_pc_service_sdk.__file__)'
-```
-
-再确认设备能被发现:
-
-```bash
-lerobot-find-cameras
-lerobot-info
-```
-
-不进交互 shell 也可以直接跑一条命令:
-
-```bash
-docker compose run --rm xense-taccap lerobot-info
-```
-
-!!! note "数据不会随容器删除而丢失"
-    数据集根目录在容器里是 `/data/lerobot`,连同 XenseSDK 的传感器配置缓存、
-    Hugging Face 与 Torch 缓存都存在 Docker volume 里,`--rm` 删掉临时容器不影响它们。
-    查看数据:`docker compose run --rm xense-taccap bash -lc 'ls -la /data'`。
-
-!!! tip "只处理数据、不接 Pico4 时"
-    容器默认会启动 XenseVR PC Service。用不到追踪器时可以关掉:
-
-    ```bash
-    START_XENSEVR_SERVICE=0 docker compose run --rm xense-taccap
-    ```
-
-装完就可以跳到 [3. 主机与硬件配置](03-host-hardware.md) —— 串口权限和 Pico4 配置仍要在主机上做。
-
----
+    在受限网络里,给终端配好代理再开始(Docker 那条脚本支持 `XENSE_PROXY_URL`,见
+    [一键安装](#docker))。
 
 以下 2.1 – 2.5 是 **conda 源码安装**这条路径。
 
-!!! info "走 Docker 的话本节到 2.5 可以整段跳过"
-    镜像里已经装好了 Mamba 环境、采集程序和三个硬件 SDK,不需要再克隆仓库、建环境或跑
-    `setup_env.sh`。
+!!! info "走 Docker 的话,2.1 – 2.5 整段跳过"
+    镜像里已经装好了 Mamba 环境、采集程序和三个硬件 SDK,不需要克隆仓库、建环境或跑
+    `setup_env.sh`——直接看后面的 [Docker 交付镜像](#docker)。
 
 !!! info "总览"
     四步:装 Mamba → 克隆仓库(含子模块)→ 建环境 → `setup_env.sh --install` → 验证。
@@ -278,6 +185,105 @@ python -c 'import av; print("PyAV OK ->", av.__version__)'
 !!! tip "需要系统 ffmpeg?"
     若你需要带 `libsvtav1` 的系统 ffmpeg,请单独安装(apt 或官方静态构建);
     当前 0.5.1 定制分支的默认编码路径不依赖它。
+
+---
+
+## Docker 交付镜像 {#docker}
+
+镜像里已经包含完整的 `xense-taccap` 环境、CUDA 用户态库、采集程序和三个硬件 SDK
+(XenseSDK、TacCap-Gripper、Pico4 绑定),容器启动时还会自动拉起 XenseVR PC Service。
+
+!!! warning "容器以特权模式运行"
+    为了支持采集过程中热插拔触觉传感器、腕相机、夹爪串口和 Pico4,容器使用特权模式
+    并共享主机网络。**只在你信任的采集主机上运行。**
+
+### 主机要求
+
+- Ubuntu 22.04 / 24.04,**amd64**
+- **NVIDIA 驱动 ≥ 570.144** —— `nvidia-smi --query-gpu=driver_version --format=csv,noheader` 可查
+
+安装脚本**不会替你装或升级显卡驱动**(涉及显卡型号、Secure Boot 和重启),驱动不满足
+会直接停下来提示。Docker Engine、Compose 插件和 NVIDIA Container Toolkit 缺了则由脚本自动装。
+
+### 一键安装
+
+把交付目录整个拷到采集主机,用**普通用户**(不要用 root)执行:
+
+```bash
+cd xense-taccap-lerobot-<版本>-linux-amd64
+./install_customer.sh
+```
+
+脚本依次完成:检查系统与显卡驱动 → 按需安装 Docker 与 NVIDIA Container Toolkit →
+安装夹爪串口的 udev 规则(即 [3.2](03-host-hardware.md#32) 的 ModemManager 屏蔽规则)→
+校验镜像 SHA256 并导入 → 跑一次 PyTorch CUDA 冒烟测试。
+
+!!! tip "需要走代理时"
+    ```bash
+    XENSE_PROXY_URL=http://127.0.0.1:7897 ./install_customer.sh
+    ```
+
+### 安装后的主机设置
+
+让当前用户立刻拿到 Docker 权限:
+
+```bash
+sudo systemctl enable --now docker
+sudo usermod -aG docker "$USER"
+newgrp docker        # 或者注销重登
+docker images
+```
+
+!!! warning "`docker` 组成员权限接近 root"
+    只把需要采集的用户加进去,不要图省事把所有本地用户都加上。
+
+要在容器里显示 Rerun 窗口,还需由主机当前**图形桌面用户**授权一次:
+
+```bash
+xhost +si:localuser:root
+# 采集结束后可撤销
+xhost -si:localuser:root
+```
+
+### 进入容器与验证
+
+```bash
+docker compose run --rm xense-taccap
+```
+
+在容器里逐条确认——四个 import 全过、GPU 可见:
+
+```bash
+python -c 'import torch; print(torch.__version__, torch.cuda.is_available())'
+python -c 'import xensesdk; print("xensesdk ->", xensesdk.__file__)'
+python -c 'import xense.taccap; print("taccap ->", xense.taccap.__file__)'
+python -c 'import xensevr_pc_service_sdk; print("pico4 ->", xensevr_pc_service_sdk.__file__)'
+```
+
+再确认设备能被发现:
+
+```bash
+lerobot-find-cameras
+lerobot-info
+```
+
+不进交互 shell 也可以直接跑一条命令:
+
+```bash
+docker compose run --rm xense-taccap lerobot-info
+```
+
+!!! note "数据不会随容器删除而丢失"
+    数据集根目录在容器里是 `/data/lerobot`,连同 XenseSDK 的传感器配置缓存、
+    Hugging Face 与 Torch 缓存都存在 Docker volume 里,`--rm` 删掉临时容器不影响它们。
+    查看数据:`docker compose run --rm xense-taccap bash -lc 'ls -la /data'`。
+
+!!! tip "只处理数据、不接 Pico4 时"
+    容器默认会启动 XenseVR PC Service。用不到追踪器时可以关掉:
+
+    ```bash
+    START_XENSEVR_SERVICE=0 docker compose run --rm xense-taccap
+    ```
 
 ---
 
