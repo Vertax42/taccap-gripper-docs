@@ -123,11 +123,6 @@ been.
     The `tracker pose` tab next to `tcp pose` is the **tracker's own raw pose**. It is there to
     look at and **never reaches a dataset** — recorded poses are `tcp.*`.
 
-!!! note "How this differs from the standalone SDK example"
-    The markers and breadcrumbs look much like the SDK's own tracker example. The difference is
-    the frame: this flow uses the gravity-aligned world frame (X forward, Y left, Z up), while the
-    SDK example shows the raw Pico4 frame.
-
 ## 5.2 Recording
 
 Devices are **auto-discovered by the serial rules** — you never list gripper, tactile or camera
