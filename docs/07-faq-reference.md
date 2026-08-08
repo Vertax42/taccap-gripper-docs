@@ -9,7 +9,7 @@
 
 | 配置项 | 默认 | 作用 |
 |---|---|---|
-| `--robot.side` | 自动 | `left`/`right`,两只夹爪都接时必填 |
+| `--robot.side` | 自动 | `left`/`right`,**单夹爪模式**下两只都接着时必填;只接一只则自动选中 |
 | `--robot.role` | `leader` | 填 `follower` 绑定从夹爪 |
 | `--robot.enable_tracker` | `true` | 关闭则只录触觉 + 夹爪 |
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别规则 |

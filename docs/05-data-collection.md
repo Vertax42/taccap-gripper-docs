@@ -171,8 +171,8 @@
         --dataset.single_task='Pick up the object'
     ```
 
-**单夹爪**:换成 `--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
-只接了一只时会自动选中,两只都接入则**必须**指定 `--robot.side`。
+**单夹爪**:换成 `--robot.type=taccap_gripper`,其余相同。只接了一只时会自动选中;
+**两只都接着、只录其中一只**时,用 `--robot.side=left|right` 指定录哪一只——这时它是必填的。
 
 ### 参数详解 {#params}
 
@@ -229,7 +229,7 @@
 
 | 参数 | 默认 | 含义 |
 |---|---|---|
-| `--robot.side` | 自动 | `left`/`right`,两只夹爪都接时必填 |
+| `--robot.side` | 自动 | `left`/`right`,**单夹爪模式**下两只都接着时必填;只接一只则自动选中 |
 | `--robot.role` | `leader` | 填 `follower` 绑定从夹爪 |
 | `--robot.enable_tracker` | `true` | 关闭则只录触觉 + 夹爪(无位姿) |
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别自动匹配 |

@@ -187,9 +187,9 @@ serials. Tactile sensors, wrist cameras and trackers each match left/right by th
         --dataset.single_task='Pick up the object'
     ```
 
-**Single gripper**: use `--robot.type=taccap_gripper` plus `--robot.side=left|right`; everything
-else is the same. With only one connected it is picked automatically; with both connected
-`--robot.side` is **required**.
+**Single gripper**: use `--robot.type=taccap_gripper`; everything else is the same. With only one
+connected it is picked automatically. **With both connected and only one being recorded**,
+`--robot.side=left|right` says which — and is required.
 
 ### Parameter reference {#params}
 
@@ -250,7 +250,7 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
 
 | Parameter | Default | Meaning |
 |---|---|---|
-| `--robot.side` | auto | `left`/`right`, required when both grippers are connected |
+| `--robot.side` | auto | `left`/`right`, required **in single-gripper mode** when both are connected; a lone unit auto-resolves |
 | `--robot.role` | `leader` | `follower` binds the slave gripper |
 | `--robot.enable_tracker` | `true` | Off records tactile + gripper only (no pose) |
 | `--robot.tracker_serial` | unset | Pin the tracker SN, bypassing automatic side matching |
