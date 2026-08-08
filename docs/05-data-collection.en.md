@@ -115,13 +115,10 @@ been.
   automatically when `--robot.enable_tracker=false`, since there is no pose to draw.
 
 !!! tip "A glance that confirms the marker is right"
-    Lay the gripper flat and look at the EE marker in `/world`: it should sit at the **two-finger
-    midpoint** with its axes **X forward / Y left / Z up**. If the position or the orientation is
-    off, the tracker is not seated properly or is on the wrong side.
+    Laid flat, the EE marker belongs at the **two-finger midpoint**, **X forward / Y left / Z up**.
 
 !!! note "The `tracker pose` tab in the scalar panel"
-    The `tracker pose` tab next to `tcp pose` is the **tracker's own raw pose**. It is there to
-    look at and **never reaches a dataset** — recorded poses are `tcp.*`.
+    `tracker pose` beside `tcp pose` is the tracker's raw pose — **view only, never recorded**.
 
 ## 5.2 Recording
 
