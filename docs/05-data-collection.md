@@ -7,7 +7,7 @@
 `taccap_gripper` **不需要遥操作端**,录制是自驱动的。
 
 数据采用**移位帧(shifted-frame)配对**:动作比观测**领先一步**——*t-1* 步的观测,配
-*t* 步的位姿(EEF TCP 位姿 + 归一化 `gripper.pos`,开了[头显相机](#57)时还包括
+*t* 步的位姿(EEF TCP 位姿 + 归一化 `gripper.pos`,开了[头显相机](#56)时还包括
 **头显位姿**)作为动作。因此每集会少 1 帧
 (它没有前一帧可配对)。集与集之间的复位阶段是被动等待:重新摆放设备即可,无需遥操。
 
@@ -20,20 +20,53 @@
 ——一条集录废了要重来。而多数问题(某路相机没上来、追踪器没位姿、`gripper.pos` 顶不到 1.0、
 双夹爪左右接反)在预览里一眼就能看出来。
 
-**所有设备都开着**跑,要确认的正是整条链路是否凑齐。
+**你要录到哪一档,就预览到哪一档**——三档接的设备不同,能看到的东西也不同。
 
-```bash
-lerobot-teleoperate \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true \
-    --show_trajectory=true
-```
+=== "① 只有夹爪"
+
+    触觉两路、腕相机、`gripper.pos`。追踪器和头显都关着,**不需要启动 PC Service**。
+
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=false \
+        --robot.enable_head_camera=false \
+        --fps=30 \
+        --display_data=true
+    ```
+
+=== "② 加上追踪器位姿"
+
+    多出 [`/world` 3D 视图](#world-view):夹爪的 EE 标记和它走过的轨迹。
+    需要追踪器已开机绑定、Pico4 已连上、[XenseVR PC Service](03-host-hardware.md#35) 已启动。
+
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=false \
+        --fps=30 \
+        --display_data=true \
+        --show_trajectory=true
+    ```
+
+=== "③ 全开(含头显相机)"
+
+    再多出头显双目画面与头部位姿,需要 **PC Service ≥ v0.2.0**(见 [§5.6](#56))。
+
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=true \
+        --fps=30 \
+        --display_data=true \
+        --show_trajectory=true
+    ```
 
 **单夹爪**:换成 `--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
 
-在 Rerun 里逐项确认:
+在 Rerun 里逐项确认(②③ 档才有位姿相关的两行):
 
 | 看什么 | 期望 |
 |---|---|
@@ -47,7 +80,7 @@ lerobot-teleoperate \
 
 !!! note "`--robot.enable_head_camera` 为什么显式写出来"
     它默认就是 `false`,写出来是为了让这个开关**在命令里可见**——改成 `true` 就会连同
-    头显双目画面与头显位姿一起预览/录制(见 [5.7 头显相机](#57)),需要 **PC Service ≥ v0.2.0**。
+    头显双目画面与头显位姿一起预览/录制(见 [5.6 头显相机](#56)),需要 **PC Service ≥ v0.2.0**。
 
 !!! tip "想让它自己停,并打印每帧耗时"
     加 `--teleop_time_s=10` 跑满 10 秒自动退出,加 `--debug_timing=true` 打印采样耗时与
@@ -62,7 +95,7 @@ lerobot-teleoperate \
   世界轴带 `+X forward / +Y left / +Z up` 标注,转动视角后仍读得出朝向。
 - 轨迹面包屑保留最近 **90 个采样点(30 fps 下约 3 秒)**,并且**越旧越淡**。够看清刚做完的
   那一笔,又不至于两只夹爪的轨迹缠成一团。
-- 开了[头显相机](#57)时,头显也会画进同一个 `/world`——一个更小的**琥珀色 `HEAD` 标记**,
+- 开了[头显相机](#56)时,头显也会画进同一个 `/world`——一个更小的**琥珀色 `HEAD` 标记**,
   不带轨迹(头一直在动,再拖一条面包屑会把夹爪轨迹盖掉)。头显位姿与 `tcp.*` 用的是
   **同一个重力对齐世界系**,所以「人在看哪」和「手在做什么」可以直接放在一起读。
 - `--show_trajectory` 默认开启;设为 `false` 可关闭。`--robot.enable_tracker=false`
@@ -80,25 +113,72 @@ lerobot-teleoperate \
     轨迹标记与面包屑的形式和 SDK 自带的追踪器示例相似,区别在坐标系:这里用的是重力对齐的
     世界系(X 前、Y 左、Z 上),SDK 示例显示的是 Pico4 的原始坐标系。
 
-## 5.2 双夹爪录制
+## 5.2 录制
 
 设备**按序列号规则自动发现**——不列举夹爪/触觉/相机序列号。触觉、腕相机、追踪器都按同一套
 规则各自匹配左右。
 
-```bash
-lerobot-record \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_tracker=true \
-    --robot.enable_head_camera=false \
-    --display_data=true \
-    --dataset.repo_id=<your_org>/<your_dataset> \
-    --dataset.num_episodes=1 \
-    --dataset.fps=30 \
-    --dataset.push_to_hub=false \
-    --dataset.episode_time_s=120 \
-    --dataset.reset_time_s=60 \
-    --dataset.single_task='Pick up the object'
-```
+**和上面预览的那一档对应**——三档录出来的数据集内容不同:
+
+=== "① 只有夹爪"
+
+    落盘 `gripper.pos` + 左右触觉 + 腕相机,**没有位姿**(数据里不会有 `tcp.*`)。
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=false \
+        --robot.enable_head_camera=false \
+        --display_data=true \
+        --dataset.repo_id=<your_org>/<your_dataset> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
+
+=== "② 加上追踪器位姿"
+
+    再加 `tcp.*`(EEF TCP 位姿)。**这是最常用的一档**,本章后面的说明默认按它来。
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=false \
+        --display_data=true \
+        --dataset.repo_id=<your_org>/<your_dataset> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
+
+=== "③ 全开(含头显相机)"
+
+    再加头显双目画面与头部位姿,需要 **PC Service ≥ v0.2.0**(见 [§5.6](#56))。
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=true \
+        --display_data=true \
+        --dataset.repo_id=<your_org>/<your_dataset> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
+
+**单夹爪**:换成 `--robot.type=taccap_gripper` 并加 `--robot.side=left|right`,其余相同。
+只接了一只时会自动选中,两只都接入则**必须**指定 `--robot.side`。
 
 ### 参数详解 {#params}
 
@@ -121,7 +201,7 @@ lerobot-record \
 | `push_to_hub` | `false` | 默认仅保存到本地;需要上传时显式设为 `true` |
 | `private` | `false` | 上传为 Hub 私有仓库 |
 | `tags` | 无 | 给 Hub 数据集打标签 |
-| `streaming_encoding` | `true` | 实时流式编码(见 [§5.5](#55)) |
+| `streaming_encoding` | `true` | 实时流式编码(见 [§5.4](#54)) |
 | `vcodec` | `auto` | 视频编码器(`h264`/`hevc`/`libsvtav1`/`auto`/硬件编码器) |
 | `encoder_threads` | 自动 | 每个编码器实例的线程数 |
 | `encoder_queue_maxsize` | `30` | 每相机缓冲帧数(~1s@30fps),编码跟不上时反压丢旧帧 |
@@ -131,7 +211,7 @@ lerobot-record \
     推荐命令始终显式指定 `fps=30`、`episode_time_s=120`、`reset_time_s=60` 和 `push_to_hub=false`,避免不同 checkout 的默认值变化影响采集。
     上面的示例把 `--robot.enable_head_camera=false` 也写了出来,同样是这个道理——它默认就是
     `false`,写出来是让这个开关在命令里可见。改成 `true` 即连同头显双目画面与头显位姿一起录
-    (见 [§5.7](#57));需要 **PC Service ≥ v0.2.0**。
+    (见 [§5.6](#56));需要 **PC Service ≥ v0.2.0**。
 
 !!! note "`fps` 与传感器帧率"
     `fps` 是**录制采样率**,不是传感器上限。视触觉传感器本身 120 Hz([硬件参数](hardware.md#specs)),
@@ -161,7 +241,7 @@ lerobot-record \
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别自动匹配 |
 | `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
 | `--robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率 / 帧率 |
-| `--robot.enable_head_camera` | `false` | 录制 Pico4 Ultra 企业版**头显相机**,见 [§5.7](#57) |
+| `--robot.enable_head_camera` | `false` | 录制 Pico4 Ultra 企业版**头显相机**,见 [§5.6](#56) |
 | `--robot.head_camera_eyes` | `both` | `both` 录左右两只眼(两个键),`left` / `right` 只录一只 |
 | `--robot.head_camera_width/_height` | `1024` / `768` | **每只眼**的尺寸,只接受 `1024x768` 或 `1280x960` |
 | `--robot.head_camera_fps` | `30` | 头显相机录制帧率 |
@@ -182,28 +262,7 @@ Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪
     用 `--robot.tracker_serial=<SN>` 直接钉住序列号——**逐字使用**,不枚举、不校验
     (打错会在 connect 时报设备找不到)。留空(默认)则走自动发现。
 
-## 5.3 单夹爪录制
-
-只录一只时用 `--robot.type=taccap_gripper`,其余参数同上。单只夹爪自动选中;两只都接入时
-用 `--robot.side=left|right` 指定录哪一只。
-
-```bash
-lerobot-record \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_tracker=true \
-    --robot.enable_head_camera=false \
-    --display_data=true \
-    --dataset.repo_id=<your_org>/<your_dataset> \
-    --dataset.num_episodes=1 \
-    --dataset.fps=30 \
-    --dataset.push_to_hub=false \
-    --dataset.episode_time_s=120 \
-    --dataset.reset_time_s=60 \
-    --dataset.single_task='Pick up the object'
-```
-
-## 5.4 每帧记录内容 {#54}
+## 5.3 每帧记录内容 {#53}
 
 | Key | 来源 | 由什么开启 | 形状 / 类型 |
 |---|---|---|---|
@@ -280,10 +339,10 @@ lerobot-record \
 - **腕相机** → `wrist_cam`;`--robot.enable_wrist_camera=false` 跳过;
   `--robot.wrist_camera_width/_height/_fps` 调。
 - **头显相机** → `left_head` / `right_head` + `head_camera.*`;**默认关闭**,
-  `--robot.enable_head_camera=true` 开启,详见 [§5.7](#57)。
+  `--robot.enable_head_camera=true` 开启,详见 [§5.6](#56)。
 - **角色** → `--robot.role=follower` 绑定从夹爪(默认 `leader`)。
 
-## 5.5 录制选项:流式编码与编码器预热 {#55}
+## 5.4 录制选项:流式编码与编码器预热 {#54}
 
 视频键(触觉 + 腕相机)**在采集时实时编码**,而非先存 PNG 再在集尾编码,因此
 **每集结束时几乎不用等**。默认开启(`--dataset.streaming_encoding=true`):
@@ -314,7 +373,7 @@ lerobot-record \
     编码器初始化约 25 ms,拖到第一帧才做会让首帧严重超出 `fps` 预算。因此每集录制前会
     **先把编码器预热好**,等全部就绪再开录——首帧不再付初始化开销。
 
-## 5.6 分集与复位
+## 5.5 分集与复位 {#55}
 
 - 一次运行采多集:`--dataset.num_episodes=N`。
 - 集与集之间是**被动复位**:重新摆放设备,无需遥操。
@@ -324,7 +383,7 @@ lerobot-record \
     会跑命令只是第一步。务必阅读 [采集规范与最佳实践](best-practices.md)——坐标原点纪律、
     触觉接触、演示一致性、增量验证等,直接决定落盘数据的质量。
 
-## 5.7 可选:头显相机(第一视角) {#57}
+## 5.6 可选:头显相机(第一视角) {#56}
 
 **默认关闭。**打开后录制 Pico4 Ultra 企业版**头显自带的双目相机**,以及头显自身的位姿——
 也就是操作员的第一视角画面和"人在往哪看"。单夹爪(`taccap_gripper`)和双夹爪

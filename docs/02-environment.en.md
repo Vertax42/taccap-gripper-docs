@@ -158,7 +158,7 @@ This step will:
 
 !!! warning "Headset stereo and head pose need PC Service >= v0.2.0"
     Only v0.2.0 and later forward the headset camera's frames, and both the
-    [stereo view and the head pose](05-data-collection.md#57) come down that path. Tracking is
+    [stereo view and the head pose](05-data-collection.md#56) come down that path. Tracking is
     unaffected — if you do not use the headset camera, the version makes no difference.
 
 ## 2.5 Verify the install {#25}
@@ -171,7 +171,7 @@ python -c 'import xensesdk; print("xensesdk OK ->", xensesdk.__file__)'
 python -c 'import xense.taccap; print("xense.taccap OK ->", xense.taccap.__file__)'
 ```
 
-One more if you use the [headset camera](05-data-collection.md#57) — it checks that what your
+One more if you use the [headset camera](05-data-collection.md#56) — it checks that what your
 environment loads is the build that carries the camera API:
 
 ```bash

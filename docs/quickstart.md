@@ -95,7 +95,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 === "③ 全开(含头显相机)"
 
     再多出头显双目画面与头部位姿。需要 **PC Service ≥ v0.2.0**
-    → [5.7 头显相机](05-data-collection.md#57)。
+    → [5.6 头显相机](05-data-collection.md#56)。
 
     ```bash
     lerobot-teleoperate \
@@ -155,7 +155,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 === "③ 全开(含头显相机)"
 
     再加头显双目画面 `left_head` / `right_head` 与头部位姿 `head_camera.*`
-    (见 [§5.7](05-data-collection.md#57))。视频量会明显增加。
+    (见 [§5.6](05-data-collection.md#56))。视频量会明显增加。
 
     ```bash
     lerobot-record \

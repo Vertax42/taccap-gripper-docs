@@ -53,7 +53,7 @@ flowchart TB
 - **Pico4 Ultra 企业版头显**通过 Type-C 有线网络或 WiFi 无线网络连接数采电脑,将位姿发送至 XenseVR PC Service。
 - **XenseVR PC Service** 是位姿数据的主机守护进程,采集端从中读取 6-DoF 位姿。
   同一条连接还可以送来**头显自带双目相机**的画面(可选,默认关闭,需服务 ≥ v0.2.0;见
-  [5.7 头显相机](05-data-collection.md#57))。
+  [5.6 头显相机](05-data-collection.md#56))。
 - **lerobot-record** 把观测(t-1 帧)与动作(t 帧位姿 + 归一化夹爪开度)配对,写出数据集
   (见 [5.1 采集原理](05-data-collection.md))。
 
@@ -84,7 +84,7 @@ flowchart TB
     - 汇总时取各路的最新图像,与夹爪状态、Pico4 位姿合成一帧观测。
 
 **每帧最终会记录**:夹爪末端(EEF TCP)位姿(`tcp.*`)、归一化夹爪开度(`gripper.pos`)、
-可选 IMU、左右触觉图、腕相机图——详见 [5.4 每帧记录内容](05-data-collection.md#54)。
+可选 IMU、左右触觉图、腕相机图——详见 [5.3 每帧记录内容](05-data-collection.md#53)。
 
 ## 1.4 支持的平台与依赖版本
 

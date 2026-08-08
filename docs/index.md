@@ -72,7 +72,7 @@ flowchart LR
 |---|---|
 | [`xense-taccap-lerobot`](https://github.com/Vertax42/xense-taccap-lerobot) | 数采主仓库(lerobot 0.5.1 定制分支,提供 `taccap_gripper` 设备类型) |
 | [`xense.taccap`](https://github.com/Vertax42/TacCap-Gripper) | 夹爪 SDK(仓库 `TacCap-Gripper`,子模块 `third_party/taccap-gripper`):IMU、编码器、按键、协议及仅从夹爪具备的电机控制 |
-| [`xensevr_pc_service_sdk`](https://github.com/Vertax42/XenseVR-PC-Service) | Pico4 Ultra 追踪器 PC 服务(子模块 `third_party/XenseVR-PC-Service`);v0.2.0 起也承载[头显相机](05-data-collection.md#57)画面 |
+| [`xensevr_pc_service_sdk`](https://github.com/Vertax42/XenseVR-PC-Service) | Pico4 Ultra 追踪器 PC 服务(子模块 `third_party/XenseVR-PC-Service`);v0.2.0 起也承载[头显相机](05-data-collection.md#56)画面 |
 | [`xensesdk`](https://github.com/XenseRobotics/xensesdk) | 视触觉传感器 SDK,由安装脚本提供([文档站](https://xensedoc.readthedocs.io/en/latest/)) |
 
 !!! note "适用版本"

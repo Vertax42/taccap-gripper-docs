@@ -8,7 +8,7 @@ This is the core chapter: collecting with `lerobot-record` and writing out a `Le
 
 The data uses **shifted-frame pairing**: the action **leads the observation by one step** — the
 observation from step *t-1* is paired with the pose from step *t* (the EEF TCP pose plus the
-normalised `gripper.pos`, and the **headset pose** too when the [headset camera](#57) is on) as
+normalised `gripper.pos`, and the **headset pose** too when the [headset camera](#56) is on) as
 its action. Each episode is therefore one frame shorter (the first
 has no predecessor). The reset phase between episodes is a passive wait: just reposition the
 setup, no teleoperation involved.
@@ -23,21 +23,58 @@ costs you nothing. Recording does cost something: a ruined episode has to be red
 what goes wrong (a camera stream that never came up, a tracker with no pose, `gripper.pos` not
 reaching 1.0, the two arms swapped) is obvious at a glance in the preview.
 
-Run it with **everything enabled** — the point is to confirm the whole chain is present.
+**Preview at the level you intend to record at** — the three levels bring up different devices,
+so they show different things.
 
-```bash
-lerobot-teleoperate \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_head_camera=false \
-    --fps=30 \
-    --display_data=true \
-    --show_trajectory=true
-```
+=== "① Gripper only"
+
+    Both tactile streams, the wrist camera, `gripper.pos`. Tracker and headset are off, so **the
+    PC Service does not need to be running**.
+
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=false \
+        --robot.enable_head_camera=false \
+        --fps=30 \
+        --display_data=true
+    ```
+
+=== "② Plus the tracker pose"
+
+    Adds the [`/world` 3D view](#world-view): the gripper's EE marker and the trail behind it.
+    Needs the tracker powered on and bound, the headset connected, and the
+    [XenseVR PC Service](03-host-hardware.md#35) running.
+
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=false \
+        --fps=30 \
+        --display_data=true \
+        --show_trajectory=true
+    ```
+
+=== "③ Everything (with the headset camera)"
+
+    Adds the headset's stereo frames and head pose. Needs **PC Service ≥ v0.2.0** (see
+    [§5.6](#56)).
+
+    ```bash
+    lerobot-teleoperate \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=true \
+        --fps=30 \
+        --display_data=true \
+        --show_trajectory=true
+    ```
 
 **Single gripper**: use `--robot.type=taccap_gripper` plus `--robot.side=left|right`;
 everything else is the same.
 
-Check each of these in Rerun:
+Check each of these in Rerun (the two pose rows only apply to ② and ③):
 
 | What | Expected |
 |---|---|
@@ -52,7 +89,7 @@ Check each of these in Rerun:
 !!! note "Why `--robot.enable_head_camera` is spelled out"
     It already defaults to `false`; writing it keeps the switch **visible in the command** — set
     it to `true` and the headset's stereo frames and head pose come along for the preview and the
-    recording (see [5.7 Headset camera](#57)). Needs **PC Service ≥ v0.2.0**.
+    recording (see [5.6 Headset camera](#56)). Needs **PC Service ≥ v0.2.0**.
 
 !!! tip "Let it stop on its own, and print per-frame timing"
     Add `--teleop_time_s=10` to exit automatically after ten seconds, and `--debug_timing=true`
@@ -70,7 +107,7 @@ been.
   +Z up`, so the orientation stays readable after you rotate the view.
 - The breadcrumb keeps the last **90 samples (about 3 s at 30 fps)** and **fades with age** —
   enough to see the stroke you just made without two grippers' trails tangling.
-- With the [headset camera](#57) on, the headset is drawn into the same `/world` as a smaller
+- With the [headset camera](#56) on, the headset is drawn into the same `/world` as a smaller
   **amber `HEAD` marker**, without a trail (the head moves constantly; a second breadcrumb would
   bury the grippers'). Head pose and `tcp.*` share **one gravity-aligned world frame**, so where
   the operator looked and what the hands did can be read together.
@@ -91,25 +128,76 @@ been.
     the frame: this flow uses the gravity-aligned world frame (X forward, Y left, Z up), while the
     SDK example shows the raw Pico4 frame.
 
-## 5.2 Recording with both grippers
+## 5.2 Recording
 
 Devices are **auto-discovered by the serial rules** — you never list gripper, tactile or camera
 serials. Tactile sensors, wrist cameras and trackers each match left/right by the same rules.
 
-```bash
-lerobot-record \
-    --robot.type=bi_taccap_gripper \
-    --robot.enable_tracker=true \
-    --robot.enable_head_camera=false \
-    --display_data=true \
-    --dataset.repo_id=<your_org>/<your_dataset> \
-    --dataset.num_episodes=1 \
-    --dataset.fps=30 \
-    --dataset.push_to_hub=false \
-    --dataset.episode_time_s=120 \
-    --dataset.reset_time_s=60 \
-    --dataset.single_task='Pick up the object'
-```
+**Match the level you previewed at** — the three record different things:
+
+=== "① Gripper only"
+
+    Writes `gripper.pos` plus both tactile streams and the wrist camera, and **no pose** (there
+    will be no `tcp.*` in the data).
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=false \
+        --robot.enable_head_camera=false \
+        --display_data=true \
+        --dataset.repo_id=<your_org>/<your_dataset> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
+
+=== "② Plus the tracker pose"
+
+    Adds `tcp.*` (the EEF TCP pose). **This is the usual one**, and what the rest of this chapter
+    assumes.
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=false \
+        --display_data=true \
+        --dataset.repo_id=<your_org>/<your_dataset> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
+
+=== "③ Everything (with the headset camera)"
+
+    Adds the headset's stereo frames and head pose. Needs **PC Service ≥ v0.2.0** (see
+    [§5.6](#56)).
+
+    ```bash
+    lerobot-record \
+        --robot.type=bi_taccap_gripper \
+        --robot.enable_tracker=true \
+        --robot.enable_head_camera=true \
+        --display_data=true \
+        --dataset.repo_id=<your_org>/<your_dataset> \
+        --dataset.num_episodes=1 \
+        --dataset.fps=30 \
+        --dataset.push_to_hub=false \
+        --dataset.episode_time_s=120 \
+        --dataset.reset_time_s=60 \
+        --dataset.single_task='Pick up the object'
+    ```
+
+**Single gripper**: use `--robot.type=taccap_gripper` plus `--robot.side=left|right`; everything
+else is the same. With only one connected it is picked automatically; with both connected
+`--robot.side` is **required**.
 
 ### Parameter reference {#params}
 
@@ -133,7 +221,7 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
 | `push_to_hub` | `false` | Local-only by default; set `true` explicitly to upload |
 | `private` | `false` | Upload as a private Hub repo |
 | `tags` | none | Tags for the Hub dataset |
-| `streaming_encoding` | `true` | Live streaming encode (see [§5.5](#55)) |
+| `streaming_encoding` | `true` | Live streaming encode (see [§5.4](#54)) |
 | `vcodec` | `auto` | Video encoder (`h264`/`hevc`/`libsvtav1`/`auto`/a hardware encoder) |
 | `encoder_threads` | auto | Threads per encoder instance |
 | `encoder_queue_maxsize` | `30` | Buffered frames per camera (~1 s @ 30 fps); back-pressure drops the oldest when encoding falls behind |
@@ -144,7 +232,7 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
     explicitly in your commands, so a different checkout's defaults cannot change what you
     collect. The examples above spell out `--robot.enable_head_camera=false` for the same reason:
     `false` is the default, and writing it keeps the switch visible. Set it to `true` to record
-    the headset's stereo view and pose as well (see [§5.7](#57)); that needs **PC Service >=
+    the headset's stereo view and pose as well (see [§5.6](#56)); that needs **PC Service >=
     v0.2.0**.
 
 !!! note "`fps` vs. sensor frame rate"
@@ -176,7 +264,7 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
 | `--robot.tracker_serial` | unset | Pin the tracker SN, bypassing automatic side matching |
 | `--robot.enable_wrist_camera` | `true` | Turn the wrist camera off |
 | `--robot.wrist_camera_width/_height/_fps` | — | Wrist camera resolution / frame rate |
-| `--robot.enable_head_camera` | `false` | Record the Pico4 Ultra Enterprise **headset camera** — see [§5.7](#57) |
+| `--robot.enable_head_camera` | `false` | Record the Pico4 Ultra Enterprise **headset camera** — see [§5.6](#56) |
 | `--robot.head_camera_eyes` | `both` | `both` records each eye as its own key; `left` / `right` records one |
 | `--robot.head_camera_width/_height` | `1024` / `768` | **Per-eye** size; only `1024x768` or `1280x960` are accepted |
 | `--robot.head_camera_fps` | `30` | Head camera recording frame rate |
@@ -199,28 +287,7 @@ automatically** — the tracker matches this unit's side from the digit before i
     enumeration and no validation (a typo surfaces as a device-not-found error at connect time).
     Leave it unset (the default) for auto-discovery.
 
-## 5.3 Recording with a single gripper
-
-To record just one, use `--robot.type=taccap_gripper`; every other parameter is as above. A lone
-gripper is selected automatically; with both plugged in, pick one with `--robot.side=left|right`.
-
-```bash
-lerobot-record \
-    --robot.type=taccap_gripper \
-    --robot.side=right \
-    --robot.enable_tracker=true \
-    --robot.enable_head_camera=false \
-    --display_data=true \
-    --dataset.repo_id=<your_org>/<your_dataset> \
-    --dataset.num_episodes=1 \
-    --dataset.fps=30 \
-    --dataset.push_to_hub=false \
-    --dataset.episode_time_s=120 \
-    --dataset.reset_time_s=60 \
-    --dataset.single_task='Pick up the object'
-```
-
-## 5.4 What each frame records {#54}
+## 5.3 What each frame records {#53}
 
 | Key | Source | Enabled by | Shape / type |
 |---|---|---|---|
@@ -309,10 +376,10 @@ lerobot-record \
 - **Wrist camera** → `wrist_cam`; skip it with `--robot.enable_wrist_camera=false`, tune with
   `--robot.wrist_camera_width/_height/_fps`.
 - **Headset camera** → `left_head` / `right_head` plus `head_camera.*`; **off by default**, turn
-  it on with `--robot.enable_head_camera=true` — see [§5.7](#57).
+  it on with `--robot.enable_head_camera=true` — see [§5.6](#56).
 - **Role** → `--robot.role=follower` binds the slave unit (default `leader`).
 
-## 5.5 Recording options: streaming encoding and encoder warm-up {#55}
+## 5.4 Recording options: streaming encoding and encoder warm-up {#54}
 
 Video keys (tactile + wrist camera) are **encoded live during collection** rather than stored as
 PNGs and encoded at the end of an episode, so **there is almost no wait when an episode
@@ -346,7 +413,7 @@ lerobot-record \
     `fps` budget badly. So each episode **warms the encoders up first** and waits until all are
     ready before recording starts — the first frame no longer pays initialisation cost.
 
-## 5.6 Episodes and resets
+## 5.5 Episodes and resets {#55}
 
 - Record several episodes in one run with `--dataset.num_episodes=N`.
 - Between episodes the reset is **passive**: reposition the setup, no teleoperation.
@@ -359,7 +426,7 @@ lerobot-record \
     consistency and incremental verification are what actually decide the quality of what lands on
     disk.
 
-## 5.7 Optional: the headset camera (first-person view) {#57}
+## 5.6 Optional: the headset camera (first-person view) {#56}
 
 **Off by default.** Turning it on records the Pico4 Ultra Enterprise headset's **own stereo
 camera** plus the headset's pose — the operator's first-person view and where they were looking.

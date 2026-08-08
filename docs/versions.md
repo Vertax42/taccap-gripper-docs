@@ -117,14 +117,14 @@ flowchart LR
 
 !!! note "PC Service v0.2.0 只影响头显相机"
     v0.2.0 相对 v0.1.0 只多做一件事:**转发头显相机的视频帧**,这是
-    [头显相机](05-data-collection.md#57)画面的通路。老版本头显 APK 配 v0.2.0 也照常工作,
+    [头显相机](05-data-collection.md#56)画面的通路。老版本头显 APK 配 v0.2.0 也照常工作,
     所以**不用头显相机就没有任何行为变化**。
 
 !!! note "版本以本地为准"
     命令与字段应以你本地这一版主仓库、以及夹爪 SDK 附带的设备说明为准。
 
 !!! note "头显相机需要 `ffc94d53` 之后的版本"
-    本手册中的[头显相机](05-data-collection.md#57)、Insight 链路移除、以及
+    本手册中的[头显相机](05-data-collection.md#56)、Insight 链路移除、以及
     [`/world` 3D 视图](05-data-collection.md#world-view)的改动,来自
     [PR #9](https://github.com/Vertax42/xense-taccap-lerobot/pull/9),已合入 `main`(`ffc94d53`)。
 
@@ -159,7 +159,7 @@ flowchart LR
 
 !!! note "头显位姿进 action、显示默认不压缩,需要 `f491cae5` 之后的版本"
     两项变化都在这之后:`head_camera.*` 从"仅观测"变成**同时也是动作**
-    (见 [5.7 位姿与可视化](05-data-collection.md#57));`--display_compressed_images`
+    (见 [5.6 位姿与可视化](05-data-collection.md#56));`--display_compressed_images`
     的默认值从 `true` 改为 **`false`**,并新增 `--display_image_every_n`。
 
     停在更早的版本时:头显位姿只作为观测落盘,策略不会被要求复现它;Rerun 显示默认走 JPEG

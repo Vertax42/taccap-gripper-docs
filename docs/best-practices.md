@@ -84,7 +84,7 @@
 | 空抓 | 触觉图无信号 | 抓取时确保真实接触、看 Rerun 触觉 |
 | 遮挡 | 腕相机看不到目标 | 清理遮挡、调整手持角度 |
 | 抖动 | IMU/位姿噪声大 | 平稳匀速带动 |
-| 丢帧 | 日志丢帧告警 | 增大 `encoder_threads`、`vcodec=auto`([5.5](05-data-collection.md#55)) |
+| 丢帧 | 日志丢帧告警 | 增大 `encoder_threads`、`vcodec=auto`([5.4](05-data-collection.md#54)) |
 | 零点漂移 | 完全闭合时 `gripper.pos`≠0 | 确认夹爪已完全闭合后按需重标零点([4.1](04-calibration.md#41)) |
 | 首帧丢关键动作 | 动作起点异常 | 开录后稳定 0.5~1s 再动作 |
 

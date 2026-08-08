@@ -478,7 +478,7 @@ connect. Opening the app does not connect it.
 === "Allow camera access"
 
     On first launch it asks whether to allow XTac-UMI XR to use the camera. Tap "**Allow**" —
-    the [headset camera](05-data-collection.md#57) needs it, and denying leaves you without
+    the [headset camera](05-data-collection.md#56) needs it, and denying leaves you without
     headset frames.
 
     ![Allow XTac-UMI XR to use the camera](assets/pico4/app-step3-camera.png){ width="380" }
@@ -490,7 +490,7 @@ connect. Opening the app does not connect it.
     ![XTac-UMI XR: status connected](assets/pico4/app-step4-connected.jpg){ width="420" }
 
 !!! tip "\"Resolution\" is the headset's stereo camera resolution"
-    It sets the capture resolution of the [headset camera](05-data-collection.md#57) and defaults
+    It sets the capture resolution of the [headset camera](05-data-collection.md#56) and defaults
     to `1024`; it does nothing if you are not using that camera. Leave it alone unless you have a
     reason.
 
@@ -562,7 +562,7 @@ full-body mocap / **standalone Tracker**). Collection uses two of them:
 - **Standalone Tracker pose** — the grippers' pose; the data carries an `sn` distinguishing the
   trackers.
 - **Head pose** — the headset's own pose, used together with the
-  [headset's stereo frames](05-data-collection.md#57).
+  [headset's stereo frames](05-data-collection.md#56).
 
 !!! note "The headset camera and head pose run through this service too"
     They are not a separate link: the headset sends each eye's frames and its own pose to the PC

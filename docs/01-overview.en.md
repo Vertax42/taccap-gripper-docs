@@ -44,7 +44,7 @@ flowchart TB
 
 The same PC Service connection can also carry the **headset's own stereo camera** — optional, off
 by default, and requiring service ≥ v0.2.0. See
-[5.7 Headset camera](05-data-collection.md#57).
+[5.6 Headset camera](05-data-collection.md#56).
 
 ## 1.3 Architecture & data flow
 

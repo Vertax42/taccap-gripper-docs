@@ -15,7 +15,7 @@
 | `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别规则 |
 | `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
 | `--robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率/帧率 |
-| `--robot.enable_head_camera` | `false` | 头显相机(第一视角 + 头显位姿),见 [5.7](05-data-collection.md#57) |
+| `--robot.enable_head_camera` | `false` | 头显相机(第一视角 + 头显位姿),见 [5.6](05-data-collection.md#56) |
 | `--robot.head_camera_eyes` | `both` | `both` = 左右眼各一个键;`left` / `right` 只录一只 |
 | `--robot.head_camera_width/_height` | `1024` / `768` | **每只眼**尺寸,只接受 `1024x768` / `1280x960` |
 | `--robot.head_camera_fps` | `30` | 头显相机帧率 |
@@ -48,7 +48,7 @@
 | **GSPS** | 视触觉传感器(左右指各一),序列号 `GSPS01...` |
 | **XC** | 腕部 UVC 相机,序列号 `XC...` |
 | **tcp** | Tool Center Point,末端执行器位姿(`tcp.x/y/z` + 6D 旋转 `r1..r6`) |
-| **6D rotation** | 旋转矩阵 R(世界 ← 本体)的**前两列**:`r1..r3` = 第一列 = 本体 X 轴在世界系下的方向,`r4..r6` = 第二列 = Y 轴;第三列为叉积,可算回 → [约定详解](05-data-collection.md#54) |
+| **6D rotation** | 旋转矩阵 R(世界 ← 本体)的**前两列**:`r1..r3` = 第一列 = 本体 X 轴在世界系下的方向,`r4..r6` = 第二列 = Y 轴;第三列为叉积,可算回 → [约定详解](05-data-collection.md#53) |
 | **shifted-frame** | 移位帧配对:t-1 观测配 t 动作 |
 | **self-driven** | 自驱动:设备自身产出观测与演示动作,无独立遥操端 |
 

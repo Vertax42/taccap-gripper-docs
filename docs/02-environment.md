@@ -144,7 +144,7 @@ mamba activate xense-taccap
     再执行 `sudo dpkg -i` 安装;已安装同版本时会跳过。
 
 !!! warning "头显双目与头部位姿需要 PC Service ≥ v0.2.0"
-    只有 v0.2.0 及以上的服务才转发头显相机的画面,[头显双目与头部位姿](05-data-collection.md#57)
+    只有 v0.2.0 及以上的服务才转发头显相机的画面,[头显双目与头部位姿](05-data-collection.md#56)
     都靠这条通路。追踪器不受影响——不用头显相机的话,装哪个版本没区别。
 
 ## 2.5 验证安装 {#25}
@@ -157,7 +157,7 @@ python -c 'import xensesdk; print("xensesdk OK ->", xensesdk.__file__)'
 python -c 'import xense.taccap; print("xense.taccap OK ->", xense.taccap.__file__)'
 ```
 
-用[头显相机](05-data-collection.md#57)时再补一条——检查是不是带相机接口的新版本:
+用[头显相机](05-data-collection.md#56)时再补一条——检查是不是带相机接口的新版本:
 
 ```bash
 python -c 'import xensevr_pc_service_sdk as xrt; print("pico camera API:", hasattr(xrt, "has_pico_camera_frame"))'

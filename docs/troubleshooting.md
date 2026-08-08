@@ -120,7 +120,7 @@
     ```
 
     再确认头显已连上 PC Service 且 APP 正在推流(相机与追踪器**共用同一条连接**)。
-    见 [5.7 头显相机 · 前置条件](05-data-collection.md#57)。
+    见 [5.6 头显相机 · 前置条件](05-data-collection.md#56)。
 
 ??? failure "`AttributeError: module 'xensevr_pc_service_sdk' has no attribute 'has_pico_camera_frame'`"
     **原因**:环境里加载的是**旧版接口**(相机接口是随 v0.2.0 一起加的)。
@@ -139,7 +139,7 @@
     **原因**:头显相机**只接受 `1024x768` 和 `1280x960`**(都是 4:3,与传感器一致)。
     填别的会直接报错而不是悄悄降级——重采样会无声改掉记录下来的视场角。
     **解决**:改回两个受支持的尺寸之一。注意**改尺寸等于换了一组数据**,变更前后的 episode
-    不能混用。见 [5.7 头显相机](05-data-collection.md#57)。
+    不能混用。见 [5.6 头显相机](05-data-collection.md#56)。
 
 ## 采集与录制
 
@@ -159,7 +159,7 @@
 ??? failure "编码器跟不上、日志出现丢帧告警"
     **原因**:实时编码队列满时会丢最旧帧(不阻塞采集循环)。
     **解决**:增大 `--dataset.encoder_threads`、用 `--dataset.vcodec=auto` 硬件编码、
-    或调 `--dataset.encoder_queue_maxsize`。见 [5.5 录制选项](05-data-collection.md#55)。
+    或调 `--dataset.encoder_queue_maxsize`。见 [5.4 录制选项](05-data-collection.md#54)。
 
 ??? failure "夹爪开度不对 / 闭合时不为 0"
     **原因**:编码器零点漂移或未标定。

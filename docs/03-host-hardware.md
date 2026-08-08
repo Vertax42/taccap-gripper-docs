@@ -431,7 +431,7 @@ XenseVR PC Service——但**要点一下「重连」才会连上**,打开 APP �
 === "允许相机权限"
 
     首次打开会问「允许"XTac-UMI XR"使用相机权限吗?」,点「**允许**」。
-    [头显相机](05-data-collection.md#57)要用到它,点了「不允许」就取不到头显画面。
+    [头显相机](05-data-collection.md#56)要用到它,点了「不允许」就取不到头显画面。
 
     ![允许 XTac-UMI XR 使用相机权限](assets/pico4/app-step3-camera.png){ width="380" }
 
@@ -442,7 +442,7 @@ XenseVR PC Service——但**要点一下「重连」才会连上**,打开 APP �
     ![XTac-UMI XR:状态 已连接](assets/pico4/app-step4-connected.jpg){ width="420" }
 
 !!! tip "「分辨率」是头显双目相机的分辨率"
-    指的是[头显相机](05-data-collection.md#57)的取流分辨率,默认 `1024`,
+    指的是[头显相机](05-data-collection.md#56)的取流分辨率,默认 `1024`,
     不用头显相机时它不起作用。没有特殊需要保持默认即可。
 
 !!! note "高精度追踪已默认常开"
@@ -502,7 +502,7 @@ XenseVR PC Service——但**要点一下「重连」才会连上**,打开 APP �
 数采用到其中两类:
 
 - **Tracker 独立追踪位姿**——夹爪的位姿,数据中带 `sn` 用于区分不同追踪器。
-- **头部位姿**——头显自己的位姿,和[头显双目画面](05-data-collection.md#57)配套使用。
+- **头部位姿**——头显自己的位姿,和[头显双目画面](05-data-collection.md#56)配套使用。
 
 !!! note "头显相机与头部位姿也走这个服务"
     它们不是另一条链路:头显把每只眼的画面和自己的位姿发给 PC Service,服务转发给采集端。
