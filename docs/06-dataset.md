@@ -47,15 +47,15 @@ sample = ds[0]          # 单帧:观测 + 动作,均为 torch tensor
 ```bash
 # 从仓库脚本运行
 python src/lerobot/scripts/lerobot_check_dataset.py \
-    --repo-id Xense/assemble_box_with_phone_stand \
+    --repo-id <your_org>/<your_dataset> \
     --root ~/.cache/huggingface/lerobot
 
 # 或用已安装的控制台入口
-lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand \
+lerobot-check-dataset --repo-id <your_org>/<your_dataset> \
     --root ~/.cache/huggingface/lerobot
 
 # 只查某几集
-lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand --episode-index 0 2 4
+lerobot-check-dataset --repo-id <your_org>/<your_dataset> --episode-index 0 2 4
 ```
 
 | 参数 | 含义 |
@@ -82,8 +82,8 @@ lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand --episode-in
 ```bash
 # 基本用法(需要 --repo-id 与 --dataset-path)
 lerobot-push-dataset-to-hub \
-    --repo-id Vertax/xense_flare_pick_and_place \
-    --dataset-path ~/.cache/huggingface/lerobot/Vertax/xense_flare_pick_and_place
+    --repo-id <your_org>/<your_dataset> \
+    --dataset-path ~/.cache/huggingface/lerobot/<your_org>/<your_dataset>
 ```
 
 常用变体:
@@ -92,8 +92,8 @@ lerobot-push-dataset-to-hub \
 
     ```bash
     lerobot-push-dataset-to-hub \
-        --repo-id Xense/assemble_box_with_phone_stand0410 \
-        --dataset-path ~/.cache/huggingface/lerobot/Xense/assemble_box_with_phone_stand0410 \
+        --repo-id <your_org>/<your_dataset> \
+        --dataset-path ~/.cache/huggingface/lerobot/<your_org>/<your_dataset> \
         --upload-large-folder
     ```
 
@@ -101,8 +101,8 @@ lerobot-push-dataset-to-hub \
 
     ```bash
     lerobot-push-dataset-to-hub \
-        --repo-id Vertax/xense_flare_pick_and_place \
-        --dataset-path ~/.cache/huggingface/lerobot/Vertax/xense_flare_pick_and_place \
+        --repo-id <your_org>/<your_dataset> \
+        --dataset-path ~/.cache/huggingface/lerobot/<your_org>/<your_dataset> \
         --private
     ```
 
@@ -110,8 +110,8 @@ lerobot-push-dataset-to-hub \
 
     ```bash
     lerobot-push-dataset-to-hub \
-        --repo-id Vertax/xense_flare_pick_and_place \
-        --dataset-path ~/.cache/huggingface/lerobot/Vertax/xense_flare_pick_and_place \
+        --repo-id <your_org>/<your_dataset> \
+        --dataset-path ~/.cache/huggingface/lerobot/<your_org>/<your_dataset> \
         --no-videos
     ```
 
@@ -119,53 +119,5 @@ lerobot-push-dataset-to-hub \
 
 !!! tip "先登录 Hub"
     上传前确保已执行 `hf auth login`(旧版也可使用 `huggingface-cli login`),或设置 `HF_TOKEN`,否则会因鉴权失败。
-
-## 6.5 完整命令示例合集
-
-先录制到本地并校验;确认完整后再按需上传 Hub。以下命令均显式指定 30 FPS、120 秒录制、60 秒复位和不自动上传。
-
-=== "单夹爪(以右侧为例)"
-
-    ```bash
-    lerobot-record \
-        --robot.type=taccap_gripper \
-        --robot.side=right \
-        --display_data=false \
-        --dataset.repo_id=Xense/pick_object_demo \
-        --dataset.single_task='Pick up the object' \
-        --dataset.num_episodes=20 \
-        --dataset.fps=30 \
-        --dataset.episode_time_s=120 \
-        --dataset.reset_time_s=60 \
-        --dataset.push_to_hub=false
-    ```
-
-=== "双夹爪"
-
-    ```bash
-    lerobot-record \
-        --robot.type=bi_taccap_gripper \
-        --display_data=false \
-        --dataset.repo_id=Xense/pick_object_demo \
-        --dataset.single_task='Pick up the object' \
-        --dataset.num_episodes=20 \
-        --dataset.fps=30 \
-        --dataset.episode_time_s=120 \
-        --dataset.reset_time_s=60 \
-        --dataset.push_to_hub=false
-    ```
-
-录制完成后执行:
-
-```bash
-# 1) 检查本地数据完整性
-lerobot-check-dataset --repo-id Xense/pick_object_demo
-
-# 2) 可选:上传 Hub
-lerobot-push-dataset-to-hub \
-    --repo-id Xense/pick_object_demo \
-    --dataset-path ~/.cache/huggingface/lerobot/Xense/pick_object_demo \
-    --upload-large-folder
-```
 
 下一步 → [7. 常见问题与参考](07-faq-reference.md)
