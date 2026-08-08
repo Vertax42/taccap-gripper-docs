@@ -1,8 +1,8 @@
 # 4. Calibration & self-check
 
-Extends the reference manual's "test the network connection". This chapter covers the two
-**one-off** jobs: calibrating the gripper, and the tracker self-check. Whether the whole chain is
-present is confirmed with the [preview](05-data-collection.md#preview) just before recording.
+This chapter covers the two **one-off** jobs: calibrating the gripper, and the tracker
+self-check. Whether the whole chain is present is confirmed with the
+[preview](05-data-collection.md#preview) just before recording.
 
 ## 4.1 Gripper calibration (zero + travel span) {#41}
 

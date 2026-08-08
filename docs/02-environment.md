@@ -1,7 +1,7 @@
 # 2. 环境部署
 
-对应参考手册的"开发环境部署"。本章面向 **Ubuntu 22.04 / 24.04 LTS(amd64)**,
-把 `xense-taccap-lerobot` 及全部硬件 SDK 装好并验证。
+本章面向 **Ubuntu 22.04 / 24.04 LTS(amd64)**,把 `xense-taccap-lerobot` 及全部硬件 SDK
+装好并验证。
 
 !!! info "XTac-UMI G1 已验证环境"
     XTac-UMI G1 硬件联调与采集流程在 `mamba` 环境 `xense-taccap` 下验证。当前可读取的测试主机环境:

@@ -1,8 +1,8 @@
 # 3. Host & Device Setup
 
-Corresponds to the reference manual's "robot configuration". A gripper being **listed** is not the
-same as it being **openable** — this chapter covers serial permissions, ModemManager contention,
-the device auto-discovery rules, and the hardware power-on order.
+A gripper being **listed** is not the same as it being **openable** — this chapter covers serial
+permissions, ModemManager contention, the device auto-discovery rules, and the hardware power-on
+order.
 
 !!! danger "[3.1 Serial permissions](#31) and [3.2 keeping ModemManager off](#32) are required"
     Both are **one-off host setup** and hold indefinitely once done.
@@ -132,10 +132,9 @@ headset — see [Reading a tracker SN](#pico-tracker-sn).
 
 The **standalone motion tracker** that ships with the Pico4 Ultra Enterprise mounts on top of the
 gripper and provides the 6-DoF pose. **XTac-UMI XR** (the VR client app) runs on the headset,
-and the pose reaches collection via the [XenseVR PC Service](#35). First time through,
-This section is written for **configuring a new Pico from scratch**, in the order **unbox and
-update → system settings → install the app → network → bind the tracker → tracking mode and UI →
-startup alignment**.
+and the pose reaches collection via the [XenseVR PC Service](#35). This section is written for
+**configuring a new Pico from scratch**, in the order **unbox and update → system settings →
+install the app → network → bind the tracker → tracking mode and UI → startup alignment**.
 
 !!! tip "Given a factory-configured headset? Skip ahead"
     Developer mode, the power policy, the app, the tracker binding and the tracking mode are all

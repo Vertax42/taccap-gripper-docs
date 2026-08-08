@@ -1,6 +1,6 @@
 # 5. 数据预览与采集
 
-对应参考手册的"SDK 使用"。本章是核心:用 `lerobot-record` 采集并写出 `LeRobotDataset`。
+本章是核心:用 `lerobot-record` 采集并写出 `LeRobotDataset`。
 
 ## 5.1 采集原理 {#51}
 

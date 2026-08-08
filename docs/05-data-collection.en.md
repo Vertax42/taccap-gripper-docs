@@ -1,7 +1,6 @@
 # 5. Data preview and collection
 
-Corresponds to the reference manual's "SDK usage". This is the core chapter: collecting with
-`lerobot-record` and writing out a `LeRobotDataset`.
+This is the core chapter: collecting with `lerobot-record` and writing out a `LeRobotDataset`.
 
 ## 5.1 How collection works {#51}
 

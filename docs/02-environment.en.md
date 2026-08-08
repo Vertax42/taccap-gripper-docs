@@ -1,8 +1,7 @@
 # 2. Environment Setup
 
-Corresponds to the reference manual's "development environment setup". This chapter targets
-**Ubuntu 22.04 / 24.04 LTS (amd64)** and gets `xense-taccap-lerobot` plus every hardware SDK
-installed and verified.
+This chapter targets **Ubuntu 22.04 / 24.04 LTS (amd64)** and gets `xense-taccap-lerobot` plus
+every hardware SDK installed and verified.
 
 !!! info "Verified environment for the XTac-UMI G1"
     XTac-UMI G1 hardware bring-up and collection were verified inside the `mamba` environment
