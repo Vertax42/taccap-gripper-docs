@@ -400,9 +400,8 @@ lerobot-record \
   cameras make it likelier that encoding falls behind.
 
 !!! note "Encoder warm-up"
-    Encoder initialisation takes ~25 ms, and leaving it until the first frame blows that frame's
-    `fps` budget badly. So each episode **warms the encoders up first** and waits until all are
-    ready before recording starts — the first frame no longer pays initialisation cost.
+    Encoders are made ready before each episode starts, so the first frame does not pay for it.
+    This is automatic — nothing to set.
 
 ## 5.5 Episodes and resets {#55}
 
@@ -495,12 +494,6 @@ compared: identical sequence numbers are a definitive match; otherwise their tim
 within `--robot.head_camera_pair_max_skew_ms` (default 20 ms, against a ~33 ms frame period at
 30 fps). Exceeding it does not stop recording — it raises a **rate-limited warning naming the
 measured skew**, so the condition is visible rather than silently recorded.
-
-!!! note "Why the frames are collected on a background thread"
-    Reading the SDK straight from the record loop caught one eye updated and the other not on
-    **7% of frames** (599 samples; the left eye was consistently one or two ahead). A background
-    thread now polls at 120 Hz and holds a pair back until both halves are in — measured 7% to 0%,
-    with no loss of frame rate.
 
 ### Pose and visualisation
 
