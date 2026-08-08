@@ -493,8 +493,7 @@ matching the sensor (PICO's camera-access API caps a frame at 2328x1748, which i
 encoder load, and one head video key in the dataset instead of two.
 
 !!! danger "Changing the size or the eye selection changes the data"
-    Either change alters the recorded frame, so **episodes either side of it are not comparable**.
-    Decide before you start recording, and note it in [Data management](data-management.md).
+    **Episodes either side of the change are not comparable** — decide before you start.
 
 ### Pairing the two eyes
 
@@ -511,18 +510,6 @@ measured skew**, so the condition is visible rather than silently recorded.
 `tcp.*`** (the same Pico→world transform the tracker uses). Head and hands are therefore directly
 comparable and can be drawn in one 3D scene: with `--display_data=true`, the `/world` view gains
 an amber `HEAD` marker (see [the `/world` 3D view](#world-view)).
-
-!!! note "The headset pose is both an observation and an action"
-    `head_camera.*` is written to both `observation` and `action`, taking part in the
-    [shifted-frame pairing](#51) exactly as `tcp.*` does — **where the operator looked while
-    demonstrating is part of the demonstration**, something a policy is meant to reproduce rather
-    than mere context. It carries the same position + 6-D rotation layout as `tcp.*`, so it can be
-    commanded the same way.
-
-    On a bimanual rig it is **unprefixed and appears once** — one headset serves both arms, unlike
-    `{side}_tcp.*`, which that rig reports twice.
-
-    Image data stays out of the action; it lives in the observation only.
 
 !!! note "Dimension change"
     Enabling it adds 9 dimensions (the headset pose) to `observation.state`: 10 → 19 for a single
