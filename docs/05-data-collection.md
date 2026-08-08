@@ -123,7 +123,7 @@
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=false \
         --robot.enable_head_camera=false \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<your_org>/<your_dataset> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -142,7 +142,7 @@
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=false \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<your_org>/<your_dataset> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -161,7 +161,7 @@
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=true \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<your_org>/<your_dataset> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -173,6 +173,15 @@
 
 **单夹爪**:换成 `--robot.type=taccap_gripper`,其余相同。只接了一只时会自动选中;
 **两只都接着、只录其中一只**时,用 `--robot.side=left|right` 指定录哪一只——这时它是必填的。
+
+!!! tip "正式录制时关掉 `--display_data`"
+    上面三条命令都写了 `--display_data=false`(这也是默认值)。Rerun 显示要在采集主循环上
+    压缩并推送每一路画面,**开着会明显占用帧预算**;关掉能把这部分负载全部让给采集和编码,
+    高分辨率或多相机时尤其明显。
+
+    数据流该在[开录前的预览](#preview)里确认,那时开着 `--display_data=true`;
+    确认完就关掉再开录。录制途中确实要盯画面的话,见
+    [`--display_image_every_n`](#params)。
 
 ### 参数详解 {#params}
 
@@ -386,7 +395,7 @@ lerobot-record \
     --robot.type=bi_taccap_gripper \
     --robot.enable_tracker=true \
     --robot.enable_head_camera=true \
-    --display_data=true \
+    --display_data=false \
     --dataset.repo_id=<your_org>/<your_dataset> \
     --dataset.single_task='Pick up the object' \
     --dataset.fps=30 \

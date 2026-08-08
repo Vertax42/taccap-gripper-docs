@@ -123,7 +123,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=false \
         --robot.enable_head_camera=false \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<你的org>/<数据集名> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -142,7 +142,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=false \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<你的org>/<数据集名> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -162,7 +162,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=true \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<你的org>/<数据集名> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -179,6 +179,7 @@ for g in scan_grippers(): print(g.side.name, g.role.name, repr(g.firmware_sn))"
 - `--robot.side` 只在单夹爪模式、且**两只夹爪都接着**时才需要;单只会自动选中。
 - `--fps` 是主循环帧率,`--dataset.fps` 是落盘采样率——**两个参数**,通常设成一样。
 - `--robot.enable_tracker` 和 `--robot.enable_head_camera` 显式写出,和预览时用的那一档保持一致——预览到哪一档就录哪一档。
+- `--display_data` **预览时开、录制时关**:Rerun 显示占采集主循环的帧预算,正式录制关掉更稳。
 
 全部参数(数据集 / 录制控制 / 设备三类)→ [5.2 参数详解](05-data-collection.md#params)
 

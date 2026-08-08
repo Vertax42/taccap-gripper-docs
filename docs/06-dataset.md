@@ -70,8 +70,8 @@ lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand --episode-in
 ## 6.3 回放与可视化
 
 - **在线数据集可视化**:数据集上传到 Hugging Face Hub 后,可使用 [LeRobot Dataset Visualizer](https://huggingface.co/spaces/lerobot/visualize_dataset) 在线浏览各 episode 的视频与数据。
-- **3D 轨迹**:采集/自检时加 `--display_data=true`,Rerun 中查看夹爪位姿与轨迹
-  (见 [`/world` 3D 视图](05-data-collection.md#world-view))。
+- **3D 轨迹**:[开录前预览](05-data-collection.md#preview)时加 `--display_data=true`,
+  在 Rerun 里查看夹爪位姿与轨迹(见 [`/world` 3D 视图](05-data-collection.md#world-view))。
 - **数据集浏览**:用 lerobot 官方的数据集可视化工具打开 parquet + mp4 逐帧检查
   (以你本地这一版 `lerobot` 提供的可视化脚本为准)。
 
@@ -130,7 +130,7 @@ lerobot-push-dataset-to-hub \
     lerobot-record \
         --robot.type=taccap_gripper \
         --robot.side=right \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=Xense/pick_object_demo \
         --dataset.single_task='Pick up the object' \
         --dataset.num_episodes=20 \
@@ -145,7 +145,7 @@ lerobot-push-dataset-to-hub \
     ```bash
     lerobot-record \
         --robot.type=bi_taccap_gripper \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=Xense/pick_object_demo \
         --dataset.single_task='Pick up the object' \
         --dataset.num_episodes=20 \

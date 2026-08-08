@@ -137,7 +137,7 @@ serials. Tactile sensors, wrist cameras and trackers each match left/right by th
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=false \
         --robot.enable_head_camera=false \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<your_org>/<your_dataset> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -157,7 +157,7 @@ serials. Tactile sensors, wrist cameras and trackers each match left/right by th
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=false \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<your_org>/<your_dataset> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -177,7 +177,7 @@ serials. Tactile sensors, wrist cameras and trackers each match left/right by th
         --robot.type=bi_taccap_gripper \
         --robot.enable_tracker=true \
         --robot.enable_head_camera=true \
-        --display_data=true \
+        --display_data=false \
         --dataset.repo_id=<your_org>/<your_dataset> \
         --dataset.num_episodes=1 \
         --dataset.fps=30 \
@@ -190,6 +190,16 @@ serials. Tactile sensors, wrist cameras and trackers each match left/right by th
 **Single gripper**: use `--robot.type=taccap_gripper`; everything else is the same. With only one
 connected it is picked automatically. **With both connected and only one being recorded**,
 `--robot.side=left|right` says which — and is required.
+
+!!! tip "Turn `--display_data` off for real recordings"
+    All three commands above pass `--display_data=false`, which is also the default. Rerun's
+    display compresses and pushes every stream **on the collection loop**, so leaving it on eats
+    a visible share of the frame budget — the more so at higher resolutions or with more cameras.
+    Off, that budget goes to capture and encoding instead.
+
+    The streams are what the [pre-recording preview](#preview) is for, with `--display_data=true`;
+    turn it off once you have checked. If you really must watch during a recording, see
+    [`--display_image_every_n`](#params).
 
 ### Parameter reference {#params}
 
@@ -427,7 +437,7 @@ lerobot-record \
     --robot.type=bi_taccap_gripper \
     --robot.enable_tracker=true \
     --robot.enable_head_camera=true \
-    --display_data=true \
+    --display_data=false \
     --dataset.repo_id=<your_org>/<your_dataset> \
     --dataset.single_task='Pick up the object' \
     --dataset.fps=30 \

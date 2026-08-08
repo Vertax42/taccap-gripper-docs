@@ -141,7 +141,7 @@ whichever stage matches the recording you are about to make.
         --robot.type=bi_taccap_gripper \\
         --robot.enable_tracker=false \\
         --robot.enable_head_camera=false \\
-        --display_data=true \\
+        --display_data=false \\
         --dataset.repo_id=<your_org>/<dataset_name> \\
         --dataset.num_episodes=1 \\
         --dataset.fps=30 \\
@@ -160,7 +160,7 @@ whichever stage matches the recording you are about to make.
         --robot.type=bi_taccap_gripper \\
         --robot.enable_tracker=true \\
         --robot.enable_head_camera=false \\
-        --display_data=true \\
+        --display_data=false \\
         --dataset.repo_id=<your_org>/<dataset_name> \\
         --dataset.num_episodes=1 \\
         --dataset.fps=30 \\
@@ -180,7 +180,7 @@ whichever stage matches the recording you are about to make.
         --robot.type=bi_taccap_gripper \\
         --robot.enable_tracker=true \\
         --robot.enable_head_camera=true \\
-        --display_data=true \\
+        --display_data=false \\
         --dataset.repo_id=<your_org>/<dataset_name> \\
         --dataset.num_episodes=1 \\
         --dataset.fps=30 \\
@@ -199,6 +199,8 @@ Three that are easy to get wrong:
 - `--fps` is the main loop rate, `--dataset.fps` is the recording sample rate — **two parameters**,
   usually set to the same value.
 - `--robot.enable_tracker` and `--robot.enable_head_camera` are spelled out so they match the preview stage you just ran — record at the stage you previewed.
+- `--display_data` is **on to preview, off to record**: Rerun's display costs frame budget on the
+  collection loop.
 
 Every parameter (dataset / recording control / device) → [5.2 Parameter reference](05-data-collection.md#params)
 
