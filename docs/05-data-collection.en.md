@@ -236,36 +236,36 @@ official [recording guide](https://huggingface.co/docs/lerobot/v0.5.1/en/il_robo
 
 | Parameter | Default | Meaning |
 |---|---|---|
-| `--robot.type` | **required** | `taccap_gripper` (single) / `bi_taccap_gripper` (bimanual) |
-| `--fps` | `30` | **Main loop** rate (device reads and preview). Separate from `--dataset.fps` (the recording sample rate) — two parameters, usually set the same |
-| `--display_data` | `false` | Show camera streams and the 3D view in Rerun |
-| `--show_trajectory` | `true` | Overlay the 3D pose + trajectory in Rerun (needs `display_data` and a `tcp.*`) |
-| `--display_compressed_images` | `false` | Whether to JPEG-compress images before showing them in Rerun. **Off by default** — the encoding happens on the record loop and eats a large share of the frame budget; it only pays off when the Rerun viewer is on another machine (`--display_ip`) |
-| `--display_image_every_n` | `1` | Refresh the camera tiles only every N frames (scalars always stay at full rate). **A last resort**, for a loop that still overruns — it is the only option here that changes what the operator sees |
-| `--play_sounds` | `true` | Spoken announcements of recording events |
-| `--resume` | `false` | **Continue recording** into an existing dataset |
-| `--teleop.*` | — | Teleoperator; **not needed** — the XTac-UMI G1 is self-driven |
+| `robot.type` | **required** | `taccap_gripper` (single) / `bi_taccap_gripper` (bimanual) |
+| `fps` | `30` | **Main loop** rate (device reads and preview). Separate from `--dataset.fps` (the recording sample rate) — two parameters, usually set the same |
+| `display_data` | `false` | Show camera streams and the 3D view in Rerun |
+| `show_trajectory` | `true` | Overlay the 3D pose + trajectory in Rerun (needs `display_data` and a `tcp.*`) |
+| `display_compressed_images` | `false` | Whether to JPEG-compress images before showing them in Rerun. **Off by default** — the encoding happens on the record loop and eats a large share of the frame budget; it only pays off when the Rerun viewer is on another machine (`--display_ip`) |
+| `display_image_every_n` | `1` | Refresh the camera tiles only every N frames (scalars always stay at full rate). **A last resort**, for a loop that still overruns — it is the only option here that changes what the operator sees |
+| `play_sounds` | `true` | Spoken announcements of recording events |
+| `resume` | `false` | **Continue recording** into an existing dataset |
+| `teleop.*` | — | Teleoperator; **not needed** — the XTac-UMI G1 is self-driven |
 
 #### Device parameters `--robot.*` (XTac-UMI G1 specific)
 
 | Parameter | Default | Meaning |
 |---|---|---|
-| `--robot.side` | auto | `left`/`right`, required **in single-gripper mode** when both are connected; a lone unit auto-resolves |
-| `--robot.role` | `leader` | `follower` binds the slave gripper |
-| `--robot.enable_tracker` | `true` | Off records tactile + gripper only (no pose) |
-| `--robot.tracker_serial` | unset | Pin the tracker SN, bypassing automatic side matching |
-| `--robot.enable_wrist_camera` | `true` | Turn the wrist camera off |
-| `--robot.wrist_camera_width/_height/_fps` | — | Wrist camera resolution / frame rate |
-| `--robot.enable_head_camera` | `false` | Record the Pico4 Ultra Enterprise **headset camera** — see [§5.6](#56) |
-| `--robot.head_camera_eyes` | `both` | `both` records each eye as its own key; `left` / `right` records one |
-| `--robot.head_camera_width/_height` | `1024` / `768` | **Per-eye** size; only `1024x768` or `1280x960` are accepted |
-| `--robot.head_camera_fps` | `30` | Head camera recording frame rate |
-| `--robot.head_camera_pair_max_skew_ms` | `20.0` | Max timestamp gap still counted as one stereo capture when the eyes' sequence numbers differ |
-| `--robot.tactile_fps` | `30` | Tactile recording frame rate |
-| `--robot.tactile_output_types` | `["rectify"]` | Tactile stream **written to disk**, **exactly one** |
-| `--robot.tactile_display_output_types` | `["difference"]` | Extra tactile streams that are **display-only**, never recorded |
-| `--robot.tactile_diff_gain` | `1.0` | Gain of the `difference` image (display only) |
-| `--robot.expected_tactiles_per_side` | — | Assert the tactile count per side |
+| `robot.side` | auto | `left`/`right`, required **in single-gripper mode** when both are connected; a lone unit auto-resolves |
+| `robot.role` | `leader` | `follower` binds the slave gripper |
+| `robot.enable_tracker` | `true` | Off records tactile + gripper only (no pose) |
+| `robot.tracker_serial` | unset | Pin the tracker SN, bypassing automatic side matching |
+| `robot.enable_wrist_camera` | `true` | Turn the wrist camera off |
+| `robot.wrist_camera_width/_height/_fps` | — | Wrist camera resolution / frame rate |
+| `robot.enable_head_camera` | `false` | Record the Pico4 Ultra Enterprise **headset camera** — see [§5.6](#56) |
+| `robot.head_camera_eyes` | `both` | `both` records each eye as its own key; `left` / `right` records one |
+| `robot.head_camera_width/_height` | `1024` / `768` | **Per-eye** size; only `1024x768` or `1280x960` are accepted |
+| `robot.head_camera_fps` | `30` | Head camera recording frame rate |
+| `robot.head_camera_pair_max_skew_ms` | `20.0` | Max timestamp gap still counted as one stereo capture when the eyes' sequence numbers differ |
+| `robot.tactile_fps` | `30` | Tactile recording frame rate |
+| `robot.tactile_output_types` | `["rectify"]` | Tactile stream **written to disk**, **exactly one** |
+| `robot.tactile_display_output_types` | `["difference"]` | Extra tactile streams that are **display-only**, never recorded |
+| `robot.tactile_diff_gain` | `1.0` | Gain of the `difference` image (display only) |
+| `robot.expected_tactiles_per_side` | — | Assert the tactile count per side |
 
 Once the Pico4 Ultra Enterprise tracker is powered on, the 6-DoF pose is **recorded
 automatically** — the tracker matches this unit's side from the digit before its serial's trailing `G`
@@ -466,6 +466,20 @@ else is an error rather than a silent downgrade, and so is a first frame whose s
 the config — rescaling would quietly change the recorded field of view. Both modes are 4:3,
 matching the sensor (PICO's camera-access API caps a frame at 2328x1748, which is also 4:3, so a
 16:9 request would be a crop or a stretch rather than more field of view).
+
+!!! warning "The headset's \"Resolution\" and these two must agree"
+    The headset produces the frames, and their size comes from the **Resolution** setting in
+    XTac-UMI XR (default `1024`); these two flags only **declare what you expect to receive**. If
+    the two disagree, connect fails on the first frame's size.
+
+    **After setting the headset to `1280`, change the command too**:
+
+    ```bash
+    --robot.head_camera_width=1280 \
+    --robot.head_camera_height=960
+    ```
+
+    And back again for `1024`. Change both, never just one.
 
 `--robot.head_camera_eyes=left` (or `right`) records one eye: half the JPEG decoding, half the
 encoder load, and one head video key in the dataset instead of two.

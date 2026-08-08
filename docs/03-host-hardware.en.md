@@ -494,6 +494,10 @@ connect. Opening the app does not connect it.
     to `1024`; it does nothing if you are not using that camera. Leave it alone unless you have a
     reason.
 
+    **Change it here and the collection command has to follow**: at `1280`, pass
+    `--robot.head_camera_width=1280 --robot.head_camera_height=960`, or connect fails on the
+    frame size.
+
 !!! note "High-accuracy tracking is always on now"
     High-accuracy tracking — steadier pose, less jitter — is enabled by default. There is no
     toggle for it and nothing to set.

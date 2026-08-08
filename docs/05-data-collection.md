@@ -215,36 +215,36 @@
 
 | 参数 | 默认 | 含义 |
 |---|---|---|
-| `--robot.type` | **必填** | `taccap_gripper`(单夹爪)/ `bi_taccap_gripper`(双夹爪) |
-| `--fps` | `30` | **主循环**帧率(设备读取与预览)。与 `--dataset.fps`(落盘采样率)是两个参数,通常设成相同值 |
-| `--display_data` | `false` | 在 Rerun 中显示相机画面与 3D 视图 |
-| `--show_trajectory` | `true` | Rerun 中叠加 3D 位姿 + 轨迹(需 `display_data` 且有 `tcp.*`) |
-| `--display_compressed_images` | `false` | Rerun 里是否 JPEG 压缩后再显示。**默认关**——压缩发生在录制主循环上,开着会吃掉大量帧预算;只有 Rerun 查看器在另一台机器上(`--display_ip`)时才划算 |
-| `--display_image_every_n` | `1` | 每 N 帧才刷新一次相机画面(标量始终全速)。**最后手段**,只在仍然超时才动它——它是唯一会改变操作员所见内容的选项 |
-| `--play_sounds` | `true` | 语音播报录制事件 |
-| `--resume` | `false` | 在已有数据集上**续录** |
-| `--teleop.*` | — | 遥操作端;**XTac-UMI G1 自驱动无需**,不用填 |
+| `robot.type` | **必填** | `taccap_gripper`(单夹爪)/ `bi_taccap_gripper`(双夹爪) |
+| `fps` | `30` | **主循环**帧率(设备读取与预览)。与 `--dataset.fps`(落盘采样率)是两个参数,通常设成相同值 |
+| `display_data` | `false` | 在 Rerun 中显示相机画面与 3D 视图 |
+| `show_trajectory` | `true` | Rerun 中叠加 3D 位姿 + 轨迹(需 `display_data` 且有 `tcp.*`) |
+| `display_compressed_images` | `false` | Rerun 里是否 JPEG 压缩后再显示。**默认关**——压缩发生在录制主循环上,开着会吃掉大量帧预算;只有 Rerun 查看器在另一台机器上(`--display_ip`)时才划算 |
+| `display_image_every_n` | `1` | 每 N 帧才刷新一次相机画面(标量始终全速)。**最后手段**,只在仍然超时才动它——它是唯一会改变操作员所见内容的选项 |
+| `play_sounds` | `true` | 语音播报录制事件 |
+| `resume` | `false` | 在已有数据集上**续录** |
+| `teleop.*` | — | 遥操作端;**XTac-UMI G1 自驱动无需**,不用填 |
 
 #### 设备参数 `--robot.*`(XTac-UMI G1 专属)
 
 | 参数 | 默认 | 含义 |
 |---|---|---|
-| `--robot.side` | 自动 | `left`/`right`,**单夹爪模式**下两只都接着时必填;只接一只则自动选中 |
-| `--robot.role` | `leader` | 填 `follower` 绑定从夹爪 |
-| `--robot.enable_tracker` | `true` | 关闭则只录触觉 + 夹爪(无位姿) |
-| `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别自动匹配 |
-| `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
-| `--robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率 / 帧率 |
-| `--robot.enable_head_camera` | `false` | 录制 Pico4 Ultra 企业版**头显相机**,见 [§5.6](#56) |
-| `--robot.head_camera_eyes` | `both` | `both` 录左右两只眼(两个键),`left` / `right` 只录一只 |
-| `--robot.head_camera_width/_height` | `1024` / `768` | **每只眼**的尺寸,只接受 `1024x768` 或 `1280x960` |
-| `--robot.head_camera_fps` | `30` | 头显相机录制帧率 |
-| `--robot.head_camera_pair_max_skew_ms` | `20.0` | 左右眼帧序号不同时,判定为同一次曝光的最大时间差 |
-| `--robot.tactile_fps` | `30` | 触觉录制帧率 |
-| `--robot.tactile_output_types` | `["rectify"]` | **落盘**的触觉流,**只能填一个** |
-| `--robot.tactile_display_output_types` | `["difference"]` | **仅显示**、不落盘的额外触觉流 |
-| `--robot.tactile_diff_gain` | `1.0` | `difference` 图的增益(只影响显示) |
-| `--robot.expected_tactiles_per_side` | — | 校验每侧触觉数量 |
+| `robot.side` | 自动 | `left`/`right`,**单夹爪模式**下两只都接着时必填;只接一只则自动选中 |
+| `robot.role` | `leader` | 填 `follower` 绑定从夹爪 |
+| `robot.enable_tracker` | `true` | 关闭则只录触觉 + 夹爪(无位姿) |
+| `robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别自动匹配 |
+| `robot.enable_wrist_camera` | `true` | 关闭腕相机 |
+| `robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率 / 帧率 |
+| `robot.enable_head_camera` | `false` | 录制 Pico4 Ultra 企业版**头显相机**,见 [§5.6](#56) |
+| `robot.head_camera_eyes` | `both` | `both` 录左右两只眼(两个键),`left` / `right` 只录一只 |
+| `robot.head_camera_width/_height` | `1024` / `768` | **每只眼**的尺寸,只接受 `1024x768` 或 `1280x960` |
+| `robot.head_camera_fps` | `30` | 头显相机录制帧率 |
+| `robot.head_camera_pair_max_skew_ms` | `20.0` | 左右眼帧序号不同时,判定为同一次曝光的最大时间差 |
+| `robot.tactile_fps` | `30` | 触觉录制帧率 |
+| `robot.tactile_output_types` | `["rectify"]` | **落盘**的触觉流,**只能填一个** |
+| `robot.tactile_display_output_types` | `["difference"]` | **仅显示**、不落盘的额外触觉流 |
+| `robot.tactile_diff_gain` | `1.0` | `difference` 图的增益(只影响显示) |
+| `robot.expected_tactiles_per_side` | — | 校验每侧触觉数量 |
 
 Pico4 Ultra 企业版追踪器上电后,6-DoF 位姿**自动录制**——追踪器按序列号末尾字母 `G` 前一个数字(单左双右)
 自动匹配本单元侧别。
@@ -421,6 +421,19 @@ lerobot-record \
 不会悄悄降级;首帧尺寸与配置不一致时同样报错——重采样会**悄悄改掉记录下来的视场角**。
 两个尺寸都是 4:3,与传感器一致(PICO 的相机访问接口单帧上限 2328x1748,也是 4:3;
 按 16:9 要画面,得到的是裁剪或拉伸,而不是更大的视场)。
+
+!!! warning "头显里的「分辨率」和这两个参数必须一致"
+    出画面的是头显,尺寸由 XTac-UMI XR 界面上的「**分辨率**」决定(默认 `1024`);命令行这两个
+    参数只是**声明你预期收到什么**。两边对不上,connect 时就会因首帧尺寸不符报错。
+
+    **在头显里把分辨率改成 `1280` 后,命令行也要跟着改**:
+
+    ```bash
+    --robot.head_camera_width=1280 \
+    --robot.head_camera_height=960
+    ```
+
+    改回 `1024` 同理。两处一起改,不要只改一边。
 
 只要一只眼时用 `--robot.head_camera_eyes=left`(或 `right`):JPEG 解码量和编码器压力都减半,
 数据集里也只有一个头部视频键。

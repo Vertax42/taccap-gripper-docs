@@ -60,9 +60,9 @@ lerobot-check-dataset --repo-id Xense/assemble_box_with_phone_stand --episode-in
 
 | 参数 | 含义 |
 |---|---|
-| `--repo-id` | 数据集仓库 id(`<org>/<name>`) |
-| `--root` | 本地根目录(默认 `~/.cache/huggingface/lerobot`) |
-| `--episode-index` | 只检查指定集(可多值,如 `0 2 4`) |
+| `repo-id` | 数据集仓库 id(`<org>/<name>`) |
+| `root` | 本地根目录(默认 `~/.cache/huggingface/lerobot`) |
+| `episode-index` | 只检查指定集(可多值,如 `0 2 4`) |
 
 !!! note "脚本来源"
     `lerobot_check_dataset.py` 随主仓库一起提供,以你本地这一版为准。

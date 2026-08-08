@@ -141,6 +141,13 @@
     **解决**:改回两个受支持的尺寸之一。注意**改尺寸等于换了一组数据**,变更前后的 episode
     不能混用。见 [5.6 头显相机](05-data-collection.md#56)。
 
+??? failure "尺寸填的是受支持的值,connect 时仍报首帧尺寸不符"
+    **原因**:命令行的尺寸和**头显里的「分辨率」设置**对不上。出画面的是头显,
+    参数只是声明预期收到什么。
+    **解决**:两边取同一个值——头显选 `1024` 就用默认;选 `1280` 就加
+    `--robot.head_camera_width=1280 --robot.head_camera_height=960`。
+    头显那一项在 [打开 App 后的界面](03-host-hardware.md#pico-toolkit-ui)。
+
 ## 采集与录制
 
 ??? failure "开了 `--display_data=true` 后日志频繁出现 `[slow_frame]`"

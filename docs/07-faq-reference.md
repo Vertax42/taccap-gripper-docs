@@ -9,29 +9,29 @@
 
 | 配置项 | 默认 | 作用 |
 |---|---|---|
-| `--robot.side` | 自动 | `left`/`right`,**单夹爪模式**下两只都接着时必填;只接一只则自动选中 |
-| `--robot.role` | `leader` | 填 `follower` 绑定从夹爪 |
-| `--robot.enable_tracker` | `true` | 关闭则只录触觉 + 夹爪 |
-| `--robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别规则 |
-| `--robot.enable_wrist_camera` | `true` | 关闭腕相机 |
-| `--robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率/帧率 |
-| `--robot.enable_head_camera` | `false` | 头显相机(第一视角 + 头显位姿),见 [5.6](05-data-collection.md#56) |
-| `--robot.head_camera_eyes` | `both` | `both` = 左右眼各一个键;`left` / `right` 只录一只 |
-| `--robot.head_camera_width/_height` | `1024` / `768` | **每只眼**尺寸,只接受 `1024x768` / `1280x960` |
-| `--robot.head_camera_fps` | `30` | 头显相机帧率 |
-| `--robot.head_camera_pair_max_skew_ms` | `20.0` | 左右眼帧序号不同时,判为同一次曝光的最大时间差 |
-| `--robot.head_camera_startup_timeout_s` | `5.0` | connect 时等待首帧的秒数 |
-| `--robot.head_camera_stale_after_s` | `0.2` | 缓存帧超过该时长即视为过期并告警 |
-| `--robot.tactile_fps` | `30` | 触觉帧率 |
-| `--robot.tactile_output_types` | `["rectify"]` | **落盘**的触觉流,**只能填一个**;填多个直接报错 |
-| `--robot.tactile_display_output_types` | `["difference"]` | **仅供 Rerun 显示**、不落盘的额外触觉流;设为空列表则关闭 |
-| `--robot.tactile_diff_gain` | `1.0` | `difference` 图的线性增益(只影响显示流);`None` = 用传感器出厂值 |
-| `--robot.expected_tactiles_per_side` | `2` | 校验每侧触觉数量 |
-| `--robot.enable_gripper` / `--robot.enable_imu` | `true` / `false` | 夹爪本体读数 / IMU 通道 |
-| `--robot.gripper_open_rad` | `1.7` | **仅从夹爪用**。主夹爪一律用自己固件里实测的行程上限,本项对它没有任何作用——没标定的主夹爪会被拒绝连接,而不是退回这个常量。见 [4.1](04-calibration.md#41) |
-| `--robot.tracker_to_ee_pos` | `None` | 覆盖 tracker→EE 平移;`None` = 用该侧**内置实测值** |
-| `--robot.tracker_to_ee_quat` | `None` | 覆盖 tracker→EE 旋转(同上,两者可独立覆盖) |
-| `--robot.tracker_wait_timeout` | `10.0` | 连接设备时等待追踪器数据的秒数 |
+| `robot.side` | 自动 | `left`/`right`,**单夹爪模式**下两只都接着时必填;只接一只则自动选中 |
+| `robot.role` | `leader` | 填 `follower` 绑定从夹爪 |
+| `robot.enable_tracker` | `true` | 关闭则只录触觉 + 夹爪 |
+| `robot.tracker_serial` | 未设 | 钉住追踪器 SN,绕过侧别规则 |
+| `robot.enable_wrist_camera` | `true` | 关闭腕相机 |
+| `robot.wrist_camera_width/_height/_fps` | — | 腕相机分辨率/帧率 |
+| `robot.enable_head_camera` | `false` | 头显相机(第一视角 + 头显位姿),见 [5.6](05-data-collection.md#56) |
+| `robot.head_camera_eyes` | `both` | `both` = 左右眼各一个键;`left` / `right` 只录一只 |
+| `robot.head_camera_width/_height` | `1024` / `768` | **每只眼**尺寸,只接受 `1024x768` / `1280x960` |
+| `robot.head_camera_fps` | `30` | 头显相机帧率 |
+| `robot.head_camera_pair_max_skew_ms` | `20.0` | 左右眼帧序号不同时,判为同一次曝光的最大时间差 |
+| `robot.head_camera_startup_timeout_s` | `5.0` | connect 时等待首帧的秒数 |
+| `robot.head_camera_stale_after_s` | `0.2` | 缓存帧超过该时长即视为过期并告警 |
+| `robot.tactile_fps` | `30` | 触觉帧率 |
+| `robot.tactile_output_types` | `["rectify"]` | **落盘**的触觉流,**只能填一个**;填多个直接报错 |
+| `robot.tactile_display_output_types` | `["difference"]` | **仅供 Rerun 显示**、不落盘的额外触觉流;设为空列表则关闭 |
+| `robot.tactile_diff_gain` | `1.0` | `difference` 图的线性增益(只影响显示流);`None` = 用传感器出厂值 |
+| `robot.expected_tactiles_per_side` | `2` | 校验每侧触觉数量 |
+| `robot.enable_gripper` / `robot.enable_imu` | `true` / `false` | 夹爪本体读数 / IMU 通道 |
+| `robot.gripper_open_rad` | `1.7` | **仅从夹爪用**。主夹爪一律用自己固件里实测的行程上限,本项对它没有任何作用——没标定的主夹爪会被拒绝连接,而不是退回这个常量。见 [4.1](04-calibration.md#41) |
+| `robot.tracker_to_ee_pos` | `None` | 覆盖 tracker→EE 平移;`None` = 用该侧**内置实测值** |
+| `robot.tracker_to_ee_quat` | `None` | 覆盖 tracker→EE 旋转(同上,两者可独立覆盖) |
+| `robot.tracker_wait_timeout` | `10.0` | 连接设备时等待追踪器数据的秒数 |
 
 !!! note "完整字段"
     上表是常用项;完整字段以主仓库附带的设备说明为准。
